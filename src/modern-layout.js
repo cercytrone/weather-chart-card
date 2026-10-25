@@ -51,6 +51,9 @@ export function renderModern(card) {
       .main > div {min-width:0;overflow-wrap:anywhere;}
       .main span {font-size:22px; color:var(--secondary-text-color); font-weight:400;}
       .main .current-condition span,.main .feels-like,.main .description {font-size:14px; font-weight:400;}
+      .main > div:not(.current-time) {line-height:1.05;}
+      .main .current-condition {font-size:14px;line-height:1.2;margin-top:2px;}
+      .main .current-condition span {line-height:inherit;}
       .main > .current-time {grid-column:3; text-align:right; margin:0; font-size:${config.time_size}px; font-weight:400; line-height:1.3;}
       #digital-clock {white-space:nowrap;}
       .date-text {font-size:${config.day_date_size}px;}

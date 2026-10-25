@@ -22,6 +22,7 @@ assert.equal(card.shadowRoot.querySelectorAll('.days span').length,5);
 assert.equal(card.shadowRoot.querySelector('#forecastChart'),null);
 assert.ok(!card.shadowRoot.innerHTML.includes('NaN'));
 assert.ok(card.clockInterval);
+assert.ok(card.shadowRoot.querySelector('style').textContent.includes('.main .current-condition {font-size:14px;line-height:1.2;margin-top:2px;}'));
 card.remove();
 await Promise.resolve();
 await Promise.resolve();
