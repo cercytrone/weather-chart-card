@@ -1,5 +1,7 @@
 <h1 align="center">Weather Chart Card</h1>
 
+forked from mlamberts78 ([mlamberts78/weather-chart-card](https://github.com/mlamberts78/weather-chart-card/))
+
 # Backup
 The original repository is no longer maintained. Feel free to fork it if you find it useful.
 
