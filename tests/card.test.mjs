@@ -74,6 +74,40 @@ control('Show Current Time').dispatchEvent(new Event('change'));
 await editor.updateComplete;
 assert.equal(editor.config.show_time,true);
 assert.equal(control('Show Current Time').checked,true);
+assert.equal(editor.shadowRoot.querySelector('input[value="daily"]').checked,true);
+const hourly = editor.shadowRoot.querySelector('input[value="hourly"]');
+hourly.checked = true;
+hourly.dispatchEvent(new Event('change'));
+await editor.updateComplete;
+assert.equal(editor.config.forecast.type,'hourly');
+const style2 = editor.shadowRoot.querySelector('input[name="style"][value="style2"]');
+style2.checked = true;
+style2.dispatchEvent(new Event('change'));
+await editor.updateComplete;
+assert.equal(editor.config.forecast.style,'style2');
+assert.equal(editor.config.forecast.type,'hourly');
+for (const [label,page] of [['Forecast','forecast'],['Units','units'],['Alternate entities','alternate'],['Main','card']]) {
+  const button = [...editor.shadowRoot.querySelectorAll('button')].find(el => el.textContent === label);
+  button.click();
+  await editor.updateComplete;
+  assert.equal(editor.currentPage,page);
+  assert.equal(button.getAttribute('aria-pressed'),'true');
+  assert.equal(editor.shadowRoot.querySelectorAll('.page-container.active').length,1);
+}
+for (const [label,key,value] of [['Current weather icon size (px)','current_icon_size',72],['Forecast icon size (px)','icons_size',36]]) {
+  const field = [...editor.shadowRoot.querySelectorAll('ha-textfield')].find(el => el.getAttribute('label') === label);
+  assert.ok(field);
+  field.value = String(value);
+  field.dispatchEvent(new Event('change'));
+  await editor.updateComplete;
+  assert.equal(editor.config[key],value);
+}
+card.setConfig({...editor.config,show_time:true});
+await card.updateComplete;
+assert.equal(card.config.current_icon_size,72);
+assert.equal(card.config.icons_size,36);
+assert.ok(card.shadowRoot.querySelector('style').textContent.includes('--mdc-icon-size:72px'));
+card.remove();
 editor.remove();
 card.remove();
 await window.happyDOM.abort();

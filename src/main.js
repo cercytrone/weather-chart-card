@@ -126,6 +126,10 @@ setConfig(config) {
     }
   };
 
+  const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
+  cardConfig.icons_size = size(cardConfig.icons_size, 25, 12, 80);
+  cardConfig.current_icon_size = size(config.current_icon_size, cardConfig.layout === 'modern' ? 56 : cardConfig.icons_size * 2, 24, 120);
+
   cardConfig.units.speed = config.speed ? config.speed : cardConfig.units.speed;
 
   this.baseIconPath = cardConfig.icon_style === 'style2' ?
@@ -895,14 +899,14 @@ updateChart({ forecasts, forecastChart } = this) {
           margin-bottom: 10px;
         }
         .main ha-icon {
-          --mdc-icon-size: 50px;
+          --mdc-icon-size: ${config.current_icon_size}px;
           margin-right: 14px;
           margin-inline-start: initial;
           margin-inline-end: 14px;
         }
         .main img {
-          width: ${config.icons_size * 2}px;
-          height: ${config.icons_size * 2}px;
+          width: ${config.current_icon_size}px;
+          height: ${config.current_icon_size}px;
           margin-right: 14px;
           margin-inline-start: initial;
           margin-inline-end: 14px;
@@ -935,6 +939,7 @@ updateChart({ forecasts, forecastChart } = this) {
           margin: 0px 5px 0px 5px;
       	  cursor: pointer;
         }
+        .forecast-item ha-icon {--mdc-icon-size:${config.icons_size}px;}
         .forecast-item {
           display: flex;
           flex-direction: column;

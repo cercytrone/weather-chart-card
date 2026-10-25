@@ -249,3 +249,21 @@ show_day: true
 show_date: true
 show_uv: true
 ```
+
+### Icon sizes
+
+The **Main** settings page provides separate pixel sizes for the current weather
+icon (`current_icon_size`, 24–120) and forecast icons (`icons_size`, 12–80).
+Both options apply to built-in HA icons, animated icons and custom icons.
+Modern defaults to a 56px current icon and 25px forecast icons; Classic preserves
+its previous defaults. On modern cards narrower than 300px the current icon is
+capped at 36px to leave space for temperature and time.
+
+```yaml
+current_icon_size: 64
+icons_size: 30
+```
+
+Forecast type, chart style, animated icon style and settings navigation use native
+HTML controls to avoid relying on internal Home Assistant radio/button components.
+Chart styles 1 and 2 still only affect the Classic layout; Modern has its own chart.

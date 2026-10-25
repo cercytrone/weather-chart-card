@@ -45,9 +45,9 @@ export function renderModern(card) {
       :host {display:block; min-width:0; container-type:inline-size;}
       ha-card {position:relative; border-radius:32px; overflow:hidden; background:var(--ha-card-background,var(--card-background-color)); color:var(--primary-text-color); box-shadow:var(--ha-card-box-shadow,0 10px 30px -12px #0005);}
       .modern {padding:20px; background:radial-gradient(circle at 100% 0%,#38bdf812,transparent 50%);}
-      .main {display:grid; grid-template-columns:56px minmax(0,1fr) auto; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--divider-color); font-size:${config.current_temp_size}px; font-weight:800;}
-      .main ha-icon {--mdc-icon-size:56px; color:#38bdf8; flex-shrink:0;}
-      .main img {width:56px;height:56px;}
+      .main {display:grid; grid-template-columns:${config.current_icon_size}px minmax(0,1fr) auto; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--divider-color); font-size:${config.current_temp_size}px; font-weight:800;}
+      .main ha-icon {--mdc-icon-size:${config.current_icon_size}px; color:#38bdf8; flex-shrink:0;}
+      .main img {width:${config.current_icon_size}px;height:${config.current_icon_size}px;}
       .main > div {min-width:0;overflow-wrap:anywhere;}
       .main span {font-size:22px; color:var(--secondary-text-color); font-weight:400;}
       .main .current-condition span,.main .feels-like,.main .description {font-size:14px; font-weight:400;}
@@ -73,7 +73,7 @@ export function renderModern(card) {
       .wind ha-icon {--mdc-icon-size:14px;}
       .wind small {display:block;font-size:9px;color:var(--secondary-text-color);}
       .updated,.empty {font-size:12px;color:var(--secondary-text-color);margin-top:12px;}
-      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:36px minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:36px}.main img{width:36px;height:36px}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
+      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
       @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
     </style>
     <ha-card .header=${config.title || ''}><div class="modern">

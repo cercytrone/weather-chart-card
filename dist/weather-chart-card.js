@@ -856,9 +856,9 @@ function renderModern(card) {
       :host {display:block; min-width:0; container-type:inline-size;}
       ha-card {position:relative; border-radius:32px; overflow:hidden; background:var(--ha-card-background,var(--card-background-color)); color:var(--primary-text-color); box-shadow:var(--ha-card-box-shadow,0 10px 30px -12px #0005);}
       .modern {padding:20px; background:radial-gradient(circle at 100% 0%,#38bdf812,transparent 50%);}
-      .main {display:grid; grid-template-columns:56px minmax(0,1fr) auto; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--divider-color); font-size:${config.current_temp_size}px; font-weight:800;}
-      .main ha-icon {--mdc-icon-size:56px; color:#38bdf8; flex-shrink:0;}
-      .main img {width:56px;height:56px;}
+      .main {display:grid; grid-template-columns:${config.current_icon_size}px minmax(0,1fr) auto; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--divider-color); font-size:${config.current_temp_size}px; font-weight:800;}
+      .main ha-icon {--mdc-icon-size:${config.current_icon_size}px; color:#38bdf8; flex-shrink:0;}
+      .main img {width:${config.current_icon_size}px;height:${config.current_icon_size}px;}
       .main > div {min-width:0;overflow-wrap:anywhere;}
       .main span {font-size:22px; color:var(--secondary-text-color); font-weight:400;}
       .main .current-condition span,.main .feels-like,.main .description {font-size:14px; font-weight:400;}
@@ -884,7 +884,7 @@ function renderModern(card) {
       .wind ha-icon {--mdc-icon-size:14px;}
       .wind small {display:block;font-size:9px;color:var(--secondary-text-color);}
       .updated,.empty {font-size:12px;color:var(--secondary-text-color);margin-top:12px;}
-      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:36px minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:36px}.main img{width:36px;height:36px}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
+      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
       @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
     </style>
     <ha-card .header=${config.title || ''}><div class="modern">
@@ -1116,6 +1116,12 @@ class WeatherChartCardEditor extends s {
       }
     }
 
+    const limits = {icons_size: [12, 80], current_icon_size: [24, 120]};
+    if (limits[key]) {
+      const value = Number(event.target.value);
+      if (!Number.isFinite(value) || value <= 0) return;
+      newConfig[key] = Math.min(limits[key][1], Math.max(limits[key][0], value));
+    }
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -1125,7 +1131,7 @@ class WeatherChartCardEditor extends s {
       return;
     }
     const newConfig = JSON.parse(JSON.stringify(this._config));
-    newConfig.forecast.style = event.target.value;
+    newConfig.forecast = {...newConfig.forecast, style: event.target.value};
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -1135,7 +1141,7 @@ class WeatherChartCardEditor extends s {
       return;
     }
     const newConfig = JSON.parse(JSON.stringify(this._config));
-    newConfig.forecast.type = event.target.value;
+    newConfig.forecast = {...newConfig.forecast, type: event.target.value};
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -1179,6 +1185,12 @@ class WeatherChartCardEditor extends s {
 
     return x`
       <style>
+        button,select,input[type="radio"] {font:inherit;accent-color:var(--primary-color);cursor:pointer;}
+        button,select {color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px 12px;}
+        button[aria-pressed="true"] {border-color:var(--primary-color);color:var(--primary-color);}
+        button:focus-visible,select:focus-visible,input:focus-visible {outline:2px solid var(--primary-color);outline-offset:2px;}
+        .buttons-container {display:flex;gap:8px;flex-wrap:wrap;}
+        .hint {color:var(--secondary-text-color);font-size:12px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -1273,51 +1285,52 @@ class WeatherChartCardEditor extends s {
       <h5>Forecast type:</h5>
 
       <div class="radio-group">
-        <ha-radio
+        <label class="check-label"><input type="radio"
           name="type"
           value="daily"
           @change="${this._handleTypeChange}"
-          .checked="${forecastConfig.type === 'daily'}"
-        ></ha-radio>
-        <label class="check-label">
+          .checked="${(forecastConfig.type || 'daily') === 'daily'}"
+        >
+
           Daily forecast
         </label>
       </div>
 
       <div class="radio-group">
-        <ha-radio
+        <label class="check-label"><input type="radio"
           name="type"
           value="hourly"
           @change="${this._handleTypeChange}"
           .checked="${forecastConfig.type === 'hourly'}"
-        ></ha-radio>
-        <label class="check-label">
+        >
+
           Hourly forecast
         </label>
       </div>
 
       <h5>Chart style:</h5>
+      ${this._config.layout === 'modern' ? x`<p class="hint">Chart style 1 and 2 apply only to the Classic layout. Modern uses its own temperature chart.</p>` : ''}
       <div class="radio-container">
         <div class="switch-right">
-          <ha-radio
+          <label class="check-label"><input type="radio"
             name="style"
             value="style1"
             @change="${this._handleStyleChange}"
-            .checked="${forecastConfig.style === 'style1'}"
-          ></ha-radio>
-          <label class="check-label">
+            .checked="${(forecastConfig.style || 'style1') === 'style1'}"
+          >
+
             Chart style 1
           </label>
         </div>
 
         <div class="switch-right">
-          <ha-radio
+          <label class="check-label"><input type="radio"
             name="style"
             value="style2"
             @change="${this._handleStyleChange}"
             .checked="${forecastConfig.style === 'style2'}"
-          ></ha-radio>
-          <label class="check-label">
+          >
+
             Chart style 2
           </label>
         </div>
@@ -1326,10 +1339,10 @@ class WeatherChartCardEditor extends s {
         <!-- Buttons to switch between pages -->
        <h4>Settings:</h4>
        <div class="buttons-container">
-         <mwc-button @click="${() => this.showPage('card')}">Main</mwc-button>
-         <mwc-button @click="${() => this.showPage('forecast')}">Forecast</mwc-button>
-         <mwc-button @click="${() => this.showPage('units')}">Units</mwc-button>
-         <mwc-button @click="${() => this.showPage('alternate')}">Alternate entities</mwc-button>
+         <button type="button" aria-pressed=${this.currentPage === 'card'} @click="${() => this.showPage('card')}">Main</button>
+         <button type="button" aria-pressed=${this.currentPage === 'forecast'} @click="${() => this.showPage('forecast')}">Forecast</button>
+         <button type="button" aria-pressed=${this.currentPage === 'units'} @click="${() => this.showPage('units')}">Units</button>
+         <button type="button" aria-pressed=${this.currentPage === 'alternate'} @click="${() => this.showPage('alternate')}">Alternate entities</button>
        </div>
 
         <!-- Card Settings Page -->
@@ -1567,31 +1580,38 @@ class WeatherChartCardEditor extends s {
                 </label>
               </div>
               <div class="switch-right radio-container" style="${this._config.animated_icons ? 'display: flex;' : 'display: none;'}">
-                  <ha-radio
+                  <label class="check-label"><input type="radio"
                     name="icon_style"
                     value="style1"
                     @change="${this._handleIconStyleChange}"
                     .checked="${this._config.icon_style === 'style1'}"
-                  ></ha-radio>
-                  <label class="check-label">
+                  >
+
                     Style 1
                   </label>
                 </div>
               <div class="switch-right radio-container" style="${this._config.animated_icons ? 'display: flex;' : 'display: none;'}">
-                  <ha-radio
+                  <label class="check-label"><input type="radio"
                     name="icon_style"
                     value="style2"
                     @change="${this._handleIconStyleChange}"
                     .checked="${this._config.icon_style === 'style2'}"
-                  ></ha-radio>
-                  <label class="check-label">
+                  >
+
                     Style 2
                   </label>
                 </div>
               </div>
        <div class="textfield-container">
          <ha-textfield
-           label="Icon Size for animated or custom icons"
+           label="Current weather icon size (px)"
+           type="number" min="24" max="120"
+           .value=${String(this._config.current_icon_size || (this._config.layout === 'modern' ? 56 : (this._config.icons_size || 25) * 2))}
+           @change=${e => this._valueChanged(e, 'current_icon_size')}
+         ></ha-textfield>
+         <ha-textfield
+           label="Forecast icon size (px)"
+           min="12" max="80"
            type="number"
            .value="${this._config.icons_size || '25'}"
            @change="${(e) => this._valueChanged(e, 'icons_size')}"
@@ -18277,6 +18297,10 @@ setConfig(config) {
     }
   };
 
+  const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
+  cardConfig.icons_size = size(cardConfig.icons_size, 25, 12, 80);
+  cardConfig.current_icon_size = size(config.current_icon_size, cardConfig.layout === 'modern' ? 56 : cardConfig.icons_size * 2, 24, 120);
+
   cardConfig.units.speed = config.speed ? config.speed : cardConfig.units.speed;
 
   this.baseIconPath = cardConfig.icon_style === 'style2' ?
@@ -19046,14 +19070,14 @@ updateChart({ forecasts, forecastChart } = this) {
           margin-bottom: 10px;
         }
         .main ha-icon {
-          --mdc-icon-size: 50px;
+          --mdc-icon-size: ${config.current_icon_size}px;
           margin-right: 14px;
           margin-inline-start: initial;
           margin-inline-end: 14px;
         }
         .main img {
-          width: ${config.icons_size * 2}px;
-          height: ${config.icons_size * 2}px;
+          width: ${config.current_icon_size}px;
+          height: ${config.current_icon_size}px;
           margin-right: 14px;
           margin-inline-start: initial;
           margin-inline-end: 14px;
@@ -19086,6 +19110,7 @@ updateChart({ forecasts, forecastChart } = this) {
           margin: 0px 5px 0px 5px;
       	  cursor: pointer;
         }
+        .forecast-item ha-icon {--mdc-icon-size:${config.icons_size}px;}
         .forecast-item {
           display: flex;
           flex-direction: column;

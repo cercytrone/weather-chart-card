@@ -146,6 +146,12 @@ class WeatherChartCardEditor extends LitElement {
       }
     }
 
+    const limits = {icons_size: [12, 80], current_icon_size: [24, 120]};
+    if (limits[key]) {
+      const value = Number(event.target.value);
+      if (!Number.isFinite(value) || value <= 0) return;
+      newConfig[key] = Math.min(limits[key][1], Math.max(limits[key][0], value));
+    }
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -155,7 +161,7 @@ class WeatherChartCardEditor extends LitElement {
       return;
     }
     const newConfig = JSON.parse(JSON.stringify(this._config));
-    newConfig.forecast.style = event.target.value;
+    newConfig.forecast = {...newConfig.forecast, style: event.target.value};
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -165,7 +171,7 @@ class WeatherChartCardEditor extends LitElement {
       return;
     }
     const newConfig = JSON.parse(JSON.stringify(this._config));
-    newConfig.forecast.type = event.target.value;
+    newConfig.forecast = {...newConfig.forecast, type: event.target.value};
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -209,6 +215,12 @@ class WeatherChartCardEditor extends LitElement {
 
     return html`
       <style>
+        button,select,input[type="radio"] {font:inherit;accent-color:var(--primary-color);cursor:pointer;}
+        button,select {color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px 12px;}
+        button[aria-pressed="true"] {border-color:var(--primary-color);color:var(--primary-color);}
+        button:focus-visible,select:focus-visible,input:focus-visible {outline:2px solid var(--primary-color);outline-offset:2px;}
+        .buttons-container {display:flex;gap:8px;flex-wrap:wrap;}
+        .hint {color:var(--secondary-text-color);font-size:12px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -303,51 +315,52 @@ class WeatherChartCardEditor extends LitElement {
       <h5>Forecast type:</h5>
 
       <div class="radio-group">
-        <ha-radio
+        <label class="check-label"><input type="radio"
           name="type"
           value="daily"
           @change="${this._handleTypeChange}"
-          .checked="${forecastConfig.type === 'daily'}"
-        ></ha-radio>
-        <label class="check-label">
+          .checked="${(forecastConfig.type || 'daily') === 'daily'}"
+        >
+
           Daily forecast
         </label>
       </div>
 
       <div class="radio-group">
-        <ha-radio
+        <label class="check-label"><input type="radio"
           name="type"
           value="hourly"
           @change="${this._handleTypeChange}"
           .checked="${forecastConfig.type === 'hourly'}"
-        ></ha-radio>
-        <label class="check-label">
+        >
+
           Hourly forecast
         </label>
       </div>
 
       <h5>Chart style:</h5>
+      ${this._config.layout === 'modern' ? html`<p class="hint">Chart style 1 and 2 apply only to the Classic layout. Modern uses its own temperature chart.</p>` : ''}
       <div class="radio-container">
         <div class="switch-right">
-          <ha-radio
+          <label class="check-label"><input type="radio"
             name="style"
             value="style1"
             @change="${this._handleStyleChange}"
-            .checked="${forecastConfig.style === 'style1'}"
-          ></ha-radio>
-          <label class="check-label">
+            .checked="${(forecastConfig.style || 'style1') === 'style1'}"
+          >
+
             Chart style 1
           </label>
         </div>
 
         <div class="switch-right">
-          <ha-radio
+          <label class="check-label"><input type="radio"
             name="style"
             value="style2"
             @change="${this._handleStyleChange}"
             .checked="${forecastConfig.style === 'style2'}"
-          ></ha-radio>
-          <label class="check-label">
+          >
+
             Chart style 2
           </label>
         </div>
@@ -356,10 +369,10 @@ class WeatherChartCardEditor extends LitElement {
         <!-- Buttons to switch between pages -->
        <h4>Settings:</h4>
        <div class="buttons-container">
-         <mwc-button @click="${() => this.showPage('card')}">Main</mwc-button>
-         <mwc-button @click="${() => this.showPage('forecast')}">Forecast</mwc-button>
-         <mwc-button @click="${() => this.showPage('units')}">Units</mwc-button>
-         <mwc-button @click="${() => this.showPage('alternate')}">Alternate entities</mwc-button>
+         <button type="button" aria-pressed=${this.currentPage === 'card'} @click="${() => this.showPage('card')}">Main</button>
+         <button type="button" aria-pressed=${this.currentPage === 'forecast'} @click="${() => this.showPage('forecast')}">Forecast</button>
+         <button type="button" aria-pressed=${this.currentPage === 'units'} @click="${() => this.showPage('units')}">Units</button>
+         <button type="button" aria-pressed=${this.currentPage === 'alternate'} @click="${() => this.showPage('alternate')}">Alternate entities</button>
        </div>
 
         <!-- Card Settings Page -->
@@ -597,31 +610,38 @@ class WeatherChartCardEditor extends LitElement {
                 </label>
               </div>
               <div class="switch-right radio-container" style="${this._config.animated_icons ? 'display: flex;' : 'display: none;'}">
-                  <ha-radio
+                  <label class="check-label"><input type="radio"
                     name="icon_style"
                     value="style1"
                     @change="${this._handleIconStyleChange}"
                     .checked="${this._config.icon_style === 'style1'}"
-                  ></ha-radio>
-                  <label class="check-label">
+                  >
+
                     Style 1
                   </label>
                 </div>
               <div class="switch-right radio-container" style="${this._config.animated_icons ? 'display: flex;' : 'display: none;'}">
-                  <ha-radio
+                  <label class="check-label"><input type="radio"
                     name="icon_style"
                     value="style2"
                     @change="${this._handleIconStyleChange}"
                     .checked="${this._config.icon_style === 'style2'}"
-                  ></ha-radio>
-                  <label class="check-label">
+                  >
+
                     Style 2
                   </label>
                 </div>
               </div>
        <div class="textfield-container">
          <ha-textfield
-           label="Icon Size for animated or custom icons"
+           label="Current weather icon size (px)"
+           type="number" min="24" max="120"
+           .value=${String(this._config.current_icon_size || (this._config.layout === 'modern' ? 56 : (this._config.icons_size || 25) * 2))}
+           @change=${e => this._valueChanged(e, 'current_icon_size')}
+         ></ha-textfield>
+         <ha-textfield
+           label="Forecast icon size (px)"
+           min="12" max="80"
            type="number"
            .value="${this._config.icons_size || '25'}"
            @change="${(e) => this._valueChanged(e, 'icons_size')}"
