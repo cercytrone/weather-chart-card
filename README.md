@@ -7,11 +7,12 @@ The original repository is no longer maintained.
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/cercytrone/weather-chart-card?style=flat-square)](https://github.com/cercytrone/weather-chart-card/releases/latest)
 ![GitHub downloads](https://img.shields.io/github/downloads/cercytrone/weather-chart-card/total?style=flat-square)
 ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads/cercytrone/weather-chart-card/latest/total)
-
-![weather-chart-card](https://github.com/mlamberts78/weather-chart-card/assets/93537082/bd5b9f6e-4125-4a19-9773-463e6d054bce)
-![15-days](https://github.com/mlamberts78/weather-chart-card/assets/93537082/f4de6060-7005-4a6d-b1f3-3aa17c856c73)
 <img width="705" height="538" alt="Neues Layout" src="https://github.com/user-attachments/assets/b7cf6749-4465-46fa-b644-3ddd85bcfad5" />
 <img width="701" height="539" alt="Mit Color-Gradient - je nach Temperatur" src="https://github.com/user-attachments/assets/aa9f7e69-1601-4f89-ad08-158d368309c5" />
+<img width="713" height="545" alt="Screenshot at Oct 25 18-45-12" src="https://github.com/user-attachments/assets/8b956e61-820c-4554-94a7-8f55414265ef" />
+![weather-chart-card](https://github.com/mlamberts78/weather-chart-card/assets/93537082/bd5b9f6e-4125-4a19-9773-463e6d054bce)
+![15-days](https://github.com/mlamberts78/weather-chart-card/assets/93537082/f4de6060-7005-4a6d-b1f3-3aa17c856c73)
+
 
 ## Installation
 
