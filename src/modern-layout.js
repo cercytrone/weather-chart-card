@@ -2,25 +2,58 @@ import {html, svg} from 'lit';
 
 export const numeric = value => value !== null && value !== '' && value !== undefined && Number.isFinite(Number(value)) ? Number(value) : null;
 
-export function forecastGeometry(forecasts) {
-  const values = forecasts.flatMap(item => [numeric(item.temperature), numeric(item.templow)]).filter(value => value !== null);
+export function extendedGeometry(forecasts, previous = null, next = null) {
+  const values = [...forecasts, previous, next].filter(Boolean).flatMap(item => [numeric(item.temperature), numeric(item.templow)]).filter(value => value !== null);
   const min = values.length ? Math.min(...values) : 0;
   const max = values.length ? Math.max(...values) : 1;
   const range = Math.max(max - min, 4);
-  return forecasts.map((item, index) => ({
+  const point = (item, index) => ({
     x: (index + 0.5) * 100 / forecasts.length,
     high: numeric(item.temperature), low: numeric(item.templow),
     highY: numeric(item.temperature) === null ? null : 32 + (max - Number(item.temperature)) / range * 100,
     lowY: numeric(item.templow) === null ? null : 32 + (max - Number(item.templow)) / range * 100,
-  }));
+  });
+  const points = forecasts.map(point);
+  // Neighbours share the visible scale, but do not become labelled columns.
+  return {points, previous: previous ? point(previous, -1) : null, next: next ? point(next, forecasts.length) : null};
+}
+
+export function forecastGeometry(forecasts) {
+  return extendedGeometry(forecasts).points;
+}
+
+export function forecastWindow(forecasts, count, cutoff, autoscroll, now = Date.now()) {
+  const selected = forecasts.map((item, index) => ({item, index}))
+    .filter(({item}) => !autoscroll || now - new Date(item.datetime) <= cutoff).slice(0, count);
+  if (!selected.length) return {items: [], previous: null, next: null};
+  const items = selected.map(({item}) => item);
+  const previous = forecasts[selected[0].index - 1] || null;
+  const next = forecasts[selected[selected.length - 1].index + 1] || null;
+  return {
+    items,
+    previous: previous && Date.parse(previous.datetime) < Date.parse(items[0].datetime) ? previous : null,
+    next: next && Date.parse(next.datetime) > Date.parse(items[items.length - 1].datetime) ? next : null,
+  };
+}
+
+export function curvePoints(geometry, key) {
+  const {points, previous, next} = geometry;
+  if (!points.length) return [];
+  const y = `${key}Y`;
+  const first = points[0];
+  const last = points[points.length - 1];
+  const left = first[y] === null ? null : previous && previous[y] !== null ? previous : {...first, x: 0};
+  const right = last[y] === null ? null : next && next[y] !== null ? next : {...last, x: 100};
+  return [left, ...points, right].filter(Boolean);
 }
 
 export function renderModern(card) {
   const {config, weather} = card;
   const count = Math.max(1, Math.min(15, Math.floor(Number(config.forecast.number_of_forecasts)) || 5));
   const cutoff = (config.forecast.type === 'hourly' ? 1 : 24) * 3600000;
-  const items = (card.forecasts || []).filter(item => !config.autoscroll || Date.now() - new Date(item.datetime) <= cutoff).slice(0, count);
-  const points = forecastGeometry(items);
+  const {items, previous: before, next: after} = forecastWindow(card.forecasts || [], count, cutoff, config.autoscroll);
+  const geometry = extendedGeometry(items, before, after);
+  const {points} = geometry;
   const format = value => value === null ? '–' : new Intl.NumberFormat(card.language, {maximumFractionDigits: config.forecast.round_temp ? 0 : 1}).format(value);
   const formatRainfall = value => new Intl.NumberFormat(card.language, {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(value);
   const icon = item => html`<ha-icon title=${card.ll(item.condition) || item.condition || ''} icon=${card.getWeatherIcon(item.condition, 'above_horizon')}></ha-icon>`;
@@ -28,7 +61,7 @@ export function renderModern(card) {
     // Break paths at missing readings rather than interpolating invented data.
     let previous;
     return svg`<g style=${`color:${color}`}>
-      ${points.map(point => {
+      ${curvePoints(geometry, key).map(point => {
         const y = point[`${key}Y`];
         const old = previous;
         previous = y === null ? null : point;
@@ -36,7 +69,7 @@ export function renderModern(card) {
           ${old ? svg`
             <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y} L ${point.x} 175 L ${old.x} 175 Z`} fill=${`url(#${key}-fill)`}/>
             <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y}`} fill="none" stroke="currentColor" stroke-width="2.5" vector-effect="non-scaling-stroke"/>` : ''}
-          <ellipse cx=${point.x} cy=${y} rx="0.8" ry="3" fill="currentColor" stroke="var(--ha-card-background, var(--card-background-color))" vector-effect="non-scaling-stroke"/>
+          ${points.includes(point) ? svg`<ellipse cx=${point.x} cy=${y} rx="0.8" ry="3" fill="currentColor" stroke="var(--ha-card-background, var(--card-background-color))" vector-effect="non-scaling-stroke"/>` : ''}
         `;
       })}
     </g>`;
@@ -66,7 +99,7 @@ export function renderModern(card) {
       .row {display:grid;grid-template-columns:repeat(${items.length || 1},minmax(0,1fr));text-align:center;align-items:center;gap:0;}
       .days {font-size:11px;font-weight:600;text-transform:uppercase;color:var(--secondary-text-color);margin-top:20px;}
       .plot {position:relative;height:${Math.max(120, Number(config.forecast.chart_height) || 150)}px;}
-      svg {width:100%;height:100%;display:block;}
+      svg {width:100%;height:100%;display:block;overflow:hidden;}
       .labels {position:absolute;inset:0;pointer-events:none;}
       .temp {position:absolute;transform:translate(-50%,-50%);font-size:${config.forecast.labels_font_size}px;font-weight:700;white-space:nowrap;}
       .rain {font-size:10px;color:#38bdf8;min-height:26px;}

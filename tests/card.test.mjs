@@ -171,6 +171,8 @@ await new Promise(resolve => setTimeout(resolve,30));
 callback({forecast:Array.from({length:10}, (_,i) => ({datetime:new Date(Date.now()+i*3600000).toISOString(),temperature:20+i}))});
 await card.updateComplete;
 assert.equal(card.shadowRoot.querySelectorAll('.days span').length,7);
+assert.equal(card.shadowRoot.querySelectorAll('.plot ellipse').length,7);
+assert.equal(card.shadowRoot.querySelectorAll('.labels .temp').length,7);
 forecastCount.value = '0';
 forecastCount.dispatchEvent(new Event('change'));
 await editor.updateComplete;
