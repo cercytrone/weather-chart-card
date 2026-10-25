@@ -41,6 +41,8 @@ card.hass = hass;
 card.setConfig({entity:'weather.home', layout:'modern', show_time:true, show_day:true, show_date:true});
 await card.updateComplete;
 assert.match(card.shadowRoot.querySelector('#digital-clock').textContent, /\d/);
+assert.equal(card.shadowRoot.querySelector('.current-time').parentElement, card.shadowRoot.querySelector('.main'));
+assert.equal(card.shadowRoot.querySelector('.main').lastElementChild.className, 'current-time');
 assert.ok(card.shadowRoot.querySelector('.date-text.day').textContent.length > 0);
 assert.match(card.shadowRoot.querySelector('.date-text.date').textContent, /\d/);
 assert.ok(card.shadowRoot.textContent.includes('UV: 0'));

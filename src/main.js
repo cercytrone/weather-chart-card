@@ -1082,6 +1082,7 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
             </div>
           ` : ''}
         </div>
+      </div>
         ${showTime || showDay || showDate ? html`
           <div class="current-time">
             ${showTime ? html`<div id="digital-clock">${currentTime}</div>` : ''}
@@ -1090,7 +1091,6 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
             ${showDate ? html`<div class="date-text date">${currentDateFormatted}</div>` : ''}
           </div>
         ` : ''}
-      </div>
     </div>
   `;
 }
