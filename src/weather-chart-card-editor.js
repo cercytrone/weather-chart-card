@@ -151,7 +151,7 @@ class WeatherChartCardEditor extends LitElement {
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
     }
-    const limits = {icons_size: [12, 80], current_icon_size: [24, 120]};
+    const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48]};
     if (limits[key]) {
       const value = Number(event.target.value);
       if (!Number.isFinite(value) || value <= 0) return;
@@ -401,6 +401,10 @@ class WeatherChartCardEditor extends LitElement {
             <input id="forecast-icon-size" name="icons_size" type="number" min="12" max="80" step="1"
               .value=${String(this._config.icons_size || 25)}
               @change=${e => this._valueChanged(e, 'icons_size')}>
+            <label for="attribute-icon-size">Attribute icon size (px)</label>
+            <input id="attribute-icon-size" name="attribute_icon_size" type="number" min="12" max="48" step="1"
+              .value=${String(this._config.attribute_icon_size || (this._config.layout === 'modern' ? 16 : 24))}
+              @change=${e => this._valueChanged(e, 'attribute_icon_size')}>
           </fieldset>
           <div class="switch-container">
             <ha-switch

@@ -128,6 +128,7 @@ setConfig(config) {
 
   const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
   cardConfig.icons_size = size(cardConfig.icons_size, 25, 12, 80);
+  cardConfig.attribute_icon_size = size(config.attribute_icon_size, cardConfig.layout === 'modern' ? 16 : 24, 12, 48);
   cardConfig.current_icon_size = size(config.current_icon_size, cardConfig.layout === 'modern' ? 56 : cardConfig.icons_size * 2, 24, 120);
 
   cardConfig.units.speed = config.speed ? config.speed : cardConfig.units.speed;
@@ -928,6 +929,9 @@ updateChart({ forecasts, forecastChart } = this) {
           margin-bottom: 6px;
       	  font-weight: 300;
           direction: ltr;
+        }
+        .attributes ha-icon {
+          --mdc-icon-size: ${config.attribute_icon_size}px;
         }
         .chart-container {
           position: relative;

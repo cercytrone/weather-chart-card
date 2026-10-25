@@ -900,7 +900,7 @@ function renderModern(card) {
       .date-text {font-size:${config.day_date_size}px;}
       .attributes {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:16px 0; font-size:12px; line-height:1.9;}
       .attributes > div {padding:10px; border-radius:16px; background:color-mix(in srgb,var(--primary-text-color) 5%,transparent); overflow-wrap:anywhere; min-width:0;}
-      .attributes ha-icon {--mdc-icon-size:16px;color:#38bdf8;}
+      .attributes ha-icon {--mdc-icon-size:${config.attribute_icon_size}px;color:#38bdf8;}
       .forecast-scroll {overflow-x:auto; padding-bottom:4px;}
       .forecast {min-width:${items.length * 56}px;}
       .row {display:grid;grid-template-columns:repeat(${items.length || 1},minmax(0,1fr));text-align:center;align-items:center;gap:0;}
@@ -1165,7 +1165,7 @@ class WeatherChartCardEditor extends s {
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
     }
-    const limits = {icons_size: [12, 80], current_icon_size: [24, 120]};
+    const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48]};
     if (limits[key]) {
       const value = Number(event.target.value);
       if (!Number.isFinite(value) || value <= 0) return;
@@ -1415,6 +1415,10 @@ class WeatherChartCardEditor extends s {
             <input id="forecast-icon-size" name="icons_size" type="number" min="12" max="80" step="1"
               .value=${String(this._config.icons_size || 25)}
               @change=${e => this._valueChanged(e, 'icons_size')}>
+            <label for="attribute-icon-size">Attribute icon size (px)</label>
+            <input id="attribute-icon-size" name="attribute_icon_size" type="number" min="12" max="48" step="1"
+              .value=${String(this._config.attribute_icon_size || (this._config.layout === 'modern' ? 16 : 24))}
+              @change=${e => this._valueChanged(e, 'attribute_icon_size')}>
           </fieldset>
           <div class="switch-container">
             <ha-switch
@@ -18350,6 +18354,7 @@ setConfig(config) {
 
   const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
   cardConfig.icons_size = size(cardConfig.icons_size, 25, 12, 80);
+  cardConfig.attribute_icon_size = size(config.attribute_icon_size, cardConfig.layout === 'modern' ? 16 : 24, 12, 48);
   cardConfig.current_icon_size = size(config.current_icon_size, cardConfig.layout === 'modern' ? 56 : cardConfig.icons_size * 2, 24, 120);
 
   cardConfig.units.speed = config.speed ? config.speed : cardConfig.units.speed;
@@ -19150,6 +19155,9 @@ updateChart({ forecasts, forecastChart } = this) {
           margin-bottom: 6px;
       	  font-weight: 300;
           direction: ltr;
+        }
+        .attributes ha-icon {
+          --mdc-icon-size: ${config.attribute_icon_size}px;
         }
         .chart-container {
           position: relative;

@@ -187,6 +187,37 @@ card.setConfig({...editor.config,layout:'modern'});
 await card.updateComplete;
 assert.equal(card.shadowRoot.querySelectorAll('.days span').length,10);
 card.remove();
+// Attribute icons have independent sizing and retain layout-specific defaults.
+const attributeSize = editor.shadowRoot.querySelector('#attribute-icon-size');
+assert.equal(attributeSize.tagName, 'INPUT');
+assert.equal(attributeSize.value, '16');
+attributeSize.value = '28';
+attributeSize.dispatchEvent(new Event('change'));
+await editor.updateComplete;
+assert.equal(editor.config.attribute_icon_size,28);
+card.setConfig({...editor.config,layout:'modern'});
+await card.updateComplete;
+assert.equal(card.config.attribute_icon_size,28);
+assert.ok(card.shadowRoot.querySelector('style').textContent.includes('.attributes ha-icon {--mdc-icon-size:28px;'));
+assert.equal(card.config.current_icon_size,72);
+assert.equal(card.config.icons_size,36);
+for (const [value, expected] of [['99',48],['1',12],['invalid',12]]) {
+  attributeSize.value = value;
+  attributeSize.dispatchEvent(new Event('change'));
+  await editor.updateComplete;
+  assert.equal(editor.config.attribute_icon_size,expected);
+}
+card.forecasts = [];
+card.setConfig({entity:'weather.home', layout:'classic',attribute_icon_size:30});
+await card.updateComplete;
+assert.equal(card.config.attribute_icon_size,30);
+assert.match(card.shadowRoot.querySelector('style').textContent, /\.attributes ha-icon\s*\{\s*--mdc-icon-size: 30px/);
+card.setConfig({entity:'weather.home',layout:'classic'});
+assert.equal(card.config.attribute_icon_size,24);
+card.setConfig({entity:'weather.home',layout:'modern'});
+assert.equal(card.config.attribute_icon_size,16);
+card.setConfig({entity:'weather.home',layout:'modern',attribute_icon_size:'unavailable'});
+assert.equal(card.config.attribute_icon_size,16);
 editor.remove();
 card.remove();
 await window.happyDOM.abort();

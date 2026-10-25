@@ -93,7 +93,7 @@ export function renderModern(card) {
       .date-text {font-size:${config.day_date_size}px;}
       .attributes {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:16px 0; font-size:12px; line-height:1.9;}
       .attributes > div {padding:10px; border-radius:16px; background:color-mix(in srgb,var(--primary-text-color) 5%,transparent); overflow-wrap:anywhere; min-width:0;}
-      .attributes ha-icon {--mdc-icon-size:16px;color:#38bdf8;}
+      .attributes ha-icon {--mdc-icon-size:${config.attribute_icon_size}px;color:#38bdf8;}
       .forecast-scroll {overflow-x:auto; padding-bottom:4px;}
       .forecast {min-width:${items.length * 56}px;}
       .row {display:grid;grid-template-columns:repeat(${items.length || 1},minmax(0,1fr));text-align:center;align-items:center;gap:0;}
