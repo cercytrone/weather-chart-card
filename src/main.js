@@ -40,6 +40,7 @@ static getStubConfig(hass, unusedEntities, allEntities) {
     show_wind_direction: true,
     show_wind_speed: true,
     show_sun: true,
+    show_uv: true,
     show_feels_like: false,
     show_dew_point: false,
     show_wind_gust_speed: false,
@@ -418,6 +419,14 @@ async firstUpdated(changedProperties) {
 
 
 async updated(changedProperties) {
+  const needsClock = this.isConnected && this.config.show_main !== false &&
+    (this.config.show_time || this.config.show_day || this.config.show_date);
+  if (needsClock && !this.clockInterval) {
+    this.clockInterval = setInterval(() => this.requestUpdate(), 1000);
+  } else if (!needsClock && this.clockInterval) {
+    clearInterval(this.clockInterval);
+    this.clockInterval = null;
+  }
   await this.updateComplete;
 
   if (changedProperties.has('config')) {
@@ -1042,43 +1051,13 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
     ? html`<img src="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}" alt="">`
     : html`<ha-icon icon="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}"></ha-icon>`;
 
-  const updateClock = () => {
-    const currentDate = new Date();
-    const timeOptions = {
-      hour12: use12HourFormat,
-      hour: 'numeric',
-      minute: 'numeric',
-      second: showSeconds ? 'numeric' : undefined
-    };
-    const currentTime = currentDate.toLocaleTimeString(this.language, timeOptions);
-    const currentDayOfWeek = currentDate.toLocaleString(this.language, { weekday: 'long' }).toUpperCase();
-    const currentDateFormatted = currentDate.toLocaleDateString(this.language, { month: 'long', day: 'numeric' });
-
-    const mainDiv = this.shadowRoot.querySelector('.main');
-    if (mainDiv) {
-      const clockElement = mainDiv.querySelector('#digital-clock');
-      if (clockElement) {
-        clockElement.textContent = currentTime;
-      }
-      if (showDay) {
-        const dayElement = mainDiv.querySelector('.date-text.day');
-        if (dayElement) {
-          dayElement.textContent = currentDayOfWeek;
-        }
-      }
-      if (showDate) {
-        const dateElement = mainDiv.querySelector('.date-text.date');
-        if (dateElement) {
-          dateElement.textContent = currentDateFormatted;
-        }
-      }
-    }
-  };
-
-  clearInterval(this.clockInterval);
-  this.clockInterval = null;
-  this.updateComplete.then(updateClock);
-  if (showTime && this.isConnected) this.clockInterval = setInterval(updateClock, 1000);
+  const currentDate = new Date();
+  const currentTime = currentDate.toLocaleTimeString(this.language, {
+    hour12: use12HourFormat, hour: 'numeric', minute: 'numeric',
+    second: showSeconds ? 'numeric' : undefined
+  });
+  const currentDay = currentDate.toLocaleDateString(this.language, {weekday: 'long'});
+  const currentDateFormatted = currentDate.toLocaleDateString(this.language, {month: 'long', day: 'numeric'});
 
   return html`
     <div class="main">
@@ -1103,12 +1082,12 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
             </div>
           ` : ''}
         </div>
-        ${showTime ? html`
+        ${showTime || showDay || showDate ? html`
           <div class="current-time">
-            <div id="digital-clock"></div>
-            ${showDay ? html`<div class="date-text day"></div>` : ''}
+            ${showTime ? html`<div id="digital-clock">${currentTime}</div>` : ''}
+            ${showDay ? html`<div class="date-text day">${currentDay}</div>` : ''}
             ${showDay && showDate ? html` ` : ''}
-            ${showDate ? html`<div class="date-text date"></div>` : ''}
+            ${showDate ? html`<div class="date-text date">${currentDateFormatted}</div>` : ''}
           </div>
         ` : ''}
       </div>
@@ -1184,6 +1163,7 @@ renderAttributes({ config, humidity, pressure, windSpeed, windDirection, sun, la
   const showWindDirection = config.show_wind_direction !== false;
   const showWindSpeed = config.show_wind_speed !== false;
   const showSun = config.show_sun !== false;
+  const showUV = config.show_uv !== false && uv_index != null && uv_index !== '' && Number.isFinite(Number(uv_index));
   const showDewpoint = config.show_dew_point == true;
   const showWindgustspeed = config.show_wind_gust_speed == true;
   const showVisibility = config.show_visibility == true;
@@ -1206,9 +1186,9 @@ return html`
           ` : ''}
         </div>
       ` : ''}
-      ${((showSun && sun != null) || (typeof uv_index !== 'undefined' && uv_index !== undefined)) ? html`
+      ${((showSun && sun != null) || showUV) ? html`
         <div>
-          ${typeof uv_index !== 'undefined' && uv_index !== undefined ? html`
+          ${showUV ? html`
             <div>
               <ha-icon icon="hass:white-balance-sunny"></ha-icon> UV: ${Math.round(uv_index * 10) / 10}
             </div>

@@ -233,3 +233,19 @@ cleanup/reconnection. DOM tests are not a substitute for visual checks in Home
 Assistant's dashboards and Companion App. Check light/dark themes, narrow and
 wide dashboard columns, large text, and your actual weather integration before
 releasing.
+
+### Clock, date and UV controls
+
+Clock, weekday and date are disabled by default. They can be selected independently
+in the visual editor; `show_main: false` hides their containing current-weather
+section. `show_uv` defaults to true and can hide the UV index without hiding the
+sunrise/sunset times. UV requires an available numeric `uv_index` attribute or a
+sensor configured with `uv`; zero is a valid reading.
+
+```yaml
+show_time: true
+show_time_seconds: false
+show_day: true
+show_date: true
+show_uv: true
+```

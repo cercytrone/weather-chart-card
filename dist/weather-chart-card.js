@@ -1072,6 +1072,7 @@ class WeatherChartCardEditor extends s {
   }
 
   configChanged(newConfig) {
+    this._config = newConfig;
     const event = new Event("config-changed", {
       bubbles: true,
       composed: true,
@@ -1171,7 +1172,7 @@ class WeatherChartCardEditor extends s {
     }
     const forecastConfig = this._config.forecast || {};
     const unitsConfig = this._config.units || {};
-    this._config.show_time !== false;
+
 
 
     return x`
@@ -1409,6 +1410,13 @@ class WeatherChartCardEditor extends s {
           </div>
           <div class="switch-container">
             <ha-switch
+              @change=${e => this._valueChanged(e, 'show_uv')}
+              .checked=${this._config.show_uv !== false}
+            ></ha-switch>
+            <label class="switch-label">Show UV Index</label>
+          </div>
+          <div class="switch-container">
+            <ha-switch
               @change="${(e) => this._valueChanged(e, 'show_sun')}"
               .checked="${this._config.show_sun !== false}"
             ></ha-switch>
@@ -1479,7 +1487,7 @@ class WeatherChartCardEditor extends s {
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'use_12hour_format')}"
-              .checked="${this._config.use_12hour_format !== false}"
+              .checked="${this._config.use_12hour_format === true}"
             ></ha-switch>
             <label class="switch-label">
               Use 12-Hour Format
@@ -1498,41 +1506,41 @@ class WeatherChartCardEditor extends s {
             <div class="switch-right">
               <ha-switch
                 @change="${(e) => this._valueChanged(e, 'show_time')}"
-                .checked="${this._config.show_time !== false}"
+                .checked="${this._config.show_time === true}"
               ></ha-switch>
               <label class="switch-label">
                 Show Current Time
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_time_seconds')}"
-                .checked="${this._config.show_time_seconds !== false}"
+                .checked="${this._config.show_time_seconds === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Seconds
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_day')}"
-                .checked="${this._config.show_day !== false}"
+                .checked="${this._config.show_day === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Day
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_date')}"
-                .checked="${this._config.show_date !== false}"
+                .checked="${this._config.show_date === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Date
               </label>
             </div>
           </div>
-            <div class="flex-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="flex-container">
               <ha-textfield
                 label="Time text size"
                 type="number"
@@ -18181,6 +18189,7 @@ static getStubConfig(hass, unusedEntities, allEntities) {
     show_wind_direction: true,
     show_wind_speed: true,
     show_sun: true,
+    show_uv: true,
     show_feels_like: false,
     show_dew_point: false,
     show_wind_gust_speed: false,
@@ -18559,6 +18568,14 @@ async firstUpdated(changedProperties) {
 
 
 async updated(changedProperties) {
+  const needsClock = this.isConnected && this.config.show_main !== false &&
+    (this.config.show_time || this.config.show_day || this.config.show_date);
+  if (needsClock && !this.clockInterval) {
+    this.clockInterval = setInterval(() => this.requestUpdate(), 1000);
+  } else if (!needsClock && this.clockInterval) {
+    clearInterval(this.clockInterval);
+    this.clockInterval = null;
+  }
   await this.updateComplete;
 
   if (changedProperties.has('config')) {
@@ -19183,43 +19200,13 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
     ? x`<img src="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}" alt="">`
     : x`<ha-icon icon="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}"></ha-icon>`;
 
-  const updateClock = () => {
-    const currentDate = new Date();
-    const timeOptions = {
-      hour12: use12HourFormat,
-      hour: 'numeric',
-      minute: 'numeric',
-      second: showSeconds ? 'numeric' : undefined
-    };
-    const currentTime = currentDate.toLocaleTimeString(this.language, timeOptions);
-    const currentDayOfWeek = currentDate.toLocaleString(this.language, { weekday: 'long' }).toUpperCase();
-    const currentDateFormatted = currentDate.toLocaleDateString(this.language, { month: 'long', day: 'numeric' });
-
-    const mainDiv = this.shadowRoot.querySelector('.main');
-    if (mainDiv) {
-      const clockElement = mainDiv.querySelector('#digital-clock');
-      if (clockElement) {
-        clockElement.textContent = currentTime;
-      }
-      if (showDay) {
-        const dayElement = mainDiv.querySelector('.date-text.day');
-        if (dayElement) {
-          dayElement.textContent = currentDayOfWeek;
-        }
-      }
-      if (showDate) {
-        const dateElement = mainDiv.querySelector('.date-text.date');
-        if (dateElement) {
-          dateElement.textContent = currentDateFormatted;
-        }
-      }
-    }
-  };
-
-  clearInterval(this.clockInterval);
-  this.clockInterval = null;
-  this.updateComplete.then(updateClock);
-  if (showTime && this.isConnected) this.clockInterval = setInterval(updateClock, 1000);
+  const currentDate = new Date();
+  const currentTime = currentDate.toLocaleTimeString(this.language, {
+    hour12: use12HourFormat, hour: 'numeric', minute: 'numeric',
+    second: showSeconds ? 'numeric' : undefined
+  });
+  const currentDay = currentDate.toLocaleDateString(this.language, {weekday: 'long'});
+  const currentDateFormatted = currentDate.toLocaleDateString(this.language, {month: 'long', day: 'numeric'});
 
   return x`
     <div class="main">
@@ -19244,12 +19231,12 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
             </div>
           ` : ''}
         </div>
-        ${showTime ? x`
+        ${showTime || showDay || showDate ? x`
           <div class="current-time">
-            <div id="digital-clock"></div>
-            ${showDay ? x`<div class="date-text day"></div>` : ''}
+            ${showTime ? x`<div id="digital-clock">${currentTime}</div>` : ''}
+            ${showDay ? x`<div class="date-text day">${currentDay}</div>` : ''}
             ${showDay && showDate ? x` ` : ''}
-            ${showDate ? x`<div class="date-text date"></div>` : ''}
+            ${showDate ? x`<div class="date-text date">${currentDateFormatted}</div>` : ''}
           </div>
         ` : ''}
       </div>
@@ -19325,6 +19312,7 @@ renderAttributes({ config, humidity, pressure, windSpeed, windDirection, sun, la
   const showWindDirection = config.show_wind_direction !== false;
   const showWindSpeed = config.show_wind_speed !== false;
   const showSun = config.show_sun !== false;
+  const showUV = config.show_uv !== false && uv_index != null && uv_index !== '' && Number.isFinite(Number(uv_index));
   const showDewpoint = config.show_dew_point == true;
   const showWindgustspeed = config.show_wind_gust_speed == true;
   const showVisibility = config.show_visibility == true;
@@ -19347,9 +19335,9 @@ return x`
           ` : ''}
         </div>
       ` : ''}
-      ${((showSun && sun != null) || (typeof uv_index !== 'undefined' && uv_index !== undefined)) ? x`
+      ${((showSun && sun != null) || showUV) ? x`
         <div>
-          ${typeof uv_index !== 'undefined' && uv_index !== undefined ? x`
+          ${showUV ? x`
             <div>
               <ha-icon icon="hass:white-balance-sunny"></ha-icon> UV: ${Math.round(uv_index * 10) / 10}
             </div>

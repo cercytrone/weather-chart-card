@@ -104,6 +104,7 @@ class WeatherChartCardEditor extends LitElement {
   }
 
   configChanged(newConfig) {
+    this._config = newConfig;
     const event = new Event("config-changed", {
       bubbles: true,
       composed: true,
@@ -203,7 +204,7 @@ class WeatherChartCardEditor extends LitElement {
     }
     const forecastConfig = this._config.forecast || {};
     const unitsConfig = this._config.units || {};
-    const isShowTimeOn = this._config.show_time !== false;
+
 
 
     return html`
@@ -441,6 +442,13 @@ class WeatherChartCardEditor extends LitElement {
           </div>
           <div class="switch-container">
             <ha-switch
+              @change=${e => this._valueChanged(e, 'show_uv')}
+              .checked=${this._config.show_uv !== false}
+            ></ha-switch>
+            <label class="switch-label">Show UV Index</label>
+          </div>
+          <div class="switch-container">
+            <ha-switch
               @change="${(e) => this._valueChanged(e, 'show_sun')}"
               .checked="${this._config.show_sun !== false}"
             ></ha-switch>
@@ -511,7 +519,7 @@ class WeatherChartCardEditor extends LitElement {
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'use_12hour_format')}"
-              .checked="${this._config.use_12hour_format !== false}"
+              .checked="${this._config.use_12hour_format === true}"
             ></ha-switch>
             <label class="switch-label">
               Use 12-Hour Format
@@ -530,41 +538,41 @@ class WeatherChartCardEditor extends LitElement {
             <div class="switch-right">
               <ha-switch
                 @change="${(e) => this._valueChanged(e, 'show_time')}"
-                .checked="${this._config.show_time !== false}"
+                .checked="${this._config.show_time === true}"
               ></ha-switch>
               <label class="switch-label">
                 Show Current Time
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_time_seconds')}"
-                .checked="${this._config.show_time_seconds !== false}"
+                .checked="${this._config.show_time_seconds === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Seconds
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_day')}"
-                .checked="${this._config.show_day !== false}"
+                .checked="${this._config.show_day === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Day
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_date')}"
-                .checked="${this._config.show_date !== false}"
+                .checked="${this._config.show_date === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Date
               </label>
             </div>
           </div>
-            <div class="flex-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="flex-container">
               <ha-textfield
                 label="Time text size"
                 type="number"
