@@ -176,3 +176,60 @@ units:
 | Swedish          | sv      |
 | Ukrainian        | uk      |
 | 한국어           | ko      |
+
+## Modern layout (optional)
+
+The existing layout remains the default. Select **Modern** in the visual editor,
+ or add `layout: modern` to your card configuration:
+
+```yaml
+type: custom:weather-chart-card
+entity: weather.home
+layout: modern
+locale: de
+show_last_changed: true
+forecast:
+  type: daily
+  number_of_forecasts: 5
+  round_temp: true
+```
+
+The modern layout uses local styles, the active Home Assistant theme and a
+responsive SVG temperature chart. It does not load Tailwind, change the page
+background or provide a separate theme switch. No forecast values are hardcoded.
+
+- Defaults to five forecasts; fewer are shown if that is all the integration supplies.
+  `number_of_forecasts: 0` also uses five in this layout; explicit counts are capped at 15.
+- Forecast columns have a minimum width of 56px and scroll horizontally when
+  necessary. Below a card width of 300px, current-weather metrics stack vertically.
+- Missing temperatures break the corresponding curve; absent low temperatures
+  are omitted. Missing rain/wind values display a dash. Zero rainfall is hidden.
+- Daily and hourly forecasts are supported if the weather entity supplies them.
+- Existing visibility toggles, alternative sensors, icons, units, temperature colors,
+  label size, chart height and temperature rounding remain configurable.
+- Modern precipitation is shown as badges rather than bars. `precip_bar_size`,
+  chart `style`, `show_probability` (additional probability beside rainfall), and
+  Chart.js animation settings apply only to the classic chart. Select
+  `precipitation_type: probability` to show probability badges instead of rainfall.
+- Last-updated information uses the weather entity's `last_updated`, not a
+  separate timestamp for forecast delivery.
+
+After replacing `dist/weather-chart-card.js` in your Home Assistant installation,
+reload frontend resources / clear the frontend cache as needed.
+
+### Development checks
+
+Use Node.js 22 or later:
+
+```sh
+npm install
+npm test
+npm run build
+```
+
+Tests cover temperature geometry (including negative, constant and missing
+values), DOM rendering without `sun.sun`, the five-day default, and subscription
+cleanup/reconnection. DOM tests are not a substitute for visual checks in Home
+Assistant's dashboards and Companion App. Check light/dark themes, narrow and
+wide dashboard columns, large text, and your actual weather integration before
+releasing.

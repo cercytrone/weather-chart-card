@@ -293,6 +293,12 @@ class WeatherChartCardEditor extends LitElement {
       ></ha-textfield>
        </div>
 
+      <label>Layout
+        <select .value=${this._config.layout || 'classic'} @change=${e => this._valueChanged(e, 'layout')}>
+          <option value="classic">Classic</option>
+          <option value="modern">Modern</option>
+        </select>
+      </label>
       <h5>Forecast type:</h5>
 
       <div class="radio-group">
