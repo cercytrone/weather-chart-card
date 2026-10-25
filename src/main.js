@@ -53,6 +53,8 @@ static getStubConfig(hass, unusedEntities, allEntities) {
     icon_style: 'style1',
     autoscroll: false,
     forecast: {
+      temperature_gradient: false,
+      gradient_fill: true,
       precipitation_type: 'rainfall',
       show_probability: false,
       labels_font_size: '11',
@@ -103,6 +105,8 @@ setConfig(config) {
     show_description: false,
     ...config,
     forecast: {
+      temperature_gradient: false,
+      gradient_fill: true,
       precipitation_type: 'rainfall',
       show_probability: false,
       labels_font_size: 11,

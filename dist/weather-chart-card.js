@@ -813,6 +813,32 @@ var t;const i=window,s$1=i.trustedTypes,e=s$1?s$1.createPolicy("lit-html",{creat
 
 const numeric = value => value !== null && value !== '' && value !== undefined && Number.isFinite(Number(value)) ? Number(value) : null;
 
+// Absolute Celsius thresholds keep colours stable across forecasts and unit systems.
+const temperaturePalette = [
+  [-10, [129, 140, 248]], [0, [56, 189, 248]], [10, [45, 212, 191]],
+  [20, [132, 204, 22]], [25, [250, 204, 21]], [30, [249, 115, 22]], [40, [239, 68, 68]],
+];
+function temperatureColor(value, unit = '°C') {
+  let temperature = numeric(value);
+  if (temperature === null) return null;
+  if (unit === '°F' || unit === 'F') temperature = (temperature - 32) * 5 / 9;
+  else if (unit === 'K') temperature -= 273.15;
+  const upper = temperaturePalette.findIndex(([limit]) => temperature <= limit);
+  let rgb;
+  if (upper === 0) rgb = temperaturePalette[0][1];
+  else if (upper === -1) rgb = temperaturePalette[temperaturePalette.length - 1][1];
+  else {
+    const [low, a] = temperaturePalette[upper - 1];
+    const [high, b] = temperaturePalette[upper];
+    const fraction = (temperature - low) / (high - low);
+    rgb = a.map((channel, i) => Math.round(channel + (b[i] - channel) * fraction));
+  }
+  return `rgb(${rgb.join(', ')})`;
+}
+
+const chartIds = new WeakMap();
+let chartId = 0;
+
 function extendedGeometry(forecasts, previous = null, next = null) {
   const values = [...forecasts, previous, next].filter(Boolean).flatMap(item => [numeric(item.temperature), numeric(item.templow)]).filter(value => value !== null);
   const min = values.length ? Math.min(...values) : 0;
@@ -826,7 +852,7 @@ function extendedGeometry(forecasts, previous = null, next = null) {
   });
   const points = forecasts.map(point);
   // Neighbours share the visible scale, but do not become labelled columns.
-  return {points, previous: previous ? point(previous, -1) : null, next: next ? point(next, forecasts.length) : null};
+  return {points, max, range, previous: previous ? point(previous, -1) : null, next: next ? point(next, forecasts.length) : null};
 }
 
 function forecastWindow(forecasts, count, cutoff, autoscroll, now = Date.now()) {
@@ -856,6 +882,12 @@ function curvePoints(geometry, key) {
 
 function renderModern(card) {
   const {config, weather} = card;
+  if (!chartIds.has(card)) chartIds.set(card, `weather-chart-${++chartId}`);
+  const id = chartIds.get(card);
+  const gradient = config.forecast.temperature_gradient === true;
+  const gradientFill = gradient && config.forecast.gradient_fill !== false;
+  const temperatureUnit = weather.attributes.temperature_unit || card.getUnit('temperature');
+  const colorFor = (value, fallback) => gradient ? temperatureColor(value, temperatureUnit) || fallback : fallback;
   const count = Math.max(1, Math.min(15, Math.floor(Number(config.forecast.number_of_forecasts)) || 5));
   const cutoff = (config.forecast.type === 'hourly' ? 1 : 24) * 3600000;
   const {items, previous: before, next: after} = forecastWindow(card.forecasts || [], count, cutoff, config.autoscroll);
@@ -868,15 +900,18 @@ function renderModern(card) {
     // Break paths at missing readings rather than interpolating invented data.
     let previous;
     return b`<g style=${`color:${color}`}>
-      ${curvePoints(geometry, key).map(point => {
+      ${curvePoints(geometry, key).map((point, index) => {
         const y = point[`${key}Y`];
         const old = previous;
         previous = y === null ? null : point;
         return y === null ? b`` : b`
           ${old ? b`
-            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y} L ${point.x} 175 L ${old.x} 175 Z`} fill=${`url(#${key}-fill)`}/>
-            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y}`} fill="none" stroke="currentColor" stroke-width="2.5" vector-effect="non-scaling-stroke"/>` : ''}
-          ${points.includes(point) ? b`<ellipse cx=${point.x} cy=${y} rx="0.8" ry="3" fill="currentColor" stroke="var(--ha-card-background, var(--card-background-color))" vector-effect="non-scaling-stroke"/>` : ''}
+            ${gradientFill ? b`<defs><linearGradient id=${`${id}-${key}-${index}`} gradientUnits="userSpaceOnUse" x1=${old.x} x2=${point.x} y1="0" y2="0">
+              ${[0, 0.25, 0.5, 0.75, 1].map(fraction => b`<stop offset=${fraction} stop-color=${temperatureColor(old[key] + (point[key] - old[key]) * fraction, temperatureUnit)}/>`)}
+            </linearGradient></defs>` : ''}
+            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y} L ${point.x} 175 L ${old.x} 175 Z`} fill=${`url(#${gradientFill ? `${id}-${key}-${index}` : `${id}-${key}-fill`})`} fill-opacity=${gradientFill ? 0.2 : 1} mask=${gradientFill ? `url(#${id}-fade)` : 'none'}/>
+            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y}`} fill="none" stroke=${gradient ? `url(#${id}-temperature)` : 'currentColor'} stroke-width="2.5" vector-effect="non-scaling-stroke"/>` : ''}
+          ${points.includes(point) ? b`<ellipse cx=${point.x} cy=${y} rx="0.8" ry="3" fill=${colorFor(point[key], color)} stroke="var(--ha-card-background, var(--card-background-color))" vector-effect="non-scaling-stroke"/>` : ''}
         `;
       })}
     </g>`;
@@ -939,15 +974,22 @@ function renderModern(card) {
         <div class="plot">
           <svg viewBox="0 0 100 175" preserveAspectRatio="none" aria-hidden="true">
             <defs>
-              <linearGradient id="high-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color=${config.forecast.temperature1_color} stop-opacity="0.2"/><stop offset="100%" stop-color=${config.forecast.temperature1_color} stop-opacity="0"/></linearGradient>
-              <linearGradient id="low-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color=${config.forecast.temperature2_color} stop-opacity="0.16"/><stop offset="100%" stop-color=${config.forecast.temperature2_color} stop-opacity="0"/></linearGradient>
+              ${gradient ? b`<linearGradient id=${`${id}-temperature`} gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="32" y2="132">
+                ${Array.from({length: 41}, (_, i) => b`<stop offset=${i / 40} stop-color=${temperatureColor(geometry.max - geometry.range * i / 40, temperatureUnit)}/>`)}
+              </linearGradient>` : ''}
+              ${gradientFill ? b`
+                <linearGradient id=${`${id}-fade-gradient`} x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="black"/></linearGradient>
+                <mask id=${`${id}-fade`} maskUnits="userSpaceOnUse" x="-100" y="0" width="300" height="175"><rect x="-100" y="0" width="300" height="175" fill=${`url(#${id}-fade-gradient)`}/></mask>
+              ` : ''}
+              <linearGradient id=${`${id}-high-fill`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color=${config.forecast.temperature1_color} stop-opacity="0.2"/><stop offset="100%" stop-color=${config.forecast.temperature1_color} stop-opacity="0"/></linearGradient>
+              <linearGradient id=${`${id}-low-fill`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color=${config.forecast.temperature2_color} stop-opacity="0.16"/><stop offset="100%" stop-color=${config.forecast.temperature2_color} stop-opacity="0"/></linearGradient>
             </defs>
             <path d="M 0 60 H 100 M 0 110 H 100" stroke="var(--divider-color)" stroke-dasharray="2 2" stroke-width="0.3"/>
             ${series('high', config.forecast.temperature1_color)}${series('low', config.forecast.temperature2_color)}
           </svg>
           <div class="labels">${points.map(point => x`
-            <span class="temp" style=${`left:${point.x}%;top:${(point.highY === null ? 32 : point.highY - 15)/175*100}%;color:${config.forecast.temperature1_color}`}>${format(point.high)}${point.high === null ? '' : '°'}</span>
-            ${point.low === null ? '' : x`<span class="temp" style=${`left:${point.x}%;top:${(point.lowY+16)/175*100}%;color:${config.forecast.temperature2_color}`}>${format(point.low)}°</span>`}
+            <span class="temp" style=${`left:${point.x}%;top:${(point.highY === null ? 32 : point.highY - 15)/175*100}%;color:${colorFor(point.high, config.forecast.temperature1_color)}`}>${format(point.high)}${point.high === null ? '' : '°'}</span>
+            ${point.low === null ? '' : x`<span class="temp" style=${`left:${point.x}%;top:${(point.lowY+16)/175*100}%;color:${colorFor(point.low, config.forecast.temperature2_color)}`}>${format(point.low)}°</span>`}
           `)}</div>
         </div>
         <div class="row rain">${items.map(item => {
@@ -1242,7 +1284,7 @@ class WeatherChartCardEditor extends s {
         .hint {color:var(--secondary-text-color);font-size:12px;}
         .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
         .forecast-count-setting {display:grid;gap:8px;margin-top:12px;}
-        .forecast-count-setting input,.icon-size-settings input {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
+        .forecast-count-setting input,.icon-size-settings input[type="number"] {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -1362,6 +1404,17 @@ class WeatherChartCardEditor extends s {
           @change=${e => this._valueChanged(e, 'forecast.number_of_forecasts')}>
         <p class="hint" id="forecast-count-hint">Daily: days. Hourly: hours. 0 = automatic (Modern: 5). Only available forecasts are shown.</p>
       </div>
+
+      <fieldset class="icon-size-settings">
+        <legend>Temperature gradients (Modern layout)</legend>
+        <label><input type="checkbox" name="temperature_gradient"
+          .checked=${forecastConfig.temperature_gradient === true}
+          @change=${e => this._valueChanged(e, 'forecast.temperature_gradient')}> Temperature-based chart colours</label>
+        <label><input type="checkbox" name="gradient_fill"
+          .checked=${forecastConfig.gradient_fill !== false}
+          @change=${e => this._valueChanged(e, 'forecast.gradient_fill')}> Apply temperature colours to chart fill</label>
+        <p class="hint">Cold: blue, mild: green, warm: yellow/orange, hot: red. Only affects Modern. Disable chart colours to restore your configured colours.</p>
+      </fieldset>
 
       <h5>Chart style:</h5>
       ${this._config.layout === 'modern' ? x`<p class="hint">Chart style 1 and 2 apply only to the Classic layout. Modern uses its own temperature chart.</p>` : ''}
@@ -18279,6 +18332,8 @@ static getStubConfig(hass, unusedEntities, allEntities) {
     icon_style: 'style1',
     autoscroll: false,
     forecast: {
+      temperature_gradient: false,
+      gradient_fill: true,
       precipitation_type: 'rainfall',
       show_probability: false,
       labels_font_size: '11',
@@ -18329,6 +18384,8 @@ setConfig(config) {
     show_description: false,
     ...config,
     forecast: {
+      temperature_gradient: false,
+      gradient_fill: true,
       precipitation_type: 'rainfall',
       show_probability: false,
       labels_font_size: 11,

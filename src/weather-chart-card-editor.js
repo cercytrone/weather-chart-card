@@ -228,7 +228,7 @@ class WeatherChartCardEditor extends LitElement {
         .hint {color:var(--secondary-text-color);font-size:12px;}
         .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
         .forecast-count-setting {display:grid;gap:8px;margin-top:12px;}
-        .forecast-count-setting input,.icon-size-settings input {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
+        .forecast-count-setting input,.icon-size-settings input[type="number"] {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -348,6 +348,17 @@ class WeatherChartCardEditor extends LitElement {
           @change=${e => this._valueChanged(e, 'forecast.number_of_forecasts')}>
         <p class="hint" id="forecast-count-hint">Daily: days. Hourly: hours. 0 = automatic (Modern: 5). Only available forecasts are shown.</p>
       </div>
+
+      <fieldset class="icon-size-settings">
+        <legend>Temperature gradients (Modern layout)</legend>
+        <label><input type="checkbox" name="temperature_gradient"
+          .checked=${forecastConfig.temperature_gradient === true}
+          @change=${e => this._valueChanged(e, 'forecast.temperature_gradient')}> Temperature-based chart colours</label>
+        <label><input type="checkbox" name="gradient_fill"
+          .checked=${forecastConfig.gradient_fill !== false}
+          @change=${e => this._valueChanged(e, 'forecast.gradient_fill')}> Apply temperature colours to chart fill</label>
+        <p class="hint">Cold: blue, mild: green, warm: yellow/orange, hot: red. Only affects Modern. Disable chart colours to restore your configured colours.</p>
+      </fieldset>
 
       <h5>Chart style:</h5>
       ${this._config.layout === 'modern' ? html`<p class="hint">Chart style 1 and 2 apply only to the Classic layout. Modern uses its own temperature chart.</p>` : ''}

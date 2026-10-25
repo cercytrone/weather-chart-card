@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {forecastGeometry, numeric, extendedGeometry, curvePoints, forecastWindow} from '../src/modern-layout.js';
+import {forecastGeometry, numeric, extendedGeometry, curvePoints, forecastWindow, temperatureColor} from '../src/modern-layout.js';
 
 for (const value of [null, undefined, '', 'unknown', 'unavailable', NaN, Infinity]) assert.equal(numeric(value), null);
 assert.equal(numeric(0), 0);
@@ -51,3 +51,17 @@ const lastWindow = forecastWindow(source, 20, 86400000, false);
 assert.equal(lastWindow.next,null);
 assert.deepEqual(forecastWindow([],5,1,true), {items:[],previous:null,next:null});
 console.log('Chart edge continuation and neighbour selection tests passed');
+
+// Colours use absolute temperatures, not the current forecast's min/max.
+assert.equal(temperatureColor(0), 'rgb(56, 189, 248)');
+assert.equal(temperatureColor(20), 'rgb(132, 204, 22)');
+assert.equal(temperatureColor(40), 'rgb(239, 68, 68)');
+assert.equal(temperatureColor(-100), temperatureColor(-10));
+assert.equal(temperatureColor(100), temperatureColor(40));
+assert.equal(temperatureColor(5), 'rgb(51, 201, 220)');
+for (const value of [null, undefined, '', 'unavailable', Infinity]) assert.equal(temperatureColor(value), null);
+for (const celsius of [-10, 0, 10, 20, 30, 40]) {
+  assert.equal(temperatureColor(celsius * 9 / 5 + 32, '°F'), temperatureColor(celsius));
+  assert.equal(temperatureColor(celsius + 273.15, 'K'), temperatureColor(celsius));
+}
+console.log('Temperature palette and unit conversion tests passed');
