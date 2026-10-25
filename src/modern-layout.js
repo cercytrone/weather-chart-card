@@ -22,6 +22,7 @@ export function renderModern(card) {
   const items = (card.forecasts || []).filter(item => !config.autoscroll || Date.now() - new Date(item.datetime) <= cutoff).slice(0, count);
   const points = forecastGeometry(items);
   const format = value => value === null ? '–' : new Intl.NumberFormat(card.language, {maximumFractionDigits: config.forecast.round_temp ? 0 : 1}).format(value);
+  const formatRainfall = value => new Intl.NumberFormat(card.language, {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(value);
   const icon = item => html`<ha-icon title=${card.ll(item.condition) || item.condition || ''} icon=${card.getWeatherIcon(item.condition, 'above_horizon')}></ha-icon>`;
   const series = (key, color) => {
     // Break paths at missing readings rather than interpolating invented data.
@@ -112,7 +113,7 @@ export function renderModern(card) {
         <div class="row rain">${items.map(item => {
           const probability = config.forecast.precipitation_type === 'probability';
           const value = numeric(probability ? item.precipitation_probability : item.precipitation);
-          return html`<div>${value === null ? '–' : value > 0 ? html`<span>${format(value)} ${probability ? '%' : weather.attributes.precipitation_unit || 'mm'}</span>` : ''}</div>`;
+          return html`<div>${value === null ? '–' : value > 0 ? html`<span>${probability ? format(value) : formatRainfall(value)} ${probability ? '%' : weather.attributes.precipitation_unit || 'mm'}</span>` : ''}</div>`;
         })}</div>
         ${config.forecast.condition_icons === false ? '' : html`<div class="row icons">${items.map(item => html`<div>${config.icons || config.animated_icons ? html`<img width=${config.icons_size} height=${config.icons_size} src=${card.getWeatherIcon(item.condition, 'above_horizon')} alt=${card.ll(item.condition) || ''}>` : icon(item)}</div>`)}</div>`}
         ${config.forecast.show_wind_forecast === false ? '' : html`<div class="row wind">${items.map(item => html`<div>${numeric(item.wind_speed) === null ? '–' : html`${item.wind_bearing === undefined ? '' : html`<ha-icon icon=${`hass:${card.getWindDirIcon(item.wind_bearing)}`}></ha-icon>`}${format(card.convertWindSpeed(Number(item.wind_speed)))}<small>${card.unitSpeed || ''}</small>`}</div>`)}</div>`}

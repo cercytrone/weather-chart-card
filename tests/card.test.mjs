@@ -20,6 +20,12 @@ callback({forecast:Array.from({length:7}, (_,i) => ({datetime:new Date(Date.now(
 await card.updateComplete;
 assert.equal(card.shadowRoot.querySelectorAll('.days span').length,5);
 assert.equal(card.shadowRoot.querySelector('#forecastChart'),null);
+card.setConfig({entity:'weather.home',layout:'modern',locale:'de',show_time:true,forecast:{round_temp:true}});
+callback({forecast:[{datetime:new Date().toISOString(),temperature:20.4,precipitation:0.4},{datetime:new Date().toISOString(),temperature:21.3,precipitation:0.3},{datetime:new Date().toISOString(),temperature:22,precipitation:1}]});
+await card.updateComplete;
+assert.deepEqual([...card.shadowRoot.querySelectorAll('.rain span')].map(el => el.textContent.trim()), ['0,4 mm','0,3 mm','1,0 mm']);
+assert.equal(card.shadowRoot.querySelector('.temp').textContent.trim(),'20°');
+
 assert.ok(!card.shadowRoot.innerHTML.includes('NaN'));
 assert.ok(card.clockInterval);
 assert.ok(card.shadowRoot.querySelector('style').textContent.includes('.main .current-condition {font-size:14px;line-height:1.2;margin-top:2px;}'));
