@@ -1,19 +1,18 @@
 <h1 align="center">Weather Chart Card</h1>
 
-# Backup
-The original repository is no longer maintained. Feel free to fork it if you find it useful.
-
-[![Buy me a coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/mlamberts7I)
-[![PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=HZUUW64FRM2J2)
+# New Layout
+The original repository is no longer maintained. 
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/mlamberts78/weather-chart-card?style=flat-square)](https://github.com/mlamberts78/weather-chart-card/releases/latest)
-![GitHub downloads](https://img.shields.io/github/downloads/mlamberts78/weather-chart-card/total?style=flat-square)
-![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads/mlamberts78/weather-chart-card/latest/total)
-[![HACS Validate](https://github.com/mlamberts78/weather-chart-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/mlamberts78/weather-chart-card/actions/workflows/validate.yaml)
-
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/cercytrone/weather-chart-card?style=flat-square)](https://github.com/cercytrone/weather-chart-card/releases/latest)
+![GitHub downloads](https://img.shields.io/github/downloads/cercytrone/weather-chart-card/total?style=flat-square)
+![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads/cercytrone/weather-chart-card/latest/total)
+<img width="705" height="538" alt="Neues Layout" src="https://github.com/user-attachments/assets/b7cf6749-4465-46fa-b644-3ddd85bcfad5" />
+<img width="701" height="539" alt="Mit Color-Gradient - je nach Temperatur" src="https://github.com/user-attachments/assets/aa9f7e69-1601-4f89-ad08-158d368309c5" />
+<img width="713" height="545" alt="Screenshot at Oct 25 18-45-12" src="https://github.com/user-attachments/assets/8b956e61-820c-4554-94a7-8f55414265ef" />
 ![weather-chart-card](https://github.com/mlamberts78/weather-chart-card/assets/93537082/bd5b9f6e-4125-4a19-9773-463e6d054bce)
 ![15-days](https://github.com/mlamberts78/weather-chart-card/assets/93537082/f4de6060-7005-4a6d-b1f3-3aa17c856c73)
+
 
 ## Installation
 
@@ -176,3 +175,113 @@ units:
 | Swedish          | sv      |
 | Ukrainian        | uk      |
 | 한국어           | ko      |
+
+## Modern layout (optional)
+
+The existing layout remains the default. Select **Modern** in the visual editor,
+ or add `layout: modern` to your card configuration:
+
+```yaml
+type: custom:weather-chart-card
+entity: weather.home
+layout: modern
+locale: de
+show_last_changed: true
+forecast:
+  type: daily
+  number_of_forecasts: 5
+  round_temp: true
+```
+
+The modern layout uses local styles, the active Home Assistant theme and a
+responsive SVG temperature chart. It does not load Tailwind, change the page
+background or provide a separate theme switch. No forecast values are hardcoded.
+
+- Defaults to five forecasts; fewer are shown if that is all the integration supplies.
+  `number_of_forecasts: 0` also uses five in this layout; explicit counts are capped at 15.
+- Forecast columns have a minimum width of 56px and scroll horizontally when
+  necessary. Below a card width of 300px, current-weather metrics stack vertically.
+- Missing temperatures break the corresponding curve; absent low temperatures
+  are omitted. Missing rain/wind values display a dash. Zero rainfall is hidden.
+- Daily and hourly forecasts are supported if the weather entity supplies them.
+- Existing visibility toggles, alternative sensors, icons, units, temperature colors,
+  label size, chart height and temperature rounding remain configurable.
+- Modern precipitation is shown as badges rather than bars. `precip_bar_size`,
+  chart `style`, `show_probability` (additional probability beside rainfall), and
+  Chart.js animation settings apply only to the classic chart. Select
+  `precipitation_type: probability` to show probability badges instead of rainfall.
+- Last-updated information uses the weather entity's `last_updated`, not a
+  separate timestamp for forecast delivery.
+
+After replacing `dist/weather-chart-card.js` in your Home Assistant installation,
+reload frontend resources / clear the frontend cache as needed.
+
+### Development checks
+
+Use Node.js 22 or later:
+
+```sh
+npm install
+npm test
+npm run build
+```
+
+Tests cover temperature geometry (including negative, constant and missing
+values), DOM rendering without `sun.sun`, the five-day default, and subscription
+cleanup/reconnection. DOM tests are not a substitute for visual checks in Home
+Assistant's dashboards and Companion App. Check light/dark themes, narrow and
+wide dashboard columns, large text, and your actual weather integration before
+releasing.
+
+### Clock, date and UV controls
+
+Clock, weekday and date are disabled by default. They can be selected independently
+in the visual editor; `show_main: false` hides their containing current-weather
+section. `show_uv` defaults to true and can hide the UV index without hiding the
+sunrise/sunset times. UV requires an available numeric `uv_index` attribute or a
+sensor configured with `uv`; zero is a valid reading.
+
+```yaml
+show_time: true
+show_time_seconds: false
+show_day: true
+show_date: true
+show_uv: true
+```
+
+### Icon sizes
+
+The **Main** settings page provides separate pixel sizes for the current weather
+icon (`current_icon_size`, 24–120) and forecast icons (`icons_size`, 12–80).
+Both options apply to built-in HA icons, animated icons and custom icons.
+Modern defaults to a 56px current icon and 25px forecast icons; Classic preserves
+its previous defaults. On modern cards narrower than 300px the current icon is
+capped at 36px to leave space for temperature and time.
+
+```yaml
+current_icon_size: 64
+icons_size: 30
+```
+
+Forecast type, chart style, animated icon style and settings navigation use native
+HTML controls to avoid relying on internal Home Assistant radio/button components.
+Chart styles 1 and 2 still only affect the Classic layout; Modern has its own chart.
+
+### Compact modern cards
+
+Modern uses compact spacing by default (`compact: true`). The Main settings page
+has a **Compact spacing (Modern layout)** checkbox; disable it for the original
+roomier spacing. Classic is unaffected. The default modern chart height is now
+150px (previously 180px), and explicit `forecast.chart_height` values down to
+120px are supported. Existing explicit heights are preserved. For example:
+
+```yaml
+layout: modern
+compact: true
+forecast:
+  chart_height: 130
+```
+
+The weather-entity dropdown uses a native select and immediately saves the chosen
+entity. Changing entities refreshes the current temperature, units and other
+attributes as well as the forecast subscription.

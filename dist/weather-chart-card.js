@@ -785,6 +785,225 @@ const locale = {
   },
 };
 
+/**
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t$1=window,e$2=t$1.ShadowRoot&&(void 0===t$1.ShadyCSS||t$1.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$3=Symbol(),n$4=new WeakMap;let o$3 = class o{constructor(t,e,n){if(this._$cssResult$=true,n!==s$3)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$2&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=n$4.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&n$4.set(s,t));}return t}toString(){return this.cssText}};const r$2=t=>new o$3("string"==typeof t?t:t+"",void 0,s$3),S$1=(s,n)=>{e$2?s.adoptedStyleSheets=n.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet)):n.forEach((e=>{const n=document.createElement("style"),o=t$1.litNonce;void 0!==o&&n.setAttribute("nonce",o),n.textContent=e.cssText,s.appendChild(n);}));},c$1=e$2?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$2(e)})(t):t;
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var s$2;const e$1=window,r$1=e$1.trustedTypes,h$1=r$1?r$1.emptyScript:"",o$2=e$1.reactiveElementPolyfillSupport,n$3={toAttribute(t,i){switch(i){case Boolean:t=t?h$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,i){let s=t;switch(i){case Boolean:s=null!==t;break;case Number:s=null===t?null:Number(t);break;case Object:case Array:try{s=JSON.parse(t);}catch(t){s=null;}}return s}},a$1=(t,i)=>i!==t&&(i==i||t==t),l$2={attribute:true,type:String,converter:n$3,reflect:false,hasChanged:a$1},d$1="finalized";let u$1 = class u extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=false,this.hasUpdated=false,this._$El=null,this._$Eu();}static addInitializer(t){var i;this.finalize(),(null!==(i=this.h)&&void 0!==i?i:this.h=[]).push(t);}static get observedAttributes(){this.finalize();const t=[];return this.elementProperties.forEach(((i,s)=>{const e=this._$Ep(s,i);void 0!==e&&(this._$Ev.set(e,s),t.push(e));})),t}static createProperty(t,i=l$2){if(i.state&&(i.attribute=false),this.finalize(),this.elementProperties.set(t,i),!i.noAccessor&&!this.prototype.hasOwnProperty(t)){const s="symbol"==typeof t?Symbol():"__"+t,e=this.getPropertyDescriptor(t,s,i);void 0!==e&&Object.defineProperty(this.prototype,t,e);}}static getPropertyDescriptor(t,i,s){return {get(){return this[i]},set(e){const r=this[t];this[i]=e,this.requestUpdate(t,r,s);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)||l$2}static finalize(){if(this.hasOwnProperty(d$1))return  false;this[d$1]=true;const t=Object.getPrototypeOf(this);if(t.finalize(),void 0!==t.h&&(this.h=[...t.h]),this.elementProperties=new Map(t.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const t=this.properties,i=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(const s of i)this.createProperty(s,t[s]);}return this.elementStyles=this.finalizeStyles(this.styles),true}static finalizeStyles(i){const s=[];if(Array.isArray(i)){const e=new Set(i.flat(1/0).reverse());for(const i of e)s.unshift(c$1(i));}else void 0!==i&&s.push(c$1(i));return s}static _$Ep(t,i){const s=i.attribute;return  false===s?void 0:"string"==typeof s?s:"string"==typeof t?t.toLowerCase():void 0}_$Eu(){var t;this._$E_=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(t=this.constructor.h)||void 0===t||t.forEach((t=>t(this)));}addController(t){var i,s;(null!==(i=this._$ES)&&void 0!==i?i:this._$ES=[]).push(t),void 0!==this.renderRoot&&this.isConnected&&(null===(s=t.hostConnected)||void 0===s||s.call(t));}removeController(t){var i;null===(i=this._$ES)||void 0===i||i.splice(this._$ES.indexOf(t)>>>0,1);}_$Eg(){this.constructor.elementProperties.forEach(((t,i)=>{this.hasOwnProperty(i)&&(this._$Ei.set(i,this[i]),delete this[i]);}));}createRenderRoot(){var t;const s=null!==(t=this.shadowRoot)&&void 0!==t?t:this.attachShadow(this.constructor.shadowRootOptions);return S$1(s,this.constructor.elementStyles),s}connectedCallback(){var t;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(true),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostConnected)||void 0===i?void 0:i.call(t)}));}enableUpdating(t){}disconnectedCallback(){var t;null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostDisconnected)||void 0===i?void 0:i.call(t)}));}attributeChangedCallback(t,i,s){this._$AK(t,s);}_$EO(t,i,s=l$2){var e;const r=this.constructor._$Ep(t,s);if(void 0!==r&&true===s.reflect){const h=(void 0!==(null===(e=s.converter)||void 0===e?void 0:e.toAttribute)?s.converter:n$3).toAttribute(i,s.type);this._$El=t,null==h?this.removeAttribute(r):this.setAttribute(r,h),this._$El=null;}}_$AK(t,i){var s;const e=this.constructor,r=e._$Ev.get(t);if(void 0!==r&&this._$El!==r){const t=e.getPropertyOptions(r),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==(null===(s=t.converter)||void 0===s?void 0:s.fromAttribute)?t.converter:n$3;this._$El=r,this[r]=h.fromAttribute(i,t.type),this._$El=null;}}requestUpdate(t,i,s){let e=true;void 0!==t&&(((s=s||this.constructor.getPropertyOptions(t)).hasChanged||a$1)(this[t],i)?(this._$AL.has(t)||this._$AL.set(t,i),true===s.reflect&&this._$El!==t&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(t,s))):e=false),!this.isUpdatePending&&e&&(this._$E_=this._$Ej());}async _$Ej(){this.isUpdatePending=true;try{await this._$E_;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var t;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((t,i)=>this[i]=t)),this._$Ei=void 0);let i=false;const s=this._$AL;try{i=this.shouldUpdate(s),i?(this.willUpdate(s),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostUpdate)||void 0===i?void 0:i.call(t)})),this.update(s)):this._$Ek();}catch(t){throw i=false,this._$Ek(),t}i&&this._$AE(s);}willUpdate(t){}_$AE(t){var i;null===(i=this._$ES)||void 0===i||i.forEach((t=>{var i;return null===(i=t.hostUpdated)||void 0===i?void 0:i.call(t)})),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$Ek(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(t){return  true}update(t){ void 0!==this._$EC&&(this._$EC.forEach(((t,i)=>this._$EO(i,this[i],t))),this._$EC=void 0),this._$Ek();}updated(t){}firstUpdated(t){}};u$1[d$1]=true,u$1.elementProperties=new Map,u$1.elementStyles=[],u$1.shadowRootOptions={mode:"open"},null==o$2||o$2({ReactiveElement:u$1}),(null!==(s$2=e$1.reactiveElementVersions)&&void 0!==s$2?s$2:e$1.reactiveElementVersions=[]).push("1.6.3");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+var t;const i=window,s$1=i.trustedTypes,e=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,o$1="$lit$",n$2=`lit$${(Math.random()+"").slice(9)}$`,l$1="?"+n$2,h=`<${l$1}>`,r=document,u=()=>r.createComment(""),d=t=>null===t||"object"!=typeof t&&"function"!=typeof t,c=Array.isArray,v=t=>c(t)||"function"==typeof(null==t?void 0:t[Symbol.iterator]),a="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m=/>/g,p=RegExp(`>|${a}(?:([^\\s"'>=/]+)(${a}*=${a}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,w=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=w(1),b=w(2),T=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),E=new WeakMap,C=r.createTreeWalker(r,129,null,false);function P(t,i){if(!Array.isArray(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e?e.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,e=[];let l,r=2===i?"<svg>":"",u=f;for(let i=0;i<s;i++){const s=t[i];let d,c,v=-1,a=0;for(;a<s.length&&(u.lastIndex=a,c=u.exec(s),null!==c);)a=u.lastIndex,u===f?"!--"===c[1]?u=_:void 0!==c[1]?u=m:void 0!==c[2]?(y.test(c[2])&&(l=RegExp("</"+c[2],"g")),u=p):void 0!==c[3]&&(u=p):u===p?">"===c[0]?(u=null!=l?l:f,v=-1):void 0===c[1]?v=-2:(v=u.lastIndex-c[2].length,d=c[1],u=void 0===c[3]?p:'"'===c[3]?$:g):u===$||u===g?u=p:u===_||u===m?u=f:(u=p,l=void 0);const w=u===p&&t[i+1].startsWith("/>")?" ":"";r+=u===f?s+h:v>=0?(e.push(d),s.slice(0,v)+o$1+s.slice(v)+n$2+w):s+n$2+(-2===v?(e.push(void 0),i):w);}return [P(t,r+(t[s]||"<?>")+(2===i?"</svg>":"")),e]};class N{constructor({strings:t,_$litType$:i},e){let h;this.parts=[];let r=0,d=0;const c=t.length-1,v=this.parts,[a,f]=V(t,i);if(this.el=N.createElement(a,e),C.currentNode=this.el.content,2===i){const t=this.el.content,i=t.firstChild;i.remove(),t.append(...i.childNodes);}for(;null!==(h=C.nextNode())&&v.length<c;){if(1===h.nodeType){if(h.hasAttributes()){const t=[];for(const i of h.getAttributeNames())if(i.endsWith(o$1)||i.startsWith(n$2)){const s=f[d++];if(t.push(i),void 0!==s){const t=h.getAttribute(s.toLowerCase()+o$1).split(n$2),i=/([.?@])?(.*)/.exec(s);v.push({type:1,index:r,name:i[2],strings:t,ctor:"."===i[1]?H:"?"===i[1]?L:"@"===i[1]?z:k});}else v.push({type:6,index:r});}for(const i of t)h.removeAttribute(i);}if(y.test(h.tagName)){const t=h.textContent.split(n$2),i=t.length-1;if(i>0){h.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)h.append(t[s],u()),C.nextNode(),v.push({type:2,index:++r});h.append(t[i],u());}}}else if(8===h.nodeType)if(h.data===l$1)v.push({type:2,index:r});else {let t=-1;for(;-1!==(t=h.data.indexOf(n$2,t+1));)v.push({type:7,index:r}),t+=n$2.length-1;}r++;}}static createElement(t,i){const s=r.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){var o,n,l,h;if(i===T)return i;let r=void 0!==e?null===(o=s._$Co)||void 0===o?void 0:o[e]:s._$Cl;const u=d(i)?void 0:i._$litDirective$;return (null==r?void 0:r.constructor)!==u&&(null===(n=null==r?void 0:r._$AO)||void 0===n||n.call(r,false),void 0===u?r=void 0:(r=new u(t),r._$AT(t,s,e)),void 0!==e?(null!==(l=(h=s)._$Co)&&void 0!==l?l:h._$Co=[])[e]=r:s._$Cl=r),void 0!==r&&(i=S(t,r._$AS(t,i.values),r,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){var i;const{el:{content:s},parts:e}=this._$AD,o=(null!==(i=null==t?void 0:t.creationScope)&&void 0!==i?i:r).importNode(s,true);C.currentNode=o;let n=C.nextNode(),l=0,h=0,u=e[0];for(;void 0!==u;){if(l===u.index){let i;2===u.type?i=new R(n,n.nextSibling,this,t):1===u.type?i=new u.ctor(n,u.name,u.strings,this,t):6===u.type&&(i=new Z(n,this,t)),this._$AV.push(i),u=e[++h];}l!==(null==u?void 0:u.index)&&(n=C.nextNode(),l++);}return C.currentNode=r,o}v(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{constructor(t,i,s,e){var o;this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cp=null===(o=null==e?void 0:e.isConnected)||void 0===o||o;}get _$AU(){var t,i;return null!==(i=null===(t=this._$AM)||void 0===t?void 0:t._$AU)&&void 0!==i?i:this._$Cp}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===(null==t?void 0:t.nodeType)&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),d(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.g(t):void 0!==t.nodeType?this.$(t):v(t)?this.T(t):this._(t);}k(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}$(t){this._$AH!==t&&(this._$AR(),this._$AH=this.k(t));}_(t){this._$AH!==A&&d(this._$AH)?this._$AA.nextSibling.data=t:this.$(r.createTextNode(t)),this._$AH=t;}g(t){var i;const{values:s,_$litType$:e}=t,o="number"==typeof e?this._$AC(t):(void 0===e.el&&(e.el=N.createElement(P(e.h,e.h[0]),this.options)),e);if((null===(i=this._$AH)||void 0===i?void 0:i._$AD)===o)this._$AH.v(s);else {const t=new M(o,this),i=t.u(this.options);t.v(s),this.$(i),this._$AH=t;}}_$AC(t){let i=E.get(t.strings);return void 0===i&&E.set(t.strings,i=new N(t)),i}T(t){c(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const o of t)e===i.length?i.push(s=new R(this.k(u()),this.k(u()),this,this.options)):s=i[e],s._$AI(o),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){var s;for(null===(s=this._$AP)||void 0===s||s.call(this,false,true,i);t&&t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){var i;void 0===this._$AM&&(this._$Cp=t,null===(i=this._$AP)||void 0===i||i.call(this,t));}}class k{constructor(t,i,s,e,o){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=o,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(t,i=this,s,e){const o=this.strings;let n=false;if(void 0===o)t=S(this,t,i,0),n=!d(t)||t!==this._$AH&&t!==T,n&&(this._$AH=t);else {const e=t;let l,h;for(t=o[0],l=0;l<o.length-1;l++)h=S(this,e[s+l],i,l),h===T&&(h=this._$AH[l]),n||(n=!d(h)||h!==this._$AH[l]),h===A?t=A:t!==A&&(t+=(null!=h?h:"")+o[l+1]),this._$AH[l]=h;}n&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=t?t:"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}const I=s$1?s$1.emptyScript:"";class L extends k{constructor(){super(...arguments),this.type=4;}j(t){t&&t!==A?this.element.setAttribute(this.name,I):this.element.removeAttribute(this.name);}}class z extends k{constructor(t,i,s,e,o){super(t,i,s,e,o),this.type=5;}_$AI(t,i=this){var s;if((t=null!==(s=S(this,t,i,0))&&void 0!==s?s:A)===T)return;const e=this._$AH,o=t===A&&e!==A||t.capture!==e.capture||t.once!==e.once||t.passive!==e.passive,n=t!==A&&(e===A||o);o&&this.element.removeEventListener(this.name,this,e),n&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){var i,s;"function"==typeof this._$AH?this._$AH.call(null!==(s=null===(i=this.options)||void 0===i?void 0:i.host)&&void 0!==s?s:this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const B=i.litHtmlPolyfillSupport;null==B||B(N,R),(null!==(t=i.litHtmlVersions)&&void 0!==t?t:i.litHtmlVersions=[]).push("2.8.0");const D=(t,i,s)=>{var e,o;const n=null!==(e=null==s?void 0:s.renderBefore)&&void 0!==e?e:i;let l=n._$litPart$;if(void 0===l){const t=null!==(o=null==s?void 0:s.renderBefore)&&void 0!==o?o:null;n._$litPart$=l=new R(i.insertBefore(u(),t),t,void 0,null!=s?s:{});}return l._$AI(t),l};
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var l,o;class s extends u$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const i=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(i,this.renderRoot,this.renderOptions);}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(true);}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(false);}render(){return T}}s.finalized=true,s._$litElement$=true,null===(l=globalThis.litElementHydrateSupport)||void 0===l||l.call(globalThis,{LitElement:s});const n$1=globalThis.litElementPolyfillSupport;null==n$1||n$1({LitElement:s});(null!==(o=globalThis.litElementVersions)&&void 0!==o?o:globalThis.litElementVersions=[]).push("3.3.3");
+
+const numeric = value => value !== null && value !== '' && value !== undefined && Number.isFinite(Number(value)) ? Number(value) : null;
+
+// Absolute Celsius thresholds keep colours stable across forecasts and unit systems.
+const temperaturePalette = [
+  [-10, [129, 140, 248]], [0, [56, 189, 248]], [10, [45, 212, 191]],
+  [20, [132, 204, 22]], [25, [250, 204, 21]], [30, [249, 115, 22]], [40, [239, 68, 68]],
+];
+function temperatureColor(value, unit = '°C') {
+  let temperature = numeric(value);
+  if (temperature === null) return null;
+  if (unit === '°F' || unit === 'F') temperature = (temperature - 32) * 5 / 9;
+  else if (unit === 'K') temperature -= 273.15;
+  const upper = temperaturePalette.findIndex(([limit]) => temperature <= limit);
+  let rgb;
+  if (upper === 0) rgb = temperaturePalette[0][1];
+  else if (upper === -1) rgb = temperaturePalette[temperaturePalette.length - 1][1];
+  else {
+    const [low, a] = temperaturePalette[upper - 1];
+    const [high, b] = temperaturePalette[upper];
+    const fraction = (temperature - low) / (high - low);
+    rgb = a.map((channel, i) => Math.round(channel + (b[i] - channel) * fraction));
+  }
+  return `rgb(${rgb.join(', ')})`;
+}
+
+const chartIds = new WeakMap();
+let chartId = 0;
+
+function extendedGeometry(forecasts, previous = null, next = null) {
+  const values = [...forecasts, previous, next].filter(Boolean).flatMap(item => [numeric(item.temperature), numeric(item.templow)]).filter(value => value !== null);
+  const min = values.length ? Math.min(...values) : 0;
+  const max = values.length ? Math.max(...values) : 1;
+  const range = Math.max(max - min, 4);
+  const point = (item, index) => ({
+    x: (index + 0.5) * 100 / forecasts.length,
+    high: numeric(item.temperature), low: numeric(item.templow),
+    highY: numeric(item.temperature) === null ? null : 32 + (max - Number(item.temperature)) / range * 100,
+    lowY: numeric(item.templow) === null ? null : 32 + (max - Number(item.templow)) / range * 100,
+  });
+  const points = forecasts.map(point);
+  // Neighbours share the visible scale, but do not become labelled columns.
+  return {points, max, range, previous: previous ? point(previous, -1) : null, next: next ? point(next, forecasts.length) : null};
+}
+
+function forecastWindow(forecasts, count, cutoff, autoscroll, now = Date.now()) {
+  const selected = forecasts.map((item, index) => ({item, index}))
+    .filter(({item}) => !autoscroll || now - new Date(item.datetime) <= cutoff).slice(0, count);
+  if (!selected.length) return {items: [], previous: null, next: null};
+  const items = selected.map(({item}) => item);
+  const previous = forecasts[selected[0].index - 1] || null;
+  const next = forecasts[selected[selected.length - 1].index + 1] || null;
+  return {
+    items,
+    previous: previous && Date.parse(previous.datetime) < Date.parse(items[0].datetime) ? previous : null,
+    next: next && Date.parse(next.datetime) > Date.parse(items[items.length - 1].datetime) ? next : null,
+  };
+}
+
+function curvePoints(geometry, key) {
+  const {points, previous, next} = geometry;
+  if (!points.length) return [];
+  const y = `${key}Y`;
+  const first = points[0];
+  const last = points[points.length - 1];
+  const left = first[y] === null ? null : previous && previous[y] !== null ? previous : {...first, x: 0};
+  const right = last[y] === null ? null : next && next[y] !== null ? next : {...last, x: 100};
+  return [left, ...points, right].filter(Boolean);
+}
+
+function renderModern(card) {
+  const {config, weather} = card;
+  if (!chartIds.has(card)) chartIds.set(card, `weather-chart-${++chartId}`);
+  const id = chartIds.get(card);
+  const gradient = config.forecast.temperature_gradient === true;
+  const gradientFill = gradient && config.forecast.gradient_fill !== false;
+  const temperatureUnit = weather.attributes.temperature_unit || card.getUnit('temperature');
+  const colorFor = (value, fallback) => gradient ? temperatureColor(value, temperatureUnit) || fallback : fallback;
+  const count = Math.max(1, Math.min(15, Math.floor(Number(config.forecast.number_of_forecasts)) || 5));
+  const cutoff = (config.forecast.type === 'hourly' ? 1 : 24) * 3600000;
+  const {items, previous: before, next: after} = forecastWindow(card.forecasts || [], count, cutoff, config.autoscroll);
+  const geometry = extendedGeometry(items, before, after);
+  const {points} = geometry;
+  const format = value => value === null ? '–' : new Intl.NumberFormat(card.language, {maximumFractionDigits: config.forecast.round_temp ? 0 : 1}).format(value);
+  const formatRainfall = value => new Intl.NumberFormat(card.language, {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(value);
+  const icon = item => x`<ha-icon title=${card.ll(item.condition) || item.condition || ''} icon=${card.getWeatherIcon(item.condition, 'above_horizon')}></ha-icon>`;
+  const series = (key, color) => {
+    // Break paths at missing readings rather than interpolating invented data.
+    let previous;
+    return b`<g style=${`color:${color}`}>
+      ${curvePoints(geometry, key).map((point, index) => {
+        const y = point[`${key}Y`];
+        const old = previous;
+        previous = y === null ? null : point;
+        return y === null ? b`` : b`
+          ${old ? b`
+            ${gradientFill ? b`<defs><linearGradient id=${`${id}-${key}-${index}`} gradientUnits="userSpaceOnUse" x1=${old.x} x2=${point.x} y1="0" y2="0">
+              ${[0, 0.25, 0.5, 0.75, 1].map(fraction => b`<stop offset=${fraction} stop-color=${temperatureColor(old[key] + (point[key] - old[key]) * fraction, temperatureUnit)}/>`)}
+            </linearGradient></defs>` : ''}
+            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y} L ${point.x} 175 L ${old.x} 175 Z`} fill=${`url(#${gradientFill ? `${id}-${key}-${index}` : `${id}-${key}-fill`})`} fill-opacity=${gradientFill ? 0.2 : 1} mask=${gradientFill ? `url(#${id}-fade)` : 'none'}/>
+            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y}`} fill="none" stroke=${gradient ? `url(#${id}-temperature)` : 'currentColor'} stroke-width="2.5" vector-effect="non-scaling-stroke"/>` : ''}
+          ${points.includes(point) ? b`<ellipse cx=${point.x} cy=${y} rx="0.8" ry="3" fill=${colorFor(point[key], color)} stroke="var(--ha-card-background, var(--card-background-color))" vector-effect="non-scaling-stroke"/>` : ''}
+        `;
+      })}
+    </g>`;
+  };
+  return x`
+    <style>
+      :host {display:block; min-width:0; container-type:inline-size;}
+      ha-card {position:relative; border-radius:32px; overflow:hidden; background:var(--ha-card-background,var(--card-background-color)); color:var(--primary-text-color); box-shadow:var(--ha-card-box-shadow,0 10px 30px -12px #0005);}
+      .modern {padding:20px; background:radial-gradient(circle at 100% 0%,#38bdf812,transparent 50%);}
+      .main {display:grid; grid-template-columns:${config.current_icon_size}px minmax(0,1fr) auto; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--divider-color); font-size:${config.current_temp_size}px; font-weight:800;}
+      .main ha-icon {--mdc-icon-size:${config.current_icon_size}px; color:#38bdf8; flex-shrink:0;}
+      .main img {width:${config.current_icon_size}px;height:${config.current_icon_size}px;}
+      .main > div {min-width:0;overflow-wrap:anywhere;}
+      .main span {font-size:22px; color:var(--secondary-text-color); font-weight:400;}
+      .main .current-condition span,.main .feels-like,.main .description {font-size:14px; font-weight:400;}
+      .main > div:not(.current-time) {line-height:1.05;}
+      .main .current-condition {font-size:14px;line-height:1.2;margin-top:2px;}
+      .main .current-condition span {line-height:inherit;}
+      .main > .current-time {grid-column:3; text-align:right; margin:0; font-size:${config.time_size}px; font-weight:400; line-height:1.3;}
+      #digital-clock {white-space:nowrap;}
+      .date-text {font-size:${config.day_date_size}px;}
+      .attributes {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:16px 0; font-size:12px; line-height:1.9;}
+      .attributes > div {padding:10px; border-radius:16px; background:color-mix(in srgb,var(--primary-text-color) 5%,transparent); overflow-wrap:anywhere; min-width:0;}
+      .attributes ha-icon {--mdc-icon-size:${config.attribute_icon_size}px;color:#38bdf8;}
+      .forecast-scroll {overflow-x:auto; padding-bottom:4px;}
+      .forecast {min-width:${items.length * 56}px;}
+      .row {display:grid;grid-template-columns:repeat(${items.length || 1},minmax(0,1fr));text-align:center;align-items:center;gap:0;}
+      .days {font-size:11px;font-weight:600;text-transform:uppercase;color:var(--secondary-text-color);margin-top:20px;}
+      .plot {position:relative;height:${Math.max(120, Number(config.forecast.chart_height) || 150)}px;}
+      svg {width:100%;height:100%;display:block;overflow:hidden;}
+      .labels {position:absolute;inset:0;pointer-events:none;}
+      .temp {position:absolute;transform:translate(-50%,-50%);font-size:${config.forecast.labels_font_size}px;font-weight:700;white-space:nowrap;}
+      .rain {font-size:10px;color:#38bdf8;min-height:26px;}
+      .rain span {display:inline-block;background:#38bdf815;border-radius:5px;padding:3px;overflow-wrap:anywhere;}
+      .icons {padding:8px 0;color:#38bdf8;}
+      .icons ha-icon {--mdc-icon-size:${config.icons_size}px;}
+      .wind {padding-top:10px;border-top:1px solid var(--divider-color);font-size:11px;}
+      .wind ha-icon {--mdc-icon-size:14px;}
+      .wind small {display:block;font-size:9px;color:var(--secondary-text-color);}
+      .updated,.empty {font-size:12px;color:var(--secondary-text-color);margin-top:12px;}
+      ${config.compact === false ? '' : `
+      .modern {padding:16px;}
+      .main {padding-bottom:12px;line-height:1.1;}
+      .attributes {gap:8px;margin:10px 0;font-size:12px;line-height:1.65;}
+      .attributes > div {padding:8px;}
+      .days {margin-top:10px;}
+      .rain {min-height:20px;}
+      .icons {padding:5px 0;}
+      .wind {padding-top:6px;}
+      .updated {margin-top:8px;}
+      `}
+      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
+      @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
+    </style>
+    <ha-card .header=${config.title || ''}><div class="modern">
+      ${card.renderMain()}
+      ${card.renderAttributes()}
+      ${items.length ? x`<div class="forecast-scroll"><div class="forecast">
+        <div class="row days">${items.map(item => x`<span>${Number.isNaN(Date.parse(item.datetime)) ? '–' : new Date(item.datetime).toLocaleString(card.language, config.forecast.type === 'hourly' ? {hour:'2-digit',minute:'2-digit'} : {weekday:'short'})}</span>`)}</div>
+        <div class="plot">
+          <svg viewBox="0 0 100 175" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              ${gradient ? b`<linearGradient id=${`${id}-temperature`} gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="32" y2="132">
+                ${Array.from({length: 41}, (_, i) => b`<stop offset=${i / 40} stop-color=${temperatureColor(geometry.max - geometry.range * i / 40, temperatureUnit)}/>`)}
+              </linearGradient>` : ''}
+              ${gradientFill ? b`
+                <linearGradient id=${`${id}-fade-gradient`} x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="black"/></linearGradient>
+                <mask id=${`${id}-fade`} maskUnits="userSpaceOnUse" x="-100" y="0" width="300" height="175"><rect x="-100" y="0" width="300" height="175" fill=${`url(#${id}-fade-gradient)`}/></mask>
+              ` : ''}
+              <linearGradient id=${`${id}-high-fill`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color=${config.forecast.temperature1_color} stop-opacity="0.2"/><stop offset="100%" stop-color=${config.forecast.temperature1_color} stop-opacity="0"/></linearGradient>
+              <linearGradient id=${`${id}-low-fill`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color=${config.forecast.temperature2_color} stop-opacity="0.16"/><stop offset="100%" stop-color=${config.forecast.temperature2_color} stop-opacity="0"/></linearGradient>
+            </defs>
+            <path d="M 0 60 H 100 M 0 110 H 100" stroke="var(--divider-color)" stroke-dasharray="2 2" stroke-width="0.3"/>
+            ${series('high', config.forecast.temperature1_color)}${series('low', config.forecast.temperature2_color)}
+          </svg>
+          <div class="labels">${points.map(point => x`
+            <span class="temp" style=${`left:${point.x}%;top:${(point.highY === null ? 32 : point.highY - 15)/175*100}%;color:${colorFor(point.high, config.forecast.temperature1_color)}`}>${format(point.high)}${point.high === null ? '' : '°'}</span>
+            ${point.low === null ? '' : x`<span class="temp" style=${`left:${point.x}%;top:${(point.lowY+16)/175*100}%;color:${colorFor(point.low, config.forecast.temperature2_color)}`}>${format(point.low)}°</span>`}
+          `)}</div>
+        </div>
+        <div class="row rain">${items.map(item => {
+          const probability = config.forecast.precipitation_type === 'probability';
+          const value = numeric(probability ? item.precipitation_probability : item.precipitation);
+          return x`<div>${value === null ? '–' : value > 0 ? x`<span>${probability ? format(value) : formatRainfall(value)} ${probability ? '%' : weather.attributes.precipitation_unit || 'mm'}</span>` : ''}</div>`;
+        })}</div>
+        ${config.forecast.condition_icons === false ? '' : x`<div class="row icons">${items.map(item => x`<div>${config.icons || config.animated_icons ? x`<img width=${config.icons_size} height=${config.icons_size} src=${card.getWeatherIcon(item.condition, 'above_horizon')} alt=${card.ll(item.condition) || ''}>` : icon(item)}</div>`)}</div>`}
+        ${config.forecast.show_wind_forecast === false ? '' : x`<div class="row wind">${items.map(item => x`<div>${numeric(item.wind_speed) === null ? '–' : x`${item.wind_bearing === undefined ? '' : x`<ha-icon icon=${`hass:${card.getWindDirIcon(item.wind_bearing)}`}></ha-icon>`}${format(card.convertWindSpeed(Number(item.wind_speed)))}<small>${card.unitSpeed || ''}</small>`}</div>`)}</div>`}
+      </div></div>` : x`<div class="empty" role="status">${card.language && card.language.startsWith('de') ? 'Keine Vorhersagedaten verfügbar.' : 'No forecast data available.'}</div>`}
+      ${card.renderLastUpdated()}
+    </div></ha-card>`;
+}
+
 const cardinalDirectionsIcon = [
   'arrow-down', 'arrow-bottom-left', 'arrow-left',
   'arrow-top-left', 'arrow-up', 'arrow-top-right',
@@ -835,35 +1054,7 @@ const weatherIconsNight = {
 
 const WeatherEntityFeature = {
   FORECAST_DAILY: 1,
-  FORECAST_HOURLY: 2,
-  FORECAST_TWICE_DAILY: 4,
-};
-
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const t$1=window,e$2=t$1.ShadowRoot&&(void 0===t$1.ShadyCSS||t$1.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$3=Symbol(),n$4=new WeakMap;let o$3 = class o{constructor(t,e,n){if(this._$cssResult$=!0,n!==s$3)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$2&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=n$4.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&n$4.set(s,t));}return t}toString(){return this.cssText}};const r$2=t=>new o$3("string"==typeof t?t:t+"",void 0,s$3),S$1=(s,n)=>{e$2?s.adoptedStyleSheets=n.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet)):n.forEach((e=>{const n=document.createElement("style"),o=t$1.litNonce;void 0!==o&&n.setAttribute("nonce",o),n.textContent=e.cssText,s.appendChild(n);}));},c$1=e$2?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$2(e)})(t):t;
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */var s$2;const e$1=window,r$1=e$1.trustedTypes,h$1=r$1?r$1.emptyScript:"",o$2=e$1.reactiveElementPolyfillSupport,n$3={toAttribute(t,i){switch(i){case Boolean:t=t?h$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,i){let s=t;switch(i){case Boolean:s=null!==t;break;case Number:s=null===t?null:Number(t);break;case Object:case Array:try{s=JSON.parse(t);}catch(t){s=null;}}return s}},a$1=(t,i)=>i!==t&&(i==i||t==t),l$2={attribute:!0,type:String,converter:n$3,reflect:!1,hasChanged:a$1},d$1="finalized";let u$1 = class u extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this._$Eu();}static addInitializer(t){var i;this.finalize(),(null!==(i=this.h)&&void 0!==i?i:this.h=[]).push(t);}static get observedAttributes(){this.finalize();const t=[];return this.elementProperties.forEach(((i,s)=>{const e=this._$Ep(s,i);void 0!==e&&(this._$Ev.set(e,s),t.push(e));})),t}static createProperty(t,i=l$2){if(i.state&&(i.attribute=!1),this.finalize(),this.elementProperties.set(t,i),!i.noAccessor&&!this.prototype.hasOwnProperty(t)){const s="symbol"==typeof t?Symbol():"__"+t,e=this.getPropertyDescriptor(t,s,i);void 0!==e&&Object.defineProperty(this.prototype,t,e);}}static getPropertyDescriptor(t,i,s){return {get(){return this[i]},set(e){const r=this[t];this[i]=e,this.requestUpdate(t,r,s);},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)||l$2}static finalize(){if(this.hasOwnProperty(d$1))return !1;this[d$1]=!0;const t=Object.getPrototypeOf(this);if(t.finalize(),void 0!==t.h&&(this.h=[...t.h]),this.elementProperties=new Map(t.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const t=this.properties,i=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(const s of i)this.createProperty(s,t[s]);}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(i){const s=[];if(Array.isArray(i)){const e=new Set(i.flat(1/0).reverse());for(const i of e)s.unshift(c$1(i));}else void 0!==i&&s.push(c$1(i));return s}static _$Ep(t,i){const s=i.attribute;return !1===s?void 0:"string"==typeof s?s:"string"==typeof t?t.toLowerCase():void 0}_$Eu(){var t;this._$E_=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(t=this.constructor.h)||void 0===t||t.forEach((t=>t(this)));}addController(t){var i,s;(null!==(i=this._$ES)&&void 0!==i?i:this._$ES=[]).push(t),void 0!==this.renderRoot&&this.isConnected&&(null===(s=t.hostConnected)||void 0===s||s.call(t));}removeController(t){var i;null===(i=this._$ES)||void 0===i||i.splice(this._$ES.indexOf(t)>>>0,1);}_$Eg(){this.constructor.elementProperties.forEach(((t,i)=>{this.hasOwnProperty(i)&&(this._$Ei.set(i,this[i]),delete this[i]);}));}createRenderRoot(){var t;const s=null!==(t=this.shadowRoot)&&void 0!==t?t:this.attachShadow(this.constructor.shadowRootOptions);return S$1(s,this.constructor.elementStyles),s}connectedCallback(){var t;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostConnected)||void 0===i?void 0:i.call(t)}));}enableUpdating(t){}disconnectedCallback(){var t;null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostDisconnected)||void 0===i?void 0:i.call(t)}));}attributeChangedCallback(t,i,s){this._$AK(t,s);}_$EO(t,i,s=l$2){var e;const r=this.constructor._$Ep(t,s);if(void 0!==r&&!0===s.reflect){const h=(void 0!==(null===(e=s.converter)||void 0===e?void 0:e.toAttribute)?s.converter:n$3).toAttribute(i,s.type);this._$El=t,null==h?this.removeAttribute(r):this.setAttribute(r,h),this._$El=null;}}_$AK(t,i){var s;const e=this.constructor,r=e._$Ev.get(t);if(void 0!==r&&this._$El!==r){const t=e.getPropertyOptions(r),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==(null===(s=t.converter)||void 0===s?void 0:s.fromAttribute)?t.converter:n$3;this._$El=r,this[r]=h.fromAttribute(i,t.type),this._$El=null;}}requestUpdate(t,i,s){let e=!0;void 0!==t&&(((s=s||this.constructor.getPropertyOptions(t)).hasChanged||a$1)(this[t],i)?(this._$AL.has(t)||this._$AL.set(t,i),!0===s.reflect&&this._$El!==t&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(t,s))):e=!1),!this.isUpdatePending&&e&&(this._$E_=this._$Ej());}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var t;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((t,i)=>this[i]=t)),this._$Ei=void 0);let i=!1;const s=this._$AL;try{i=this.shouldUpdate(s),i?(this.willUpdate(s),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostUpdate)||void 0===i?void 0:i.call(t)})),this.update(s)):this._$Ek();}catch(t){throw i=!1,this._$Ek(),t}i&&this._$AE(s);}willUpdate(t){}_$AE(t){var i;null===(i=this._$ES)||void 0===i||i.forEach((t=>{var i;return null===(i=t.hostUpdated)||void 0===i?void 0:i.call(t)})),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t);}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(t){return !0}update(t){void 0!==this._$EC&&(this._$EC.forEach(((t,i)=>this._$EO(i,this[i],t))),this._$EC=void 0),this._$Ek();}updated(t){}firstUpdated(t){}};u$1[d$1]=!0,u$1.elementProperties=new Map,u$1.elementStyles=[],u$1.shadowRootOptions={mode:"open"},null==o$2||o$2({ReactiveElement:u$1}),(null!==(s$2=e$1.reactiveElementVersions)&&void 0!==s$2?s$2:e$1.reactiveElementVersions=[]).push("1.6.3");
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var t;const i=window,s$1=i.trustedTypes,e=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,o$1="$lit$",n$2=`lit$${(Math.random()+"").slice(9)}$`,l$1="?"+n$2,h=`<${l$1}>`,r=document,u=()=>r.createComment(""),d=t=>null===t||"object"!=typeof t&&"function"!=typeof t,c=Array.isArray,v=t=>c(t)||"function"==typeof(null==t?void 0:t[Symbol.iterator]),a="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m=/>/g,p=RegExp(`>|${a}(?:([^\\s"'>=/]+)(${a}*=${a}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,w=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=w(1),T=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),E=new WeakMap,C=r.createTreeWalker(r,129,null,!1);function P(t,i){if(!Array.isArray(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e?e.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,e=[];let l,r=2===i?"<svg>":"",u=f;for(let i=0;i<s;i++){const s=t[i];let d,c,v=-1,a=0;for(;a<s.length&&(u.lastIndex=a,c=u.exec(s),null!==c);)a=u.lastIndex,u===f?"!--"===c[1]?u=_:void 0!==c[1]?u=m:void 0!==c[2]?(y.test(c[2])&&(l=RegExp("</"+c[2],"g")),u=p):void 0!==c[3]&&(u=p):u===p?">"===c[0]?(u=null!=l?l:f,v=-1):void 0===c[1]?v=-2:(v=u.lastIndex-c[2].length,d=c[1],u=void 0===c[3]?p:'"'===c[3]?$:g):u===$||u===g?u=p:u===_||u===m?u=f:(u=p,l=void 0);const w=u===p&&t[i+1].startsWith("/>")?" ":"";r+=u===f?s+h:v>=0?(e.push(d),s.slice(0,v)+o$1+s.slice(v)+n$2+w):s+n$2+(-2===v?(e.push(void 0),i):w);}return [P(t,r+(t[s]||"<?>")+(2===i?"</svg>":"")),e]};class N{constructor({strings:t,_$litType$:i},e){let h;this.parts=[];let r=0,d=0;const c=t.length-1,v=this.parts,[a,f]=V(t,i);if(this.el=N.createElement(a,e),C.currentNode=this.el.content,2===i){const t=this.el.content,i=t.firstChild;i.remove(),t.append(...i.childNodes);}for(;null!==(h=C.nextNode())&&v.length<c;){if(1===h.nodeType){if(h.hasAttributes()){const t=[];for(const i of h.getAttributeNames())if(i.endsWith(o$1)||i.startsWith(n$2)){const s=f[d++];if(t.push(i),void 0!==s){const t=h.getAttribute(s.toLowerCase()+o$1).split(n$2),i=/([.?@])?(.*)/.exec(s);v.push({type:1,index:r,name:i[2],strings:t,ctor:"."===i[1]?H:"?"===i[1]?L:"@"===i[1]?z:k});}else v.push({type:6,index:r});}for(const i of t)h.removeAttribute(i);}if(y.test(h.tagName)){const t=h.textContent.split(n$2),i=t.length-1;if(i>0){h.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)h.append(t[s],u()),C.nextNode(),v.push({type:2,index:++r});h.append(t[i],u());}}}else if(8===h.nodeType)if(h.data===l$1)v.push({type:2,index:r});else {let t=-1;for(;-1!==(t=h.data.indexOf(n$2,t+1));)v.push({type:7,index:r}),t+=n$2.length-1;}r++;}}static createElement(t,i){const s=r.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){var o,n,l,h;if(i===T)return i;let r=void 0!==e?null===(o=s._$Co)||void 0===o?void 0:o[e]:s._$Cl;const u=d(i)?void 0:i._$litDirective$;return (null==r?void 0:r.constructor)!==u&&(null===(n=null==r?void 0:r._$AO)||void 0===n||n.call(r,!1),void 0===u?r=void 0:(r=new u(t),r._$AT(t,s,e)),void 0!==e?(null!==(l=(h=s)._$Co)&&void 0!==l?l:h._$Co=[])[e]=r:s._$Cl=r),void 0!==r&&(i=S(t,r._$AS(t,i.values),r,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){var i;const{el:{content:s},parts:e}=this._$AD,o=(null!==(i=null==t?void 0:t.creationScope)&&void 0!==i?i:r).importNode(s,!0);C.currentNode=o;let n=C.nextNode(),l=0,h=0,u=e[0];for(;void 0!==u;){if(l===u.index){let i;2===u.type?i=new R(n,n.nextSibling,this,t):1===u.type?i=new u.ctor(n,u.name,u.strings,this,t):6===u.type&&(i=new Z(n,this,t)),this._$AV.push(i),u=e[++h];}l!==(null==u?void 0:u.index)&&(n=C.nextNode(),l++);}return C.currentNode=r,o}v(t){let i=0;for(const s of this._$AV)void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{constructor(t,i,s,e){var o;this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cp=null===(o=null==e?void 0:e.isConnected)||void 0===o||o;}get _$AU(){var t,i;return null!==(i=null===(t=this._$AM)||void 0===t?void 0:t._$AU)&&void 0!==i?i:this._$Cp}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===(null==t?void 0:t.nodeType)&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),d(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.g(t):void 0!==t.nodeType?this.$(t):v(t)?this.T(t):this._(t);}k(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}$(t){this._$AH!==t&&(this._$AR(),this._$AH=this.k(t));}_(t){this._$AH!==A&&d(this._$AH)?this._$AA.nextSibling.data=t:this.$(r.createTextNode(t)),this._$AH=t;}g(t){var i;const{values:s,_$litType$:e}=t,o="number"==typeof e?this._$AC(t):(void 0===e.el&&(e.el=N.createElement(P(e.h,e.h[0]),this.options)),e);if((null===(i=this._$AH)||void 0===i?void 0:i._$AD)===o)this._$AH.v(s);else {const t=new M(o,this),i=t.u(this.options);t.v(s),this.$(i),this._$AH=t;}}_$AC(t){let i=E.get(t.strings);return void 0===i&&E.set(t.strings,i=new N(t)),i}T(t){c(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const o of t)e===i.length?i.push(s=new R(this.k(u()),this.k(u()),this,this.options)):s=i[e],s._$AI(o),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){var s;for(null===(s=this._$AP)||void 0===s||s.call(this,!1,!0,i);t&&t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){var i;void 0===this._$AM&&(this._$Cp=t,null===(i=this._$AP)||void 0===i||i.call(this,t));}}class k{constructor(t,i,s,e,o){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=o,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(t,i=this,s,e){const o=this.strings;let n=!1;if(void 0===o)t=S(this,t,i,0),n=!d(t)||t!==this._$AH&&t!==T,n&&(this._$AH=t);else {const e=t;let l,h;for(t=o[0],l=0;l<o.length-1;l++)h=S(this,e[s+l],i,l),h===T&&(h=this._$AH[l]),n||(n=!d(h)||h!==this._$AH[l]),h===A?t=A:t!==A&&(t+=(null!=h?h:"")+o[l+1]),this._$AH[l]=h;}n&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=t?t:"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}const I=s$1?s$1.emptyScript:"";class L extends k{constructor(){super(...arguments),this.type=4;}j(t){t&&t!==A?this.element.setAttribute(this.name,I):this.element.removeAttribute(this.name);}}class z extends k{constructor(t,i,s,e,o){super(t,i,s,e,o),this.type=5;}_$AI(t,i=this){var s;if((t=null!==(s=S(this,t,i,0))&&void 0!==s?s:A)===T)return;const e=this._$AH,o=t===A&&e!==A||t.capture!==e.capture||t.once!==e.once||t.passive!==e.passive,n=t!==A&&(e===A||o);o&&this.element.removeEventListener(this.name,this,e),n&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){var i,s;"function"==typeof this._$AH?this._$AH.call(null!==(s=null===(i=this.options)||void 0===i?void 0:i.host)&&void 0!==s?s:this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const B=i.litHtmlPolyfillSupport;null==B||B(N,R),(null!==(t=i.litHtmlVersions)&&void 0!==t?t:i.litHtmlVersions=[]).push("2.8.0");const D=(t,i,s)=>{var e,o;const n=null!==(e=null==s?void 0:s.renderBefore)&&void 0!==e?e:i;let l=n._$litPart$;if(void 0===l){const t=null!==(o=null==s?void 0:s.renderBefore)&&void 0!==o?o:null;n._$litPart$=l=new R(i.insertBefore(u(),t),t,void 0,null!=s?s:{});}return l._$AI(t),l};
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */var l,o;class s extends u$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const i=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(i,this.renderRoot,this.renderOptions);}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!0);}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!1);}render(){return T}}s.finalized=!0,s._$litElement$=!0,null===(l=globalThis.litElementHydrateSupport)||void 0===l||l.call(globalThis,{LitElement:s});const n$1=globalThis.litElementPolyfillSupport;null==n$1||n$1({LitElement:s});(null!==(o=globalThis.litElementVersions)&&void 0!==o?o:globalThis.litElementVersions=[]).push("3.3.3");
+  FORECAST_HOURLY: 2};
 
 const ALT_SCHEMA = [
   { name: "temp", title: "Alternative temperature sensor", selector: { entity: { domain: 'sensor' } } },
@@ -969,6 +1160,7 @@ class WeatherChartCardEditor extends s {
   }
 
   configChanged(newConfig) {
+    this._config = newConfig;
     const event = new Event("config-changed", {
       bubbles: true,
       composed: true,
@@ -1010,6 +1202,17 @@ class WeatherChartCardEditor extends s {
       }
     }
 
+    if (key === 'forecast.number_of_forecasts') {
+      const value = Number(event.target.value);
+      if (event.target.value === '' || !Number.isFinite(value)) return;
+      newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
+    }
+    const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48]};
+    if (limits[key]) {
+      const value = Number(event.target.value);
+      if (!Number.isFinite(value) || value <= 0) return;
+      newConfig[key] = Math.min(limits[key][1], Math.max(limits[key][0], value));
+    }
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -1019,7 +1222,7 @@ class WeatherChartCardEditor extends s {
       return;
     }
     const newConfig = JSON.parse(JSON.stringify(this._config));
-    newConfig.forecast.style = event.target.value;
+    newConfig.forecast = {...newConfig.forecast, style: event.target.value};
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -1029,7 +1232,7 @@ class WeatherChartCardEditor extends s {
       return;
     }
     const newConfig = JSON.parse(JSON.stringify(this._config));
-    newConfig.forecast.type = event.target.value;
+    newConfig.forecast = {...newConfig.forecast, type: event.target.value};
     this.configChanged(newConfig);
     this.requestUpdate();
   }
@@ -1068,11 +1271,20 @@ class WeatherChartCardEditor extends s {
     }
     const forecastConfig = this._config.forecast || {};
     const unitsConfig = this._config.units || {};
-    this._config.show_time !== false;
+
 
 
     return x`
       <style>
+        button,select,input[type="radio"] {font:inherit;accent-color:var(--primary-color);cursor:pointer;}
+        button,select {color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px 12px;}
+        button[aria-pressed="true"] {border-color:var(--primary-color);color:var(--primary-color);}
+        button:focus-visible,select:focus-visible,input:focus-visible {outline:2px solid var(--primary-color);outline-offset:2px;}
+        .buttons-container {display:flex;gap:8px;flex-wrap:wrap;}
+        .hint {color:var(--secondary-text-color);font-size:12px;}
+        .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
+        .forecast-count-setting {display:grid;gap:8px;margin-top:12px;}
+        .forecast-count-setting input,.icon-size-settings input[type="number"] {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -1140,17 +1352,11 @@ class WeatherChartCardEditor extends s {
       </style>
       <div>
       <div class="textfield-container">
-<ha-select
-  naturalMenuWidth
-  fixedMenuPosition
-  label="Entity"
-  .configValue=${'entity'}
-  .value=${this._entity}
-  @change=${(e) => this._EntityChanged(e, 'entity')}
-  @closed=${(ev) => ev.stopPropagation()}
->
-  ${this.entities.map((entity) => x`<ha-list-item .value=${entity}>${entity}</ha-list-item>`)}
-</ha-select>
+<label for="weather-entity">Weather entity</label>
+<select id="weather-entity" @change=${e => this._EntityChanged(e)}>
+  <option value="" .selected=${!this._entity} disabled>Select weather entity</option>
+  ${[...new Set([...this.entities, this._entity].filter(Boolean))].map(entity => x`<option value=${entity} .selected=${entity === this._entity}>${entity}</option>`)}
+</select>
       <ha-textfield
         label="Title"
         .value="${this._config.title || ''}"
@@ -1158,54 +1364,81 @@ class WeatherChartCardEditor extends s {
       ></ha-textfield>
        </div>
 
+      <label>Layout
+        <select .value=${this._config.layout || 'classic'} @change=${e => this._valueChanged(e, 'layout')}>
+          <option value="classic">Classic</option>
+          <option value="modern">Modern</option>
+        </select>
+      </label>
       <h5>Forecast type:</h5>
 
       <div class="radio-group">
-        <ha-radio
+        <label class="check-label"><input type="radio"
           name="type"
           value="daily"
           @change="${this._handleTypeChange}"
-          .checked="${forecastConfig.type === 'daily'}"
-        ></ha-radio>
-        <label class="check-label">
+          .checked="${(forecastConfig.type || 'daily') === 'daily'}"
+        >
+
           Daily forecast
         </label>
       </div>
 
       <div class="radio-group">
-        <ha-radio
+        <label class="check-label"><input type="radio"
           name="type"
           value="hourly"
           @change="${this._handleTypeChange}"
           .checked="${forecastConfig.type === 'hourly'}"
-        ></ha-radio>
-        <label class="check-label">
+        >
+
           Hourly forecast
         </label>
       </div>
 
+      <div class="forecast-count-setting">
+        <label for="forecast-count">Number of forecasts (days / hours)</label>
+        <input id="forecast-count" type="number" min="0" max=${this._config.layout === 'modern' ? '15' : '100'} step="1"
+          .value=${String(forecastConfig.number_of_forecasts == null ? (this._config.layout === 'modern' ? 5 : 0) : forecastConfig.number_of_forecasts)}
+          aria-describedby="forecast-count-hint"
+          @change=${e => this._valueChanged(e, 'forecast.number_of_forecasts')}>
+        <p class="hint" id="forecast-count-hint">Daily: days. Hourly: hours. 0 = automatic (Modern: 5). Only available forecasts are shown.</p>
+      </div>
+
+      <fieldset class="icon-size-settings">
+        <legend>Temperature gradients (Modern layout)</legend>
+        <label><input type="checkbox" name="temperature_gradient"
+          .checked=${forecastConfig.temperature_gradient === true}
+          @change=${e => this._valueChanged(e, 'forecast.temperature_gradient')}> Temperature-based chart colours</label>
+        <label><input type="checkbox" name="gradient_fill"
+          .checked=${forecastConfig.gradient_fill !== false}
+          @change=${e => this._valueChanged(e, 'forecast.gradient_fill')}> Apply temperature colours to chart fill</label>
+        <p class="hint">Cold: blue, mild: green, warm: yellow/orange, hot: red. Only affects Modern. Disable chart colours to restore your configured colours.</p>
+      </fieldset>
+
       <h5>Chart style:</h5>
+      ${this._config.layout === 'modern' ? x`<p class="hint">Chart style 1 and 2 apply only to the Classic layout. Modern uses its own temperature chart.</p>` : ''}
       <div class="radio-container">
         <div class="switch-right">
-          <ha-radio
+          <label class="check-label"><input type="radio"
             name="style"
             value="style1"
             @change="${this._handleStyleChange}"
-            .checked="${forecastConfig.style === 'style1'}"
-          ></ha-radio>
-          <label class="check-label">
+            .checked="${(forecastConfig.style || 'style1') === 'style1'}"
+          >
+
             Chart style 1
           </label>
         </div>
 
         <div class="switch-right">
-          <ha-radio
+          <label class="check-label"><input type="radio"
             name="style"
             value="style2"
             @change="${this._handleStyleChange}"
             .checked="${forecastConfig.style === 'style2'}"
-          ></ha-radio>
-          <label class="check-label">
+          >
+
             Chart style 2
           </label>
         </div>
@@ -1214,14 +1447,32 @@ class WeatherChartCardEditor extends s {
         <!-- Buttons to switch between pages -->
        <h4>Settings:</h4>
        <div class="buttons-container">
-         <mwc-button @click="${() => this.showPage('card')}">Main</mwc-button>
-         <mwc-button @click="${() => this.showPage('forecast')}">Forecast</mwc-button>
-         <mwc-button @click="${() => this.showPage('units')}">Units</mwc-button>
-         <mwc-button @click="${() => this.showPage('alternate')}">Alternate entities</mwc-button>
+         <button type="button" aria-pressed=${this.currentPage === 'card'} @click="${() => this.showPage('card')}">Main</button>
+         <button type="button" aria-pressed=${this.currentPage === 'forecast'} @click="${() => this.showPage('forecast')}">Forecast</button>
+         <button type="button" aria-pressed=${this.currentPage === 'units'} @click="${() => this.showPage('units')}">Units</button>
+         <button type="button" aria-pressed=${this.currentPage === 'alternate'} @click="${() => this.showPage('alternate')}">Alternate entities</button>
        </div>
 
         <!-- Card Settings Page -->
         <div class="page-container ${this.currentPage === 'card' ? 'active' : ''}">
+          <label class="compact-setting"><input type="checkbox" name="compact"
+            .checked=${this._config.compact !== false}
+            @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+          <fieldset class="icon-size-settings">
+            <legend>Icon sizes</legend>
+            <label for="current-icon-size">Current weather icon size (px)</label>
+            <input id="current-icon-size" name="current_icon_size" type="number" min="24" max="120" step="1"
+              .value=${String(this._config.current_icon_size || (this._config.layout === 'modern' ? 56 : (this._config.icons_size || 25) * 2))}
+              @change=${e => this._valueChanged(e, 'current_icon_size')}>
+            <label for="forecast-icon-size">Forecast icon size (px)</label>
+            <input id="forecast-icon-size" name="icons_size" type="number" min="12" max="80" step="1"
+              .value=${String(this._config.icons_size || 25)}
+              @change=${e => this._valueChanged(e, 'icons_size')}>
+            <label for="attribute-icon-size">Attribute icon size (px)</label>
+            <input id="attribute-icon-size" name="attribute_icon_size" type="number" min="12" max="48" step="1"
+              .value=${String(this._config.attribute_icon_size || (this._config.layout === 'modern' ? 16 : 24))}
+              @change=${e => this._valueChanged(e, 'attribute_icon_size')}>
+          </fieldset>
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'show_main')}"
@@ -1300,6 +1551,13 @@ class WeatherChartCardEditor extends s {
           </div>
           <div class="switch-container">
             <ha-switch
+              @change=${e => this._valueChanged(e, 'show_uv')}
+              .checked=${this._config.show_uv !== false}
+            ></ha-switch>
+            <label class="switch-label">Show UV Index</label>
+          </div>
+          <div class="switch-container">
+            <ha-switch
               @change="${(e) => this._valueChanged(e, 'show_sun')}"
               .checked="${this._config.show_sun !== false}"
             ></ha-switch>
@@ -1370,7 +1628,7 @@ class WeatherChartCardEditor extends s {
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'use_12hour_format')}"
-              .checked="${this._config.use_12hour_format !== false}"
+              .checked="${this._config.use_12hour_format === true}"
             ></ha-switch>
             <label class="switch-label">
               Use 12-Hour Format
@@ -1389,41 +1647,41 @@ class WeatherChartCardEditor extends s {
             <div class="switch-right">
               <ha-switch
                 @change="${(e) => this._valueChanged(e, 'show_time')}"
-                .checked="${this._config.show_time !== false}"
+                .checked="${this._config.show_time === true}"
               ></ha-switch>
               <label class="switch-label">
                 Show Current Time
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_time_seconds')}"
-                .checked="${this._config.show_time_seconds !== false}"
+                .checked="${this._config.show_time_seconds === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Seconds
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_day')}"
-                .checked="${this._config.show_day !== false}"
+                .checked="${this._config.show_day === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Day
               </label>
             </div>
-            <div class="switch-right checkbox-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="switch-right checkbox-container">
               <ha-checkbox
                 @change="${(e) => this._valueChanged(e, 'show_date')}"
-                .checked="${this._config.show_date !== false}"
+                .checked="${this._config.show_date === true}"
               ></ha-checkbox>
               <label class="check-label">
                 Show Date
               </label>
             </div>
           </div>
-            <div class="flex-container" style="${this._config.show_time ? 'display: flex;' : 'display: none;'}">
+            <div class="flex-container">
               <ha-textfield
                 label="Time text size"
                 type="number"
@@ -1448,35 +1706,29 @@ class WeatherChartCardEditor extends s {
                 </label>
               </div>
               <div class="switch-right radio-container" style="${this._config.animated_icons ? 'display: flex;' : 'display: none;'}">
-                  <ha-radio
+                  <label class="check-label"><input type="radio"
                     name="icon_style"
                     value="style1"
                     @change="${this._handleIconStyleChange}"
                     .checked="${this._config.icon_style === 'style1'}"
-                  ></ha-radio>
-                  <label class="check-label">
+                  >
+
                     Style 1
                   </label>
                 </div>
               <div class="switch-right radio-container" style="${this._config.animated_icons ? 'display: flex;' : 'display: none;'}">
-                  <ha-radio
+                  <label class="check-label"><input type="radio"
                     name="icon_style"
                     value="style2"
                     @change="${this._handleIconStyleChange}"
                     .checked="${this._config.icon_style === 'style2'}"
-                  ></ha-radio>
-                  <label class="check-label">
+                  >
+
                     Style 2
                   </label>
                 </div>
               </div>
        <div class="textfield-container">
-         <ha-textfield
-           label="Icon Size for animated or custom icons"
-           type="number"
-           .value="${this._config.icons_size || '25'}"
-           @change="${(e) => this._valueChanged(e, 'icons_size')}"
-         ></ha-textfield>
           <ha-textfield
             label="Curent temperature Font Size"
            type="number"
@@ -1606,15 +1858,10 @@ class WeatherChartCardEditor extends s {
               <ha-textfield
                 label="Chart height"
                 type="number"
-                .value="${forecastConfig.chart_height || '180'}"
+                .value=${String(forecastConfig.chart_height || (this._config.layout === 'modern' ? 150 : 180))}
                 @change="${(e) => this._valueChanged(e, 'forecast.chart_height')}"
               ></ha-textfield>
-              <ha-textfield
-                label="Number of forecasts"
-                type="number"
-                .value="${forecastConfig.number_of_forecasts || '0'}"
-                @change="${(e) => this._valueChanged(e, 'forecast.number_of_forecasts')}"
-              ></ha-textfield>
+
               </div>
             </div>
           </div>
@@ -1675,9 +1922,9 @@ customElements.define("weather-chart-card-editor", WeatherChartCardEditor);
  */var n;null!=(null===(n=window.HTMLSlotElement)||void 0===n?void 0:n.prototype.assignedElements)?(o,n)=>o.assignedElements(n):(o,n)=>o.assignedNodes(n).filter((o=>o.nodeType===Node.ELEMENT_NODE));
 
 /*!
- * @kurkle/color v0.3.2
+ * @kurkle/color v0.3.4
  * https://github.com/kurkle/color#readme
- * (c) 2023 Jukka Kurkela
+ * (c) 2024 Jukka Kurkela
  * Released under the MIT License
  */
 function round(v) {
@@ -1851,183 +2098,183 @@ function hslString(v) {
 }
 
 const map$2 = {
-  x: 'dark',
-  Z: 'light',
-  Y: 're',
-  X: 'blu',
-  W: 'gr',
-  V: 'medium',
-  U: 'slate',
-  A: 'ee',
-  T: 'ol',
-  S: 'or',
-  B: 'ra',
-  C: 'lateg',
-  D: 'ights',
-  R: 'in',
-  Q: 'turquois',
-  E: 'hi',
-  P: 'ro',
-  O: 'al',
-  N: 'le',
-  M: 'de',
-  L: 'yello',
-  F: 'en',
-  K: 'ch',
-  G: 'arks',
-  H: 'ea',
-  I: 'ightg',
-  J: 'wh'
+	x: 'dark',
+	Z: 'light',
+	Y: 're',
+	X: 'blu',
+	W: 'gr',
+	V: 'medium',
+	U: 'slate',
+	A: 'ee',
+	T: 'ol',
+	S: 'or',
+	B: 'ra',
+	C: 'lateg',
+	D: 'ights',
+	R: 'in',
+	Q: 'turquois',
+	E: 'hi',
+	P: 'ro',
+	O: 'al',
+	N: 'le',
+	M: 'de',
+	L: 'yello',
+	F: 'en',
+	K: 'ch',
+	G: 'arks',
+	H: 'ea',
+	I: 'ightg',
+	J: 'wh'
 };
 const names$1 = {
-  OiceXe: 'f0f8ff',
-  antiquewEte: 'faebd7',
-  aqua: 'ffff',
-  aquamarRe: '7fffd4',
-  azuY: 'f0ffff',
-  beige: 'f5f5dc',
-  bisque: 'ffe4c4',
-  black: '0',
-  blanKedOmond: 'ffebcd',
-  Xe: 'ff',
-  XeviTet: '8a2be2',
-  bPwn: 'a52a2a',
-  burlywood: 'deb887',
-  caMtXe: '5f9ea0',
-  KartYuse: '7fff00',
-  KocTate: 'd2691e',
-  cSO: 'ff7f50',
-  cSnflowerXe: '6495ed',
-  cSnsilk: 'fff8dc',
-  crimson: 'dc143c',
-  cyan: 'ffff',
-  xXe: '8b',
-  xcyan: '8b8b',
-  xgTMnPd: 'b8860b',
-  xWay: 'a9a9a9',
-  xgYF: '6400',
-  xgYy: 'a9a9a9',
-  xkhaki: 'bdb76b',
-  xmagFta: '8b008b',
-  xTivegYF: '556b2f',
-  xSange: 'ff8c00',
-  xScEd: '9932cc',
-  xYd: '8b0000',
-  xsOmon: 'e9967a',
-  xsHgYF: '8fbc8f',
-  xUXe: '483d8b',
-  xUWay: '2f4f4f',
-  xUgYy: '2f4f4f',
-  xQe: 'ced1',
-  xviTet: '9400d3',
-  dAppRk: 'ff1493',
-  dApskyXe: 'bfff',
-  dimWay: '696969',
-  dimgYy: '696969',
-  dodgerXe: '1e90ff',
-  fiYbrick: 'b22222',
-  flSOwEte: 'fffaf0',
-  foYstWAn: '228b22',
-  fuKsia: 'ff00ff',
-  gaRsbSo: 'dcdcdc',
-  ghostwEte: 'f8f8ff',
-  gTd: 'ffd700',
-  gTMnPd: 'daa520',
-  Way: '808080',
-  gYF: '8000',
-  gYFLw: 'adff2f',
-  gYy: '808080',
-  honeyMw: 'f0fff0',
-  hotpRk: 'ff69b4',
-  RdianYd: 'cd5c5c',
-  Rdigo: '4b0082',
-  ivSy: 'fffff0',
-  khaki: 'f0e68c',
-  lavFMr: 'e6e6fa',
-  lavFMrXsh: 'fff0f5',
-  lawngYF: '7cfc00',
-  NmoncEffon: 'fffacd',
-  ZXe: 'add8e6',
-  ZcSO: 'f08080',
-  Zcyan: 'e0ffff',
-  ZgTMnPdLw: 'fafad2',
-  ZWay: 'd3d3d3',
-  ZgYF: '90ee90',
-  ZgYy: 'd3d3d3',
-  ZpRk: 'ffb6c1',
-  ZsOmon: 'ffa07a',
-  ZsHgYF: '20b2aa',
-  ZskyXe: '87cefa',
-  ZUWay: '778899',
-  ZUgYy: '778899',
-  ZstAlXe: 'b0c4de',
-  ZLw: 'ffffe0',
-  lime: 'ff00',
-  limegYF: '32cd32',
-  lRF: 'faf0e6',
-  magFta: 'ff00ff',
-  maPon: '800000',
-  VaquamarRe: '66cdaa',
-  VXe: 'cd',
-  VScEd: 'ba55d3',
-  VpurpN: '9370db',
-  VsHgYF: '3cb371',
-  VUXe: '7b68ee',
-  VsprRggYF: 'fa9a',
-  VQe: '48d1cc',
-  VviTetYd: 'c71585',
-  midnightXe: '191970',
-  mRtcYam: 'f5fffa',
-  mistyPse: 'ffe4e1',
-  moccasR: 'ffe4b5',
-  navajowEte: 'ffdead',
-  navy: '80',
-  Tdlace: 'fdf5e6',
-  Tive: '808000',
-  TivedBb: '6b8e23',
-  Sange: 'ffa500',
-  SangeYd: 'ff4500',
-  ScEd: 'da70d6',
-  pOegTMnPd: 'eee8aa',
-  pOegYF: '98fb98',
-  pOeQe: 'afeeee',
-  pOeviTetYd: 'db7093',
-  papayawEp: 'ffefd5',
-  pHKpuff: 'ffdab9',
-  peru: 'cd853f',
-  pRk: 'ffc0cb',
-  plum: 'dda0dd',
-  powMrXe: 'b0e0e6',
-  purpN: '800080',
-  YbeccapurpN: '663399',
-  Yd: 'ff0000',
-  Psybrown: 'bc8f8f',
-  PyOXe: '4169e1',
-  saddNbPwn: '8b4513',
-  sOmon: 'fa8072',
-  sandybPwn: 'f4a460',
-  sHgYF: '2e8b57',
-  sHshell: 'fff5ee',
-  siFna: 'a0522d',
-  silver: 'c0c0c0',
-  skyXe: '87ceeb',
-  UXe: '6a5acd',
-  UWay: '708090',
-  UgYy: '708090',
-  snow: 'fffafa',
-  sprRggYF: 'ff7f',
-  stAlXe: '4682b4',
-  tan: 'd2b48c',
-  teO: '8080',
-  tEstN: 'd8bfd8',
-  tomato: 'ff6347',
-  Qe: '40e0d0',
-  viTet: 'ee82ee',
-  JHt: 'f5deb3',
-  wEte: 'ffffff',
-  wEtesmoke: 'f5f5f5',
-  Lw: 'ffff00',
-  LwgYF: '9acd32'
+	OiceXe: 'f0f8ff',
+	antiquewEte: 'faebd7',
+	aqua: 'ffff',
+	aquamarRe: '7fffd4',
+	azuY: 'f0ffff',
+	beige: 'f5f5dc',
+	bisque: 'ffe4c4',
+	black: '0',
+	blanKedOmond: 'ffebcd',
+	Xe: 'ff',
+	XeviTet: '8a2be2',
+	bPwn: 'a52a2a',
+	burlywood: 'deb887',
+	caMtXe: '5f9ea0',
+	KartYuse: '7fff00',
+	KocTate: 'd2691e',
+	cSO: 'ff7f50',
+	cSnflowerXe: '6495ed',
+	cSnsilk: 'fff8dc',
+	crimson: 'dc143c',
+	cyan: 'ffff',
+	xXe: '8b',
+	xcyan: '8b8b',
+	xgTMnPd: 'b8860b',
+	xWay: 'a9a9a9',
+	xgYF: '6400',
+	xgYy: 'a9a9a9',
+	xkhaki: 'bdb76b',
+	xmagFta: '8b008b',
+	xTivegYF: '556b2f',
+	xSange: 'ff8c00',
+	xScEd: '9932cc',
+	xYd: '8b0000',
+	xsOmon: 'e9967a',
+	xsHgYF: '8fbc8f',
+	xUXe: '483d8b',
+	xUWay: '2f4f4f',
+	xUgYy: '2f4f4f',
+	xQe: 'ced1',
+	xviTet: '9400d3',
+	dAppRk: 'ff1493',
+	dApskyXe: 'bfff',
+	dimWay: '696969',
+	dimgYy: '696969',
+	dodgerXe: '1e90ff',
+	fiYbrick: 'b22222',
+	flSOwEte: 'fffaf0',
+	foYstWAn: '228b22',
+	fuKsia: 'ff00ff',
+	gaRsbSo: 'dcdcdc',
+	ghostwEte: 'f8f8ff',
+	gTd: 'ffd700',
+	gTMnPd: 'daa520',
+	Way: '808080',
+	gYF: '8000',
+	gYFLw: 'adff2f',
+	gYy: '808080',
+	honeyMw: 'f0fff0',
+	hotpRk: 'ff69b4',
+	RdianYd: 'cd5c5c',
+	Rdigo: '4b0082',
+	ivSy: 'fffff0',
+	khaki: 'f0e68c',
+	lavFMr: 'e6e6fa',
+	lavFMrXsh: 'fff0f5',
+	lawngYF: '7cfc00',
+	NmoncEffon: 'fffacd',
+	ZXe: 'add8e6',
+	ZcSO: 'f08080',
+	Zcyan: 'e0ffff',
+	ZgTMnPdLw: 'fafad2',
+	ZWay: 'd3d3d3',
+	ZgYF: '90ee90',
+	ZgYy: 'd3d3d3',
+	ZpRk: 'ffb6c1',
+	ZsOmon: 'ffa07a',
+	ZsHgYF: '20b2aa',
+	ZskyXe: '87cefa',
+	ZUWay: '778899',
+	ZUgYy: '778899',
+	ZstAlXe: 'b0c4de',
+	ZLw: 'ffffe0',
+	lime: 'ff00',
+	limegYF: '32cd32',
+	lRF: 'faf0e6',
+	magFta: 'ff00ff',
+	maPon: '800000',
+	VaquamarRe: '66cdaa',
+	VXe: 'cd',
+	VScEd: 'ba55d3',
+	VpurpN: '9370db',
+	VsHgYF: '3cb371',
+	VUXe: '7b68ee',
+	VsprRggYF: 'fa9a',
+	VQe: '48d1cc',
+	VviTetYd: 'c71585',
+	midnightXe: '191970',
+	mRtcYam: 'f5fffa',
+	mistyPse: 'ffe4e1',
+	moccasR: 'ffe4b5',
+	navajowEte: 'ffdead',
+	navy: '80',
+	Tdlace: 'fdf5e6',
+	Tive: '808000',
+	TivedBb: '6b8e23',
+	Sange: 'ffa500',
+	SangeYd: 'ff4500',
+	ScEd: 'da70d6',
+	pOegTMnPd: 'eee8aa',
+	pOegYF: '98fb98',
+	pOeQe: 'afeeee',
+	pOeviTetYd: 'db7093',
+	papayawEp: 'ffefd5',
+	pHKpuff: 'ffdab9',
+	peru: 'cd853f',
+	pRk: 'ffc0cb',
+	plum: 'dda0dd',
+	powMrXe: 'b0e0e6',
+	purpN: '800080',
+	YbeccapurpN: '663399',
+	Yd: 'ff0000',
+	Psybrown: 'bc8f8f',
+	PyOXe: '4169e1',
+	saddNbPwn: '8b4513',
+	sOmon: 'fa8072',
+	sandybPwn: 'f4a460',
+	sHgYF: '2e8b57',
+	sHshell: 'fff5ee',
+	siFna: 'a0522d',
+	silver: 'c0c0c0',
+	skyXe: '87ceeb',
+	UXe: '6a5acd',
+	UWay: '708090',
+	UgYy: '708090',
+	snow: 'fffafa',
+	sprRggYF: 'ff7f',
+	stAlXe: '4682b4',
+	tan: 'd2b48c',
+	teO: '8080',
+	tEstN: 'd8bfd8',
+	tomato: 'ff6347',
+	Qe: '40e0d0',
+	viTet: 'ee82ee',
+	JHt: 'f5deb3',
+	wEte: 'ffffff',
+	wEtesmoke: 'f5f5f5',
+	Lw: 'ffff00',
+	LwgYF: '9acd32'
 };
 function unpack() {
   const unpacked = {};
@@ -2256,9 +2503,9 @@ class Color {
 }
 
 /*!
- * Chart.js v4.4.1
+ * Chart.js v4.6.1
  * https://www.chartjs.org
- * (c) 2023 Chart.js Contributors
+ * (c) 2026 Chart.js Contributors
  * Released under the MIT License
  */
 
@@ -2279,7 +2526,7 @@ class Color {
  * @param value - The value to test.
  * @since 2.7.0
  */ function isNullOrUndef(value) {
-    return value === null || typeof value === 'undefined';
+    return value === null || value === undefined;
 }
 /**
  * Returns true if `value` is an array (including typed arrays), else returns false.
@@ -2339,11 +2586,7 @@ function each(loopable, fn, thisArg, reverse) {
     let i, len, keys;
     if (isArray(loopable)) {
         len = loopable.length;
-        if (reverse) {
-            for(i = len - 1; i >= 0; i--){
-                fn.call(thisArg, loopable[i], i);
-            }
-        } else {
+        {
             for(i = 0; i < len; i++){
                 fn.call(thisArg, loopable[i], i);
             }
@@ -2574,8 +2817,13 @@ function almostEquals(x, y, epsilon) {
     result.sort((a, b)=>a - b).pop();
     return result;
 }
+/**
+ * Verifies that attempting to coerce n to string or number won't throw a TypeError.
+ */ function isNonPrimitive(n) {
+    return typeof n === 'symbol' || typeof n === 'object' && n !== null && !(Symbol.toPrimitive in n || 'toString' in n || 'valueOf' in n);
+}
 function isNumber(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+    return !isNonPrimitive(n) && !isNaN(parseFloat(n)) && isFinite(n);
 }
 function almostWhole(x, epsilon) {
     const rounded = Math.round(x);
@@ -2867,18 +3115,29 @@ function unlistenArrayEvents(array, listener) {
     let start = 0;
     let count = pointCount;
     if (meta._sorted) {
-        const { iScale , _parsed  } = meta;
+        const { iScale , vScale , _parsed  } = meta;
+        const spanGaps = meta.dataset ? meta.dataset.options ? meta.dataset.options.spanGaps : null : null;
         const axis = iScale.axis;
         const { min , max , minDefined , maxDefined  } = iScale.getUserBounds();
         if (minDefined) {
-            start = _limitValue(Math.min(// @ts-expect-error Need to type _parsed
+            start = Math.min(// @ts-expect-error Need to type _parsed
             _lookupByKey(_parsed, axis, min).lo, // @ts-expect-error Need to fix types on _lookupByKey
-            animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo), 0, pointCount - 1);
+            animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo);
+            if (spanGaps) {
+                const distanceToDefinedLo = _parsed.slice(0, start + 1).reverse().findIndex((point)=>!isNullOrUndef(point[vScale.axis]));
+                start -= Math.max(0, distanceToDefinedLo);
+            }
+            start = _limitValue(start, 0, pointCount - 1);
         }
         if (maxDefined) {
-            count = _limitValue(Math.max(// @ts-expect-error Need to type _parsed
+            let end = Math.max(// @ts-expect-error Need to type _parsed
             _lookupByKey(_parsed, iScale.axis, max, true).hi + 1, // @ts-expect-error Need to fix types on _lookupByKey
-            animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1), start, pointCount) - start;
+            animationsDisabled ? 0 : _lookupByKey(points, axis, iScale.getPixelForValue(max), true).hi + 1);
+            if (spanGaps) {
+                const distanceToDefinedHi = _parsed.slice(end - 1).findIndex((point)=>!isNullOrUndef(point[vScale.axis]));
+                end += Math.max(0, distanceToDefinedHi);
+            }
+            count = _limitValue(end, start, pointCount) - start;
         } else {
             count = pointCount - start;
         }
@@ -3433,6 +3692,9 @@ function _longestText(ctx, font, arrayOfThings, cache) {
 /**
  * Clears the entire canvas.
  */ function clearCanvas(canvas, ctx) {
+    if (!ctx && !canvas) {
+        return;
+    }
     ctx = ctx || canvas.getContext('2d');
     ctx.save();
     // canvas.width and canvas.height do not consider the canvas transform,
@@ -3839,7 +4101,6 @@ function _readValueToProps(value, props) {
  * @param info.cacheable - Will be set to `false` if option is not cacheable.
  * @since 2.7.0
  */ function resolve(inputs, context, index, info) {
-    let cacheable = true;
     let i, ilen, value;
     for(i = 0, ilen = inputs.length; i < ilen; ++i){
         value = inputs[i];
@@ -3848,16 +4109,11 @@ function _readValueToProps(value, props) {
         }
         if (context !== undefined && typeof value === 'function') {
             value = value(context);
-            cacheable = false;
         }
         if (index !== undefined && isArray(value)) {
             value = value[index % value.length];
-            cacheable = false;
         }
         if (value !== undefined) {
-            if (info && !cacheable) {
-                info.cacheable = false;
-            }
             return value;
         }
     }
@@ -4035,7 +4291,7 @@ function createContext(parentContext, context) {
 const readKey = (prefix, name)=>prefix ? prefix + _capitalize(name) : name;
 const needsSubResolver = (prop, value)=>isObject(value) && prop !== 'adapters' && (Object.getPrototypeOf(value) === null || value.constructor === Object);
 function _cached(target, prop, resolve) {
-    if (Object.prototype.hasOwnProperty.call(target, prop)) {
+    if (Object.prototype.hasOwnProperty.call(target, prop) || prop === 'constructor') {
         return target[prop];
     }
     const value = resolve();
@@ -4369,12 +4625,6 @@ function capBezierPoints(points, area) {
 }
 
 /**
- * Note: typedefs are auto-exported, so use a made-up `dom` namespace where
- * necessary to avoid duplicates with `export * from './helpers`; see
- * https://github.com/microsoft/TypeScript/issues/46011
- * @typedef { import('../core/core.controller.js').default } dom.Chart
- * @typedef { import('../../types').ChartEvent } ChartEvent
- */ /**
  * @private
  */ function _isDomSupported() {
     return typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -4481,7 +4731,7 @@ const useOffsetPos = (x, y, target)=>(x > 0 || y > 0) && (!target || !target.sha
 function getContainerSize(canvas, width, height) {
     let maxWidth, maxHeight;
     if (width === undefined || height === undefined) {
-        const container = _getParentNode(canvas);
+        const container = canvas && _getParentNode(canvas);
         if (!container) {
             width = canvas.clientWidth;
             height = canvas.clientHeight;
@@ -4544,10 +4794,10 @@ function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
  * @returns True if the canvas context size or transformation has changed.
  */ function retinaScale(chart, forceRatio, forceStyle) {
     const pixelRatio = forceRatio || 1;
-    const deviceHeight = Math.floor(chart.height * pixelRatio);
-    const deviceWidth = Math.floor(chart.width * pixelRatio);
-    chart.height = Math.floor(chart.height);
-    chart.width = Math.floor(chart.width);
+    const deviceHeight = round1(chart.height * pixelRatio);
+    const deviceWidth = round1(chart.width * pixelRatio);
+    chart.height = round1(chart.height);
+    chart.width = round1(chart.width);
     const canvas = chart.canvas;
     // If no style has been set on the canvas, the render size is used as display size,
     // making the chart visually bigger, so let's enforce it to the "correct" values.
@@ -4556,10 +4806,12 @@ function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
         canvas.style.height = `${chart.height}px`;
         canvas.style.width = `${chart.width}px`;
     }
-    if (chart.currentDevicePixelRatio !== pixelRatio || canvas.height !== deviceHeight || canvas.width !== deviceWidth) {
+    const canvasHeight = Math.floor(deviceHeight);
+    const canvasWidth = Math.floor(deviceWidth);
+    if (chart.currentDevicePixelRatio !== pixelRatio || canvas.height !== canvasHeight || canvas.width !== canvasWidth) {
         chart.currentDevicePixelRatio = pixelRatio;
-        canvas.height = deviceHeight;
-        canvas.width = deviceWidth;
+        canvas.height = canvasHeight;
+        canvas.width = canvasWidth;
         chart.ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         return true;
     }
@@ -4987,10 +5239,39 @@ function styleChanged(style, prevStyle) {
     return JSON.stringify(style, replacer) !== JSON.stringify(prevStyle, replacer);
 }
 
+function getSizeForArea(scale, chartArea, field) {
+    return scale.options.clip ? scale[field] : chartArea[field];
+}
+function getDatasetArea(meta, chartArea) {
+    const { xScale , yScale  } = meta;
+    if (xScale && yScale) {
+        return {
+            left: getSizeForArea(xScale, chartArea, 'left'),
+            right: getSizeForArea(xScale, chartArea, 'right'),
+            top: getSizeForArea(yScale, chartArea, 'top'),
+            bottom: getSizeForArea(yScale, chartArea, 'bottom')
+        };
+    }
+    return chartArea;
+}
+function getDatasetClipArea(chart, meta) {
+    const clip = meta._clip;
+    if (clip.disabled) {
+        return false;
+    }
+    const area = getDatasetArea(meta, chart.chartArea);
+    return {
+        left: clip.left === false ? 0 : area.left - (clip.left === true ? 0 : clip.left),
+        right: clip.right === false ? chart.width : area.right + (clip.right === true ? 0 : clip.right),
+        top: clip.top === false ? 0 : area.top - (clip.top === true ? 0 : clip.top),
+        bottom: clip.bottom === false ? chart.height : area.bottom + (clip.bottom === true ? 0 : clip.bottom)
+    };
+}
+
 /*!
- * Chart.js v4.4.1
+ * Chart.js v4.6.1
  * https://www.chartjs.org
- * (c) 2023 Chart.js Contributors
+ * (c) 2026 Chart.js Contributors
  * Released under the MIT License
  */
 
@@ -5424,9 +5705,11 @@ function applyStack(stack, value, dsIndex, options = {}) {
     if (value === null) {
         return;
     }
+    let found = false;
     for(i = 0, ilen = keys.length; i < ilen; ++i){
         datasetIndex = +keys[i];
         if (datasetIndex === dsIndex) {
+            found = true;
             if (options.all) {
                 continue;
             }
@@ -5437,17 +5720,23 @@ function applyStack(stack, value, dsIndex, options = {}) {
             value += otherValue;
         }
     }
+    if (!found && !options.all) {
+        return 0;
+    }
     return value;
 }
-function convertObjectDataToArray(data) {
+function convertObjectDataToArray(data, meta) {
+    const { iScale , vScale  } = meta;
+    const iAxisKey = iScale.axis === 'x' ? 'x' : 'y';
+    const vAxisKey = vScale.axis === 'x' ? 'x' : 'y';
     const keys = Object.keys(data);
     const adata = new Array(keys.length);
     let i, ilen, key;
     for(i = 0, ilen = keys.length; i < ilen; ++i){
         key = keys[i];
         adata[i] = {
-            x: key,
-            y: data[key]
+            [iAxisKey]: key,
+            [vAxisKey]: data[key]
         };
     }
     return adata;
@@ -5536,7 +5825,7 @@ function clearStacks(meta, items) {
     for (const parsed of items){
         const stacks = parsed._stacks;
         if (!stacks || stacks[axis] === undefined || stacks[axis][datasetIndex] === undefined) {
-            return;
+            continue;
         }
         delete stacks[axis][datasetIndex];
         if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
@@ -5639,7 +5928,8 @@ class DatasetController {
         const data = dataset.data || (dataset.data = []);
         const _data = this._data;
         if (isObject(data)) {
-            this._data = convertObjectDataToArray(data);
+            const meta = this._cachedMeta;
+            this._data = convertObjectDataToArray(data, meta);
         } else if (_data !== data) {
             if (_data) {
                 unlistenArrayEvents(_data, this);
@@ -5676,6 +5966,7 @@ class DatasetController {
         this._resyncElements(resetNewElements);
         if (stackChanged || oldStacked !== meta._stacked) {
             updateStacks(this, meta._parsed);
+            meta._stacked = isStacked(meta.vScale, meta);
         }
     }
  configure() {
@@ -6470,8 +6761,10 @@ class BarController extends DatasetController {
         const metasets = iScale.getMatchingVisibleMetas(this._type).filter((meta)=>meta.controller.options.grouped);
         const stacked = iScale.options.stacked;
         const stacks = [];
+        const currentParsed = this._cachedMeta.controller.getParsed(dataIndex);
+        const iScaleValue = currentParsed && currentParsed[iScale.axis];
         const skipNull = (meta)=>{
-            const parsed = meta.controller.getParsed(dataIndex);
+            const parsed = meta._parsed.find((item)=>item[iScale.axis] === iScaleValue);
             const val = parsed && parsed[meta.vScale.axis];
             if (isNullOrUndef(val) || isNaN(val)) {
                 return true;
@@ -6495,6 +6788,22 @@ class BarController extends DatasetController {
     }
  _getStackCount(index) {
         return this._getStacks(undefined, index).length;
+    }
+    _getAxisCount() {
+        return this._getAxis().length;
+    }
+    getFirstScaleIdForIndexAxis() {
+        const scales = this.chart.scales;
+        const indexScaleId = this.chart.options.indexAxis;
+        return Object.keys(scales).filter((key)=>scales[key].axis === indexScaleId).shift();
+    }
+    _getAxis() {
+        const axis = {};
+        const firstScaleAxisId = this.getFirstScaleIdForIndexAxis();
+        for (const dataset of this.chart.data.datasets){
+            axis[valueOrDefault(this.chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID, firstScaleAxisId)] = true;
+        }
+        return Object.keys(axis);
     }
  _getStackIndex(datasetIndex, name, dataIndex) {
         const stacks = this._getStacks(datasetIndex, dataIndex);
@@ -6586,10 +6895,13 @@ class BarController extends DatasetController {
         const skipNull = options.skipNull;
         const maxBarThickness = valueOrDefault(options.maxBarThickness, Infinity);
         let center, size;
+        const axisCount = this._getAxisCount();
         if (ruler.grouped) {
             const stackCount = skipNull ? this._getStackCount(index) : ruler.stackCount;
-            const range = options.barThickness === 'flex' ? computeFlexCategoryTraits(index, ruler, options, stackCount) : computeFitCategoryTraits(index, ruler, options, stackCount);
-            const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined);
+            const range = options.barThickness === 'flex' ? computeFlexCategoryTraits(index, ruler, options, stackCount * axisCount) : computeFitCategoryTraits(index, ruler, options, stackCount * axisCount);
+            const axisID = this.chart.options.indexAxis === 'x' ? this.getDataset().xAxisID : this.getDataset().yAxisID;
+            const axisNumber = this._getAxis().indexOf(valueOrDefault(axisID, this.getFirstScaleIdForIndexAxis()));
+            const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined) + axisNumber;
             center = range.start + range.chunk * stackIndex + range.chunk / 2;
             size = Math.min(maxBarThickness, range.chunk * range.ratio);
         } else {
@@ -6610,7 +6922,7 @@ class BarController extends DatasetController {
         const ilen = rects.length;
         let i = 0;
         for(; i < ilen; ++i){
-            if (this.getParsed(i)[vScale.axis] !== null) {
+            if (this.getParsed(i)[vScale.axis] !== null && !rects[i].hidden) {
                 rects[i].draw(this._ctx);
             }
         }
@@ -6796,11 +7108,12 @@ class DoughnutController extends DatasetController {
         circumference: 360,
         radius: '100%',
         spacing: 0,
+        spacingMode: 'angular',
         indexAxis: 'r'
     };
     static descriptors = {
-        _scriptable: (name)=>name !== 'spacing',
-        _indexable: (name)=>name !== 'spacing' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash')
+        _scriptable: (name)=>name !== 'spacing' && name !== 'spacingMode',
+        _indexable: (name)=>name !== 'spacing' && name !== 'spacingMode' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash')
     };
  static overrides = {
         aspectRatio: 1,
@@ -6809,19 +7122,24 @@ class DoughnutController extends DatasetController {
                 labels: {
                     generateLabels (chart) {
                         const data = chart.data;
+                        const { labels: { pointStyle , textAlign , color , useBorderRadius , borderRadius  }  } = chart.legend.options;
                         if (data.labels.length && data.datasets.length) {
-                            const { labels: { pointStyle , color  }  } = chart.legend.options;
                             return data.labels.map((label, i)=>{
                                 const meta = chart.getDatasetMeta(0);
                                 const style = meta.controller.getStyle(i);
                                 return {
                                     text: label,
                                     fillStyle: style.backgroundColor,
-                                    strokeStyle: style.borderColor,
                                     fontColor: color,
-                                    lineWidth: style.borderWidth,
-                                    pointStyle: pointStyle,
                                     hidden: !chart.getDataVisibility(i),
+                                    lineDash: style.borderDash,
+                                    lineDashOffset: style.borderDashOffset,
+                                    lineJoin: style.borderJoinStyle,
+                                    lineWidth: style.borderWidth,
+                                    strokeStyle: style.borderColor,
+                                    textAlign: textAlign,
+                                    pointStyle: pointStyle,
+                                    borderRadius: useBorderRadius && (borderRadius || style.borderRadius),
                                     index: i
                                 };
                             });
@@ -7162,7 +7480,9 @@ class PolarAreaController extends DatasetController {
             }
         },
         indexAxis: 'r',
-        startAngle: 0
+        startAngle: 0,
+        spacing: 0,
+        spacingMode: 'proportional'
     };
  static overrides = {
         aspectRatio: 1,
@@ -7305,6 +7625,12 @@ class PolarAreaController extends DatasetController {
                 endAngle,
                 options: this.resolveDataElementOptions(i, arc.active ? 'active' : mode)
             };
+            if (properties.options.spacing === 0) {
+                properties.options.spacing = this.options.spacing;
+            }
+            if (properties.options.spacingMode === 'angular') {
+                properties.options.spacingMode = this.options.spacingMode;
+            }
             this.updateElement(arc, i, properties, mode);
         }
     }
@@ -7606,10 +7932,20 @@ var adapters = {
 function binarySearch(metaset, axis, value, intersect) {
     const { controller , data , _sorted  } = metaset;
     const iScale = controller._cachedMeta.iScale;
+    const spanGaps = metaset.dataset ? metaset.dataset.options ? metaset.dataset.options.spanGaps : null : null;
     if (iScale && axis === iScale.axis && axis !== 'r' && _sorted && data.length) {
         const lookupMethod = iScale._reversePixels ? _rlookupByKey : _lookupByKey;
         if (!intersect) {
-            return lookupMethod(data, axis, value);
+            const result = lookupMethod(data, axis, value);
+            if (spanGaps) {
+                const { vScale  } = controller._cachedMeta;
+                const { _parsed  } = metaset;
+                const distanceToDefinedLo = _parsed.slice(0, result.lo + 1).reverse().findIndex((point)=>!isNullOrUndef(point[vScale.axis]));
+                result.lo -= Math.max(0, distanceToDefinedLo);
+                const distanceToDefinedHi = _parsed.slice(result.hi).findIndex((point)=>!isNullOrUndef(point[vScale.axis]));
+                result.hi += Math.max(0, distanceToDefinedHi);
+            }
+            return result;
         } else if (controller._sharedOptions) {
             const el = data[0];
             const range = typeof el.getRange === 'function' && el.getRange(axis);
@@ -7739,7 +8075,7 @@ function binarySearch(metaset, axis, value, intersect) {
     const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
     let intersectsItem = false;
     evaluateInteractionItems(chart, axis, position, (element, datasetIndex, index)=>{
-        if (element[rangeMethod](position[axis], useFinalPosition)) {
+        if (element[rangeMethod] && element[rangeMethod](position[axis], useFinalPosition)) {
             items.push({
                 element,
                 datasetIndex,
@@ -7754,7 +8090,6 @@ function binarySearch(metaset, axis, value, intersect) {
     return items;
 }
  var Interaction = {
-    evaluateInteractionItems,
     modes: {
  index (chart, e, options, useFinalPosition) {
             const position = getRelativePosition(e, chart);
@@ -8017,7 +8352,6 @@ function placeBoxes(boxes, chartArea, params, stacks) {
     for (const layout of boxes){
         const box = layout.box;
         const stack = stacks[layout.stack] || {
-            count: 1,
             placed: 0,
             weight: 1
         };
@@ -8238,10 +8572,14 @@ const eventListenerOptions = supportsEventListenerOptions ? {
     passive: true
 } : false;
 function addListener(node, type, listener) {
-    node.addEventListener(type, listener, eventListenerOptions);
+    if (node) {
+        node.addEventListener(type, listener, eventListenerOptions);
+    }
 }
 function removeListener(chart, type, listener) {
-    chart.canvas.removeEventListener(type, listener, eventListenerOptions);
+    if (chart && chart.canvas) {
+        chart.canvas.removeEventListener(type, listener, eventListenerOptions);
+    }
 }
 function fromNativeEvent(event, chart) {
     const type = EVENT_TYPES[event.type] || event.type;
@@ -8434,7 +8772,7 @@ function createProxyAndListen(chart, type, listener) {
         return getMaximumSize(canvas, width, height, aspectRatio);
     }
  isAttached(canvas) {
-        const container = _getParentNode(canvas);
+        const container = canvas && _getParentNode(canvas);
         return !!(container && container.isConnected);
     }
 }
@@ -9788,7 +10126,9 @@ class Scale extends Element {
             translation: [
                 titleX,
                 titleY
-            ]
+            ],
+            strokeColor: title.strokeColor,
+            strokeWidth: title.strokeWidth
         });
     }
     draw(chartArea) {
@@ -10039,18 +10379,22 @@ var registry = /* #__PURE__ */ new Registry();
 
 class PluginService {
     constructor(){
-        this._init = [];
+        this._init = undefined;
     }
  notify(chart, hook, args, filter) {
         if (hook === 'beforeInit') {
             this._init = this._createDescriptors(chart, true);
             this._notify(this._init, chart, 'install');
         }
+        if (this._init === undefined) {
+            return;
+        }
         const descriptors = filter ? this._descriptors(chart).filter(filter) : this._descriptors(chart);
         const result = this._notify(descriptors, chart, hook, args);
         if (hook === 'afterDestroy') {
             this._notify(descriptors, chart, 'stop');
             this._notify(this._init, chart, 'uninstall');
+            this._init = undefined;
         }
         return result;
     }
@@ -10493,7 +10837,7 @@ function needContext(proxy, names) {
     return false;
 }
 
-var version = "4.4.1";
+var version = "4.6.1";
 
 const KNOWN_POSITIONS = [
     'top',
@@ -10562,21 +10906,6 @@ function moveNumericKeys(obj, start, move) {
         return lastEvent;
     }
     return e;
-}
-function getSizeForArea(scale, chartArea, field) {
-    return scale.options.clip ? scale[field] : chartArea[field];
-}
-function getDatasetArea(meta, chartArea) {
-    const { xScale , yScale  } = meta;
-    if (xScale && yScale) {
-        return {
-            left: getSizeForArea(xScale, chartArea, 'left'),
-            right: getSizeForArea(xScale, chartArea, 'right'),
-            top: getSizeForArea(yScale, chartArea, 'top'),
-            bottom: getSizeForArea(yScale, chartArea, 'bottom')
-        };
-    }
-    return chartArea;
 }
 class Chart {
     static defaults = defaults$1;
@@ -11025,8 +11354,8 @@ class Chart {
         let i;
         if (this._resizeBeforeDraw) {
             const { width , height  } = this._resizeBeforeDraw;
-            this._resize(width, height);
             this._resizeBeforeDraw = null;
+            this._resize(width, height);
         }
         this.clear();
         if (this.width <= 0 || this.height <= 0) {
@@ -11076,27 +11405,20 @@ class Chart {
     }
  _drawDataset(meta) {
         const ctx = this.ctx;
-        const clip = meta._clip;
-        const useClip = !clip.disabled;
-        const area = getDatasetArea(meta, this.chartArea);
         const args = {
             meta,
             index: meta.index,
             cancelable: true
         };
+        const clip = getDatasetClipArea(this, meta);
         if (this.notifyPlugins('beforeDatasetDraw', args) === false) {
             return;
         }
-        if (useClip) {
-            clipArea(ctx, {
-                left: clip.left === false ? 0 : area.left - clip.left,
-                right: clip.right === false ? this.width : area.right + clip.right,
-                top: clip.top === false ? 0 : area.top - clip.top,
-                bottom: clip.bottom === false ? this.height : area.bottom + clip.bottom
-            });
+        if (clip) {
+            clipArea(ctx, clip);
         }
         meta.controller.draw();
-        if (useClip) {
+        if (clip) {
             unclipArea(ctx);
         }
         args.cancelable = false;
@@ -11409,6 +11731,34 @@ function invalidatePlugins() {
     return each(Chart.instances, (chart)=>chart._plugins.invalidate());
 }
 
+function clipSelf(ctx, element, endAngle) {
+    const { startAngle , x , y , outerRadius , innerRadius , options  } = element;
+    const { borderWidth , borderJoinStyle  } = options;
+    const outerAngleClip = Math.min(borderWidth / outerRadius, _normalizeAngle(startAngle - endAngle));
+    ctx.beginPath();
+    ctx.arc(x, y, outerRadius - borderWidth / 2, startAngle + outerAngleClip / 2, endAngle - outerAngleClip / 2);
+    if (innerRadius > 0) {
+        const innerAngleClip = Math.min(borderWidth / innerRadius, _normalizeAngle(startAngle - endAngle));
+        ctx.arc(x, y, innerRadius + borderWidth / 2, endAngle - innerAngleClip / 2, startAngle + innerAngleClip / 2, true);
+    } else {
+        const clipWidth = Math.min(borderWidth / 2, outerRadius * _normalizeAngle(startAngle - endAngle));
+        if (borderJoinStyle === 'round') {
+            ctx.arc(x, y, clipWidth, endAngle - PI / 2, startAngle + PI / 2, true);
+        } else if (borderJoinStyle === 'bevel') {
+            const r = 2 * clipWidth * clipWidth;
+            const endX = -r * Math.cos(endAngle + PI / 2) + x;
+            const endY = -r * Math.sin(endAngle + PI / 2) + y;
+            const startX = r * Math.cos(startAngle + PI / 2) + x;
+            const startY = r * Math.sin(startAngle + PI / 2) + y;
+            ctx.lineTo(endX, endY);
+            ctx.lineTo(startX, startY);
+        }
+    }
+    ctx.closePath();
+    ctx.moveTo(0, 0);
+    ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.clip('evenodd');
+}
 function clipArc(ctx, element, endAngle) {
     const { startAngle , pixelMargin , x , y , outerRadius , innerRadius  } = element;
     let angleMargin = pixelMargin / outerRadius;
@@ -11465,6 +11815,19 @@ function toRadiusCorners(value) {
         y: y + r * Math.sin(theta)
     };
 }
+function pathFullCircle(ctx, element, offset, spacing) {
+    const { x , y , startAngle: start , pixelMargin , innerRadius: innerR  } = element;
+    const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
+    const innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
+    ctx.beginPath();
+    ctx.arc(x, y, outerRadius, start, start + TAU);
+    if (innerRadius > 0) {
+        // Start the inner contour as a separate subpath to avoid a seam connector.
+        ctx.moveTo(x + Math.cos(start) * innerRadius, y + Math.sin(start) * innerRadius);
+        ctx.arc(x, y, innerRadius, start + TAU, start, true);
+    }
+    ctx.closePath();
+}
 /**
  * Path the arc, respecting border radius by separating into left and right halves.
  *
@@ -11480,33 +11843,68 @@ function toRadiusCorners(value) {
  *    6<---b<---5    Inner
  */ function pathArc(ctx, element, offset, spacing, end, circular) {
     const { x , y , startAngle: start , pixelMargin , innerRadius: innerR  } = element;
-    const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
-    const innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
-    let spacingOffset = 0;
+    const { spacingMode ='angular'  } = element.options;
     const alpha = end - start;
+    if (circular && element.options.selfJoin && Math.abs(alpha) >= TAU - 1e-4) {
+        pathFullCircle(ctx, element, offset, spacing);
+        return;
+    }
+    const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
+    let innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
+    let outerSpacingOffset = 0;
+    let innerSpacingOffset = 0;
+    const beta = outerRadius > 0 ? Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius : 0.001;
+    const angleOffset = (alpha - beta) / 2;
     if (spacing) {
         // When spacing is present, it is the same for all items
         // So we adjust the start and end angle of the arc such that
         // the distance is the same as it would be without the spacing
         const noSpacingInnerRadius = innerR > 0 ? innerR - spacing : 0;
         const noSpacingOuterRadius = outerRadius > 0 ? outerRadius - spacing : 0;
-        const avNogSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
-        const adjustedAngle = avNogSpacingRadius !== 0 ? alpha * avNogSpacingRadius / (avNogSpacingRadius + spacing) : alpha;
-        spacingOffset = (alpha - adjustedAngle) / 2;
+        const avgNoSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
+        const proportionalOffset = (()=>{
+            const adjustedAngle = avgNoSpacingRadius !== 0 ? alpha * avgNoSpacingRadius / (avgNoSpacingRadius + spacing) : alpha;
+            return (alpha - adjustedAngle) / 2;
+        })();
+        const angularOffset = avgNoSpacingRadius > 0 ? Math.asin(Math.min(1, spacing / avgNoSpacingRadius)) : 0;
+        // Keep spacing trims below half the available span after base offset trimming.
+        const maxOffset = Math.max(0, beta / 2 - 0.001);
+        const maxOffsetSin = Math.sin(maxOffset);
+        if (spacingMode === 'parallel') {
+            if (innerRadius === 0 && maxOffsetSin > 0) {
+                // A root radius of zero cannot realize a non-zero parallel separator width.
+                // Raise the root just enough for the available angular span.
+                const minInnerRadius = spacing / maxOffsetSin;
+                const maxInnerRadius = Math.max(0, outerRadius - 0.001);
+                innerRadius = Math.min(minInnerRadius, maxInnerRadius);
+            }
+            // Use one bounded spacing value for both radii so large spacing keeps stable geometry.
+            const maxParallelSpacing = Math.min(outerRadius > 0 ? outerRadius * maxOffsetSin : Number.POSITIVE_INFINITY, innerRadius > 0 ? innerRadius * maxOffsetSin : Number.POSITIVE_INFINITY);
+            const parallelSpacing = Math.min(spacing, maxParallelSpacing);
+            outerSpacingOffset = outerRadius > 0 ? Math.asin(Math.min(1, parallelSpacing / outerRadius)) : Math.min(maxOffset, angularOffset);
+            innerSpacingOffset = innerRadius > 0 ? Math.asin(Math.min(1, parallelSpacing / innerRadius)) : outerSpacingOffset;
+        } else if (spacingMode === 'proportional') {
+            outerSpacingOffset = Math.min(maxOffset, proportionalOffset);
+            innerSpacingOffset = Math.min(maxOffset, proportionalOffset);
+        } else {
+            outerSpacingOffset = Math.min(maxOffset, angularOffset);
+            innerSpacingOffset = Math.min(maxOffset, angularOffset);
+        }
     }
-    const beta = Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius;
-    const angleOffset = (alpha - beta) / 2;
-    const startAngle = start + angleOffset + spacingOffset;
-    const endAngle = end - angleOffset - spacingOffset;
-    const { outerStart , outerEnd , innerStart , innerEnd  } = parseBorderRadius$1(element, innerRadius, outerRadius, endAngle - startAngle);
+    const outerStartAngle = start + angleOffset + outerSpacingOffset;
+    const outerEndAngle = end - angleOffset - outerSpacingOffset;
+    const innerStartAngle = start + angleOffset + innerSpacingOffset;
+    const innerEndAngle = end - angleOffset - innerSpacingOffset;
+    const angleDelta = Math.min(outerEndAngle - outerStartAngle, innerEndAngle - innerStartAngle);
+    const { outerStart , outerEnd , innerStart , innerEnd  } = parseBorderRadius$1(element, innerRadius, outerRadius, angleDelta);
     const outerStartAdjustedRadius = outerRadius - outerStart;
     const outerEndAdjustedRadius = outerRadius - outerEnd;
-    const outerStartAdjustedAngle = startAngle + outerStart / outerStartAdjustedRadius;
-    const outerEndAdjustedAngle = endAngle - outerEnd / outerEndAdjustedRadius;
+    const outerStartAdjustedAngle = outerStartAngle + outerStart / outerStartAdjustedRadius;
+    const outerEndAdjustedAngle = outerEndAngle - outerEnd / outerEndAdjustedRadius;
     const innerStartAdjustedRadius = innerRadius + innerStart;
     const innerEndAdjustedRadius = innerRadius + innerEnd;
-    const innerStartAdjustedAngle = startAngle + innerStart / innerStartAdjustedRadius;
-    const innerEndAdjustedAngle = endAngle - innerEnd / innerEndAdjustedRadius;
+    const innerStartAdjustedAngle = innerStartAngle + innerStart / innerStartAdjustedRadius;
+    const innerEndAdjustedAngle = innerEndAngle - innerEnd / innerEndAdjustedRadius;
     ctx.beginPath();
     if (circular) {
         // The first arc segments from point 1 to point a to point 2
@@ -11516,32 +11914,32 @@ function toRadiusCorners(value) {
         // The corner segment from point 2 to point 3
         if (outerEnd > 0) {
             const pCenter = rThetaToXY(outerEndAdjustedRadius, outerEndAdjustedAngle, x, y);
-            ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, endAngle + HALF_PI);
+            ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, outerEndAngle + HALF_PI);
         }
         // The line from point 3 to point 4
-        const p4 = rThetaToXY(innerEndAdjustedRadius, endAngle, x, y);
+        const p4 = rThetaToXY(innerEndAdjustedRadius, innerEndAngle, x, y);
         ctx.lineTo(p4.x, p4.y);
         // The corner segment from point 4 to point 5
         if (innerEnd > 0) {
             const pCenter = rThetaToXY(innerEndAdjustedRadius, innerEndAdjustedAngle, x, y);
-            ctx.arc(pCenter.x, pCenter.y, innerEnd, endAngle + HALF_PI, innerEndAdjustedAngle + Math.PI);
+            ctx.arc(pCenter.x, pCenter.y, innerEnd, innerEndAngle + HALF_PI, innerEndAdjustedAngle + Math.PI);
         }
         // The inner arc from point 5 to point b to point 6
-        const innerMidAdjustedAngle = (endAngle - innerEnd / innerRadius + (startAngle + innerStart / innerRadius)) / 2;
-        ctx.arc(x, y, innerRadius, endAngle - innerEnd / innerRadius, innerMidAdjustedAngle, true);
-        ctx.arc(x, y, innerRadius, innerMidAdjustedAngle, startAngle + innerStart / innerRadius, true);
+        const innerMidAdjustedAngle = (innerEndAngle - innerEnd / innerRadius + (innerStartAngle + innerStart / innerRadius)) / 2;
+        ctx.arc(x, y, innerRadius, innerEndAngle - innerEnd / innerRadius, innerMidAdjustedAngle, true);
+        ctx.arc(x, y, innerRadius, innerMidAdjustedAngle, innerStartAngle + innerStart / innerRadius, true);
         // The corner segment from point 6 to point 7
         if (innerStart > 0) {
             const pCenter = rThetaToXY(innerStartAdjustedRadius, innerStartAdjustedAngle, x, y);
-            ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - HALF_PI);
+            ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, innerStartAngle - HALF_PI);
         }
         // The line from point 7 to point 8
-        const p8 = rThetaToXY(outerStartAdjustedRadius, startAngle, x, y);
+        const p8 = rThetaToXY(outerStartAdjustedRadius, outerStartAngle, x, y);
         ctx.lineTo(p8.x, p8.y);
         // The corner segment from point 8 to point 1
         if (outerStart > 0) {
             const pCenter = rThetaToXY(outerStartAdjustedRadius, outerStartAdjustedAngle, x, y);
-            ctx.arc(pCenter.x, pCenter.y, outerStart, startAngle - HALF_PI, outerStartAdjustedAngle);
+            ctx.arc(pCenter.x, pCenter.y, outerStart, outerStartAngle - HALF_PI, outerStartAdjustedAngle);
         }
     } else {
         ctx.moveTo(x, y);
@@ -11572,7 +11970,7 @@ function drawArc(ctx, element, offset, spacing, circular) {
 }
 function drawBorder(ctx, element, offset, spacing, circular) {
     const { fullCircles , startAngle , circumference , options  } = element;
-    const { borderWidth , borderJoinStyle , borderDash , borderDashOffset  } = options;
+    const { borderWidth , borderJoinStyle , borderDash , borderDashOffset , borderRadius  } = options;
     const inner = options.borderAlign === 'inner';
     if (!borderWidth) {
         return;
@@ -11587,6 +11985,7 @@ function drawBorder(ctx, element, offset, spacing, circular) {
         ctx.lineJoin = borderJoinStyle || 'bevel';
     }
     let endAngle = element.endAngle;
+    const isFullCircle = Math.abs(endAngle - startAngle) >= TAU - 1e-4;
     if (fullCircles) {
         pathArc(ctx, element, offset, spacing, endAngle, circular);
         for(let i = 0; i < fullCircles; ++i){
@@ -11598,6 +11997,10 @@ function drawBorder(ctx, element, offset, spacing, circular) {
     }
     if (inner) {
         clipArc(ctx, element, endAngle);
+    }
+    const skipSelfClip = isFullCircle && element.innerRadius > 0;
+    if (!skipSelfClip && options.selfJoin && endAngle - startAngle >= PI && borderRadius === 0 && borderJoinStyle !== 'miter') {
+        clipSelf(ctx, element, endAngle);
     }
     if (!fullCircles) {
         pathArc(ctx, element, offset, spacing, endAngle, circular);
@@ -11616,8 +12019,10 @@ class ArcElement extends Element {
         borderWidth: 2,
         offset: 0,
         spacing: 0,
+        spacingMode: 'angular',
         angle: undefined,
-        circular: true
+        circular: true,
+        selfJoin: false
     };
     static defaultRoutes = {
         backgroundColor: 'backgroundColor'
@@ -11633,6 +12038,7 @@ class ArcElement extends Element {
     outerRadius;
     pixelMargin;
     startAngle;
+    circular;
     constructor(cfg){
         super();
         this.options = undefined;
@@ -11643,6 +12049,7 @@ class ArcElement extends Element {
         this.outerRadius = undefined;
         this.pixelMargin = 0;
         this.fullCircles = 0;
+        this.circular = false;
         if (cfg) {
             Object.assign(this, cfg);
         }
@@ -11665,7 +12072,8 @@ class ArcElement extends Element {
         ], useFinalPosition);
         const rAdjust = (this.options.spacing + this.options.borderWidth) / 2;
         const _circumference = valueOrDefault(circumference, endAngle - startAngle);
-        const betweenAngles = _circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
+        const nonZeroBetween = _angleBetween(angle, startAngle, endAngle) && startAngle !== endAngle;
+        const betweenAngles = _circumference >= TAU || nonZeroBetween;
         const withinRadius = _isBetween(distance, innerRadius + rAdjust, outerRadius + rAdjust);
         return betweenAngles && withinRadius;
     }
@@ -12331,6 +12739,9 @@ function containsColorsDefinitions(descriptors) {
 function containsColorsDefinition(descriptor) {
     return descriptor && (descriptor.borderColor || descriptor.backgroundColor);
 }
+function containsDefaultColorsDefenitions() {
+    return defaults$1.borderColor !== 'rgba(0,0,0,0.1)' || defaults$1.backgroundColor !== 'rgba(0,0,0,0.1)';
+}
 var plugin_colors = {
     id: 'colors',
     defaults: {
@@ -12343,7 +12754,8 @@ var plugin_colors = {
         }
         const { data: { datasets  } , options: chartOptions  } = chart.config;
         const { elements  } = chartOptions;
-        if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(chartOptions) || elements && containsColorsDefinitions(elements))) {
+        const containsColorDefenition = containsColorsDefinitions(datasets) || containsColorsDefinition(chartOptions) || elements && containsColorsDefinitions(elements) || containsDefaultColorsDefenitions();
+        if (!options.forceOverride && containsColorDefenition) {
             return;
         }
         const colorizer = getColorizer(chart);
@@ -12942,13 +13354,15 @@ function computeCircularBoundary(source) {
 
 function _drawfill(ctx, source, area) {
     const target = _getTarget(source);
-    const { line , scale , axis  } = source;
+    const { chart , index , line , scale , axis  } = source;
     const lineOpts = line.options;
     const fillOption = lineOpts.fill;
     const color = lineOpts.backgroundColor;
     const { above =color , below =color  } = fillOption || {};
+    const meta = chart.getDatasetMeta(index);
+    const clip = getDatasetClipArea(chart, meta);
     if (target && line.points.length) {
-        clipArea(ctx, area);
+        clipArea(ctx, clipToIndexBounds(area, meta.iScale));
         doFill(ctx, {
             line,
             target,
@@ -12956,34 +13370,72 @@ function _drawfill(ctx, source, area) {
             below,
             area,
             scale,
-            axis
+            axis,
+            clip
         });
         unclipArea(ctx);
     }
 }
+function clipToIndexBounds(area, iScale) {
+    if (!iScale || iScale.getPointPositionForValue) {
+        return area;
+    }
+    const p1 = iScale.getPixelForValue(iScale.min);
+    const p2 = iScale.getPixelForValue(iScale.max);
+    const lo = Math.min(p1, p2);
+    const hi = Math.max(p1, p2);
+    return iScale.isHorizontal() ? {
+        ...area,
+        left: Math.max(area.left, lo),
+        right: Math.min(area.right, hi)
+    } : {
+        ...area,
+        top: Math.max(area.top, lo),
+        bottom: Math.min(area.bottom, hi)
+    };
+}
 function doFill(ctx, cfg) {
-    const { line , target , above , below , area , scale  } = cfg;
+    const { line , target , above , below , area , scale , clip  } = cfg;
     const property = line._loop ? 'angle' : cfg.axis;
     ctx.save();
-    if (property === 'x' && below !== above) {
-        clipVertical(ctx, target, area.top);
-        fill(ctx, {
-            line,
-            target,
-            color: above,
-            scale,
-            property
-        });
-        ctx.restore();
-        ctx.save();
-        clipVertical(ctx, target, area.bottom);
+    let fillColor = below;
+    if (below !== above) {
+        if (property === 'x') {
+            clipVertical(ctx, target, area.top);
+            fill(ctx, {
+                line,
+                target,
+                color: above,
+                scale,
+                property,
+                clip
+            });
+            ctx.restore();
+            ctx.save();
+            clipVertical(ctx, target, area.bottom);
+        } else if (property === 'y') {
+            clipHorizontal(ctx, target, area.left);
+            fill(ctx, {
+                line,
+                target,
+                color: below,
+                scale,
+                property,
+                clip
+            });
+            ctx.restore();
+            ctx.save();
+            clipHorizontal(ctx, target, area.right);
+            fillColor = above;
+        }
     }
     fill(ctx, {
         line,
         target,
-        color: below,
+        color: fillColor,
         scale,
-        property
+        property,
+        clip
     });
     ctx.restore();
 }
@@ -13016,15 +13468,44 @@ function clipVertical(ctx, target, clipY) {
     ctx.closePath();
     ctx.clip();
 }
+function clipHorizontal(ctx, target, clipX) {
+    const { segments , points  } = target;
+    let first = true;
+    let lineLoop = false;
+    ctx.beginPath();
+    for (const segment of segments){
+        const { start , end  } = segment;
+        const firstPoint = points[start];
+        const lastPoint = points[_findSegmentEnd(start, end, points)];
+        if (first) {
+            ctx.moveTo(firstPoint.x, firstPoint.y);
+            first = false;
+        } else {
+            ctx.lineTo(clipX, firstPoint.y);
+            ctx.lineTo(firstPoint.x, firstPoint.y);
+        }
+        lineLoop = !!target.pathSegment(ctx, segment, {
+            move: lineLoop
+        });
+        if (lineLoop) {
+            ctx.closePath();
+        } else {
+            ctx.lineTo(clipX, lastPoint.y);
+        }
+    }
+    ctx.lineTo(clipX, target.first().y);
+    ctx.closePath();
+    ctx.clip();
+}
 function fill(ctx, cfg) {
-    const { line , target , property , color , scale  } = cfg;
+    const { line , target , property , color , scale , clip  } = cfg;
     const segments = _segments(line, target, property);
     for (const { source: src , target: tgt , start , end  } of segments){
         const { style: { backgroundColor =color  } = {}  } = src;
         const notShape = target !== true;
         ctx.save();
         ctx.fillStyle = backgroundColor;
-        clipBounds(ctx, scale, notShape && _getBounds(property, start, end));
+        clipBounds(ctx, scale, clip, notShape && _getBounds(property, start, end));
         ctx.beginPath();
         const lineLoop = !!line.pathSegment(ctx, src);
         let loop;
@@ -13048,12 +13529,30 @@ function fill(ctx, cfg) {
         ctx.restore();
     }
 }
-function clipBounds(ctx, scale, bounds) {
-    const { top , bottom  } = scale.chart.chartArea;
+function clipBounds(ctx, scale, clip, bounds) {
+    const chartArea = scale.chart.chartArea;
     const { property , start , end  } = bounds || {};
-    if (property === 'x') {
+    if (property === 'x' || property === 'y') {
+        let left, top, right, bottom;
+        if (property === 'x') {
+            left = start;
+            top = chartArea.top;
+            right = end;
+            bottom = chartArea.bottom;
+        } else {
+            left = chartArea.left;
+            top = start;
+            right = chartArea.right;
+            bottom = end;
+        }
         ctx.beginPath();
-        ctx.rect(start, top, end - start, bottom - top);
+        if (clip) {
+            left = Math.max(left, clip.left);
+            right = Math.min(right, clip.right);
+            top = Math.max(top, clip.top);
+            bottom = Math.min(bottom, clip.bottom);
+        }
+        ctx.rect(left, top, right - left, bottom - top);
         ctx.clip();
     }
 }
@@ -13874,20 +14373,26 @@ const positioners$1 = {
             return false;
         }
         let i, len;
-        let x = 0;
+        let xSet = new Set();
         let y = 0;
         let count = 0;
         for(i = 0, len = items.length; i < len; ++i){
             const el = items[i].element;
             if (el && el.hasValue()) {
                 const pos = el.tooltipPosition();
-                x += pos.x;
+                xSet.add(pos.x);
                 y += pos.y;
                 ++count;
             }
         }
+        if (count === 0 || xSet.size === 0) {
+            return false;
+        }
+        const xAverage = [
+            ...xSet
+        ].reduce((a, b)=>a + b) / xSet.size;
         return {
-            x: x / count,
+            x: xAverage,
             y: y / count
         };
     },
@@ -15342,14 +15847,14 @@ class LogarithmicScale extends Scale {
                 setMax(10);
             } else {
                 setMin(changeExponent(min, -1));
-                setMax(changeExponent(max, +1));
+                setMax(changeExponent(max, 1));
             }
         }
         if (min <= 0) {
             setMin(changeExponent(max, -1));
         }
         if (max <= 0) {
-            setMax(changeExponent(min, +1));
+            setMax(changeExponent(min, 1));
         }
         this.min = min;
         this.max = max;
@@ -15635,7 +16140,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount, borderOpts) {
     ctx.save();
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
-    ctx.setLineDash(borderOpts.dash);
+    ctx.setLineDash(borderOpts.dash || []);
     ctx.lineDashOffset = borderOpts.dashOffset;
     ctx.beginPath();
     pathRadiusLine(scale, radius, circular, labelCount);
@@ -15818,7 +16323,7 @@ class RadialLinearScale extends LinearScaleBase {
         }
         if (grid.display) {
             this.ticks.forEach((tick, index)=>{
-                if (index !== 0) {
+                if (index !== 0 || index === 0 && this.min < 0) {
                     offset = this.getDistanceFromCenterForValue(tick.value);
                     const context = this.getContext(index);
                     const optsAtIndex = grid.setContext(context);
@@ -15839,7 +16344,7 @@ class RadialLinearScale extends LinearScaleBase {
                 ctx.strokeStyle = color;
                 ctx.setLineDash(optsAtIndex.borderDash);
                 ctx.lineDashOffset = optsAtIndex.borderDashOffset;
-                offset = this.getDistanceFromCenterForValue(opts.ticks.reverse ? this.min : this.max);
+                offset = this.getDistanceFromCenterForValue(opts.reverse ? this.min : this.max);
                 position = this.getPointPosition(i, offset);
                 ctx.beginPath();
                 ctx.moveTo(this.xCenter, this.yCenter);
@@ -15865,7 +16370,7 @@ class RadialLinearScale extends LinearScaleBase {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         this.ticks.forEach((tick, index)=>{
-            if (index === 0 && !opts.reverse) {
+            if (index === 0 && this.min >= 0 && !opts.reverse) {
                 return;
             }
             const optsAtIndex = tickOpts.setContext(this.getContext(index));
@@ -15950,7 +16455,7 @@ const INTERVALS = {
         value = parser(value);
     }
     if (!isNumberFinite(value)) {
-        value = typeof parser === 'string' ? adapter.parse(value,  parser) : adapter.parse(value);
+        value = typeof parser === 'string' ? adapter.parse(value, parser) : adapter.parse(value);
     }
     if (value === null) {
         return null;
@@ -17814,17 +18319,21 @@ static getStubConfig(hass, unusedEntities, allEntities) {
     show_wind_direction: true,
     show_wind_speed: true,
     show_sun: true,
+    show_uv: true,
     show_feels_like: false,
     show_dew_point: false,
     show_wind_gust_speed: false,
     show_visibility: false,
     show_last_changed: false,
     use_12hour_format: false,
+    layout: 'classic',
     icons_size: 25,
     animated_icons: false,
     icon_style: 'style1',
     autoscroll: false,
     forecast: {
+      temperature_gradient: false,
+      gradient_fill: true,
       precipitation_type: 'rainfall',
       show_probability: false,
       labels_font_size: '11',
@@ -17863,7 +18372,8 @@ setConfig(config) {
     icons_size: 25,
     animated_icons: false,
     icon_style: 'style1',
-    current_temp_size: 28,
+    layout: 'classic',
+    current_temp_size: config.layout === 'modern' ? 40 : 28,
     time_size: 26,
     day_date_size: 15,
     show_feels_like: false,
@@ -17874,14 +18384,16 @@ setConfig(config) {
     show_description: false,
     ...config,
     forecast: {
+      temperature_gradient: false,
+      gradient_fill: true,
       precipitation_type: 'rainfall',
       show_probability: false,
       labels_font_size: 11,
-      chart_height: 180,
+      chart_height: config.layout === 'modern' ? 150 : 180,
       precip_bar_size: 100,
       style: 'style1',
-      temperature1_color: 'rgba(255, 152, 0, 1.0)',
-      temperature2_color: 'rgba(68, 115, 158, 1.0)',
+      temperature1_color: config.layout === 'modern' ? '#f59e0b' : 'rgba(255, 152, 0, 1.0)',
+      temperature2_color: config.layout === 'modern' ? '#38bdf8' : 'rgba(68, 115, 158, 1.0)',
       precipitation_color: 'rgba(132, 209, 253, 1.0)',
       condition_icons: true,
       show_wind_forecast: true,
@@ -17896,6 +18408,11 @@ setConfig(config) {
       ...config.units,
     }
   };
+
+  const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
+  cardConfig.icons_size = size(cardConfig.icons_size, 25, 12, 80);
+  cardConfig.attribute_icon_size = size(config.attribute_icon_size, cardConfig.layout === 'modern' ? 16 : 24, 12, 48);
+  cardConfig.current_icon_size = size(config.current_icon_size, cardConfig.layout === 'modern' ? 56 : cardConfig.icons_size * 2, 24, 120);
 
   cardConfig.units.speed = config.speed ? config.speed : cardConfig.units.speed;
 
@@ -17913,22 +18430,21 @@ set hass(hass) {
   this._hass = hass;
   this.language = this.config.locale || hass.selectedLanguage || hass.language;
   this.sun = 'sun.sun' in hass.states ? hass.states['sun.sun'] : null;
-  this.unitSpeed = this.config.units.speed ? this.config.units.speed : this.weather && this.weather.attributes.wind_speed_unit;
-  this.unitPressure = this.config.units.pressure ? this.config.units.pressure : this.weather && this.weather.attributes.pressure_unit;
-  this.unitVisibility = this.config.units.visibility ? this.config.units.visibility : this.weather && this.weather.attributes.visibility_unit;
-  this.weather = this.config.entity in hass.states
-    ? hass.states[this.config.entity]
-    : null;
+  this.weather = hass.states[this.config.entity] || null;
+  const attributes = this.weather ? this.weather.attributes : {};
+  this.unitSpeed = this.config.units.speed || attributes.wind_speed_unit;
+  this.unitPressure = this.config.units.pressure || attributes.pressure_unit;
+  this.unitVisibility = this.config.units.visibility || attributes.visibility_unit;
 
   if (this.weather) {
-    this.temperature = this.config.temp ? hass.states[this.config.temp].state : this.weather.attributes.temperature;
-    this.humidity = this.config.humid ? hass.states[this.config.humid].state : this.weather.attributes.humidity;
-    this.pressure = this.config.press ? hass.states[this.config.press].state : this.weather.attributes.pressure;
-    this.uv_index = this.config.uv ? hass.states[this.config.uv].state : this.weather.attributes.uv_index;
-    this.windSpeed = this.config.windspeed ? hass.states[this.config.windspeed].state : this.weather.attributes.wind_speed;
-    this.dew_point = this.config.dew_point ? hass.states[this.config.dew_point].state : this.weather.attributes.dew_point;
-    this.wind_gust_speed = this.config.wind_gust_speed ? hass.states[this.config.wind_gust_speed].state : this.weather.attributes.wind_gust_speed;
-    this.visibility = this.config.visibility ? hass.states[this.config.visibility].state : this.weather.attributes.visibility;
+    this.temperature = this.config.temp ? (hass.states[this.config.temp] || {}).state : this.weather.attributes.temperature;
+    this.humidity = this.config.humid ? (hass.states[this.config.humid] || {}).state : this.weather.attributes.humidity;
+    this.pressure = this.config.press ? (hass.states[this.config.press] || {}).state : this.weather.attributes.pressure;
+    this.uv_index = this.config.uv ? (hass.states[this.config.uv] || {}).state : this.weather.attributes.uv_index;
+    this.windSpeed = this.config.windspeed ? (hass.states[this.config.windspeed] || {}).state : this.weather.attributes.wind_speed;
+    this.dew_point = this.config.dew_point ? (hass.states[this.config.dew_point] || {}).state : this.weather.attributes.dew_point;
+    this.wind_gust_speed = this.config.wind_gust_speed ? (hass.states[this.config.wind_gust_speed] || {}).state : this.weather.attributes.wind_gust_speed;
+    this.visibility = this.config.visibility ? (hass.states[this.config.visibility] || {}).state : this.weather.attributes.visibility;
 
     if (this.config.winddir && hass.states[this.config.winddir] && hass.states[this.config.winddir].state !== undefined) {
       this.windDirection = parseFloat(hass.states[this.config.winddir].state);
@@ -17940,7 +18456,7 @@ set hass(hass) {
     this.description = this.config.description && hass.states[this.config.description] ? hass.states[this.config.description].state : this.weather.attributes.description;
   }
 
-  if (this.weather && !this.forecastSubscriber) {
+  if (this.isConnected && this.weather && !this.forecastSubscriber) {
     this.subscribeForecastEvents();
   }
 }
@@ -17955,7 +18471,9 @@ subscribeForecastEvents() {
     return;
   }
 
+  const generation = this.subscriptionGeneration;
   const callback = (event) => {
+    if (generation !== this.subscriptionGeneration) return;
     this.forecasts = event.forecast;
     this.requestUpdate();
     this.drawChart();
@@ -17965,6 +18483,9 @@ subscribeForecastEvents() {
     type: "weather/subscribe_forecast",
     forecast_type: isHourly ? 'hourly' : 'daily',
     entity_id: this.config.entity,
+  }).catch(error => {
+    if (generation === this.subscriptionGeneration) this.forecastSubscriber = null;
+    console.warn('Weather forecast subscription failed', error);
   });
 }
 
@@ -17976,10 +18497,13 @@ subscribeForecastEvents() {
     super();
     this.resizeObserver = null;
     this.resizeInitialized = false;
+    this.subscriptionGeneration = 0;
   }
 
   connectedCallback() {
     super.connectedCallback();
+    this.requestUpdate();
+    if (this._hass && this.weather && !this.forecastSubscriber) this.subscribeForecastEvents();
     if (!this.resizeInitialized) {
       this.delayedAttachResizeObserver();
     }
@@ -17987,6 +18511,7 @@ subscribeForecastEvents() {
 
   delayedAttachResizeObserver() {
     setTimeout(() => {
+      if (!this.isConnected) return;
       this.attachResizeObserver();
       this.resizeInitialized = true;
     }, 0);
@@ -17995,9 +18520,27 @@ subscribeForecastEvents() {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.detachResizeObserver();
-    if (this.forecastSubscriber) {
-      this.forecastSubscriber.then((unsub) => unsub());
-    }
+    this.stopForecastSubscription();
+    clearInterval(this.clockInterval);
+    this.clockInterval = null;
+    this.cancelAutoscroll();
+    if (this.forecastChart) this.forecastChart.destroy();
+    this.forecastChart = null;
+    this.resizeInitialized = false;
+  }
+
+  stopForecastSubscription() {
+    this.subscriptionGeneration++;
+    const subscription = this.forecastSubscriber;
+    this.forecastSubscriber = null;
+    if (subscription) Promise.resolve(subscription).then(unsub => { if (unsub) unsub(); }).catch(console.warn);
+  }
+
+  convertWindSpeed(value) {
+    const source = this.weather.attributes.wind_speed_unit;
+    const factors = {'km/h': 1, 'm/s': 3.6, mph: 1.609344, kn: 1.852};
+    if (this.unitSpeed === 'Bft') return this.calculateBeaufortScale(value);
+    return factors[source] && factors[this.unitSpeed] ? value * factors[source] / factors[this.unitSpeed] : value;
   }
 
   attachResizeObserver() {
@@ -18041,7 +18584,8 @@ ll(str) {
 }
 
   getCardSize() {
-    return 4;
+    const height = this.shadowRoot && this.shadowRoot.querySelector('ha-card');
+    return height ? Math.ceil(height.getBoundingClientRect().height / 50) : (this.config.layout === 'modern' ? 9 : 4);
   }
 
   getUnit(unit) {
@@ -18061,7 +18605,7 @@ ll(str) {
 
 getWindDirIcon(deg) {
   if (typeof deg === 'number') {
-    return cardinalDirectionsIcon[parseInt((deg + 22.5) / 45.0)];
+    return cardinalDirectionsIcon[Math.floor((((deg % 360) + 360) % 360 + 22.5) / 45) % 8];
   } else {
     var i = 9;
     switch (deg) {
@@ -18163,6 +18707,14 @@ async firstUpdated(changedProperties) {
 
 
 async updated(changedProperties) {
+  const needsClock = this.isConnected && this.config.show_main !== false &&
+    (this.config.show_time || this.config.show_day || this.config.show_date);
+  if (needsClock && !this.clockInterval) {
+    this.clockInterval = setInterval(() => this.requestUpdate(), 1000);
+  } else if (!needsClock && this.clockInterval) {
+    clearInterval(this.clockInterval);
+    this.clockInterval = null;
+  }
   await this.updateComplete;
 
   if (changedProperties.has('config')) {
@@ -18171,13 +18723,16 @@ async updated(changedProperties) {
     const entityChanged = oldConfig && this.config.entity !== oldConfig.entity;
     const forecastTypeChanged = oldConfig && this.config.forecast.type !== oldConfig.forecast.type;
     const autoscrollChanged = oldConfig && this.config.autoscroll !== oldConfig.autoscroll;
+    if (oldConfig && this.config.forecast.number_of_forecasts !== oldConfig.forecast.number_of_forecasts) {
+      this.measureCard();
+    }
 
     if (entityChanged || forecastTypeChanged) {
-      if (this.forecastSubscriber && typeof this.forecastSubscriber === 'function') {
-        this.forecastSubscriber();
-      }
+      this.stopForecastSubscription();
+      this.forecasts = [];
 
-      this.subscribeForecastEvents();
+      // Refresh all derived attributes immediately, not only the weather object.
+      if (this._hass) this.hass = this._hass;
     }
 
     if (this.forecasts && this.forecasts.length) {
@@ -18185,7 +18740,7 @@ async updated(changedProperties) {
     }
 
     if (autoscrollChanged) {
-      if (!this.config.autoscroll) {
+      if (this.config.autoscroll) {
         this.autoscroll();
       } else {
         this.cancelAutoscroll();
@@ -18215,7 +18770,8 @@ autoscroll() {
     this.autoscrollTimeout = setTimeout(() => {
       this.autoscrollTimeout = null;
       this.updateChart();
-      drawChartOncePerHour();
+      this.requestUpdate();
+      updateChartOncePerHour();
     }, nextHour - now);
   };
 
@@ -18225,10 +18781,16 @@ autoscroll() {
 cancelAutoscroll() {
   if (this.autoscrollTimeout) {
     clearTimeout(this.autoscrollTimeout);
+    this.autoscrollTimeout = null;
   }
 }
 
 drawChart({ config, language, weather, forecastItems } = this) {
+  if (config.layout === 'modern') {
+    if (this.forecastChart) this.forecastChart.destroy();
+    this.forecastChart = null;
+    return;
+  }
   if (!this.forecasts || !this.forecasts.length) {
     return [];
   }
@@ -18540,9 +19102,7 @@ computeForecastData({ config, forecastItems } = this) {
     }
     dateTime.push(d.datetime);
     tempHigh.push(d.temperature);
-    if (typeof d.templow !== 'undefined') {
-      tempLow.push(d.templow);
-    }
+    tempLow.push(d.templow == null ? null : d.templow);
 
     if (roundTemp) {
       tempHigh[i] = Math.round(tempHigh[i]);
@@ -18603,6 +19163,7 @@ updateChart({ forecasts, forecastChart } = this) {
         </ha-card>
       `;
     }
+    if (config.layout === 'modern') return renderModern(this);
     return x`
       <style>
         ha-icon {
@@ -18625,14 +19186,14 @@ updateChart({ forecasts, forecastChart } = this) {
           margin-bottom: 10px;
         }
         .main ha-icon {
-          --mdc-icon-size: 50px;
+          --mdc-icon-size: ${config.current_icon_size}px;
           margin-right: 14px;
           margin-inline-start: initial;
           margin-inline-end: 14px;
         }
         .main img {
-          width: ${config.icons_size * 2}px;
-          height: ${config.icons_size * 2}px;
+          width: ${config.current_icon_size}px;
+          height: ${config.current_icon_size}px;
           margin-right: 14px;
           margin-inline-start: initial;
           margin-inline-end: 14px;
@@ -18652,6 +19213,9 @@ updateChart({ forecasts, forecastChart } = this) {
       	  font-weight: 300;
           direction: ltr;
         }
+        .attributes ha-icon {
+          --mdc-icon-size: ${config.attribute_icon_size}px;
+        }
         .chart-container {
           position: relative;
           height: ${config.forecast.chart_height}px;
@@ -18665,6 +19229,7 @@ updateChart({ forecasts, forecastChart } = this) {
           margin: 0px 5px 0px 5px;
       	  cursor: pointer;
         }
+        .forecast-item ha-icon {--mdc-icon-size:${config.icons_size}px;}
         .forecast-item {
           display: flex;
           flex-direction: column;
@@ -18778,54 +19343,23 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
   }
 
   const iconHtml = config.animated_icons || config.icons
-    ? x`<img src="${this.getWeatherIcon(weather.state, sun.state)}" alt="">`
-    : x`<ha-icon icon="${this.getWeatherIcon(weather.state, sun.state)}"></ha-icon>`;
+    ? x`<img src="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}" alt="">`
+    : x`<ha-icon icon="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}"></ha-icon>`;
 
-  const updateClock = () => {
-    const currentDate = new Date();
-    const timeOptions = {
-      hour12: use12HourFormat,
-      hour: 'numeric',
-      minute: 'numeric',
-      second: showSeconds ? 'numeric' : undefined
-    };
-    const currentTime = currentDate.toLocaleTimeString(this.language, timeOptions);
-    const currentDayOfWeek = currentDate.toLocaleString(this.language, { weekday: 'long' }).toUpperCase();
-    const currentDateFormatted = currentDate.toLocaleDateString(this.language, { month: 'long', day: 'numeric' });
-
-    const mainDiv = this.shadowRoot.querySelector('.main');
-    if (mainDiv) {
-      const clockElement = mainDiv.querySelector('#digital-clock');
-      if (clockElement) {
-        clockElement.textContent = currentTime;
-      }
-      if (showDay) {
-        const dayElement = mainDiv.querySelector('.date-text.day');
-        if (dayElement) {
-          dayElement.textContent = currentDayOfWeek;
-        }
-      }
-      if (showDate) {
-        const dateElement = mainDiv.querySelector('.date-text.date');
-        if (dateElement) {
-          dateElement.textContent = currentDateFormatted;
-        }
-      }
-    }
-  };
-
-  updateClock();
-
-  if (showTime) {
-    setInterval(updateClock, 1000);
-  }
+  const currentDate = new Date();
+  const currentTime = currentDate.toLocaleTimeString(this.language, {
+    hour12: use12HourFormat, hour: 'numeric', minute: 'numeric',
+    second: showSeconds ? 'numeric' : undefined
+  });
+  const currentDay = currentDate.toLocaleDateString(this.language, {weekday: 'long'});
+  const currentDateFormatted = currentDate.toLocaleDateString(this.language, {month: 'long', day: 'numeric'});
 
   return x`
     <div class="main">
       ${iconHtml}
       <div>
         <div>
-          ${showTemperature ? x`${roundedTemperature}<span>${this.getUnit('temperature')}</span>` : ''}
+          ${showTemperature ? x`${Number.isFinite(roundedTemperature) ? roundedTemperature : '–'}<span>${this.getUnit('temperature')}</span>` : ''}
           ${showFeelsLike && roundedFeelsLike ? x`
             <div class="feels-like">
               ${this.ll('feelsLike')}
@@ -18843,15 +19377,15 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
             </div>
           ` : ''}
         </div>
-        ${showTime ? x`
+      </div>
+        ${showTime || showDay || showDate ? x`
           <div class="current-time">
-            <div id="digital-clock"></div>
-            ${showDay ? x`<div class="date-text day"></div>` : ''}
+            ${showTime ? x`<div id="digital-clock">${currentTime}</div>` : ''}
+            ${showDay ? x`<div class="date-text day">${currentDay}</div>` : ''}
             ${showDay && showDate ? x` ` : ''}
-            ${showDate ? x`<div class="date-text date"></div>` : ''}
+            ${showDate ? x`<div class="date-text date">${currentDateFormatted}</div>` : ''}
           </div>
         ` : ''}
-      </div>
     </div>
   `;
 }
@@ -18913,6 +19447,9 @@ renderAttributes({ config, humidity, pressure, windSpeed, windDirection, sun, la
     }
   }
 
+  if (!Number.isFinite(Number(dWindSpeed)) || windSpeed == null) dWindSpeed = undefined;
+  if (!Number.isFinite(Number(dPressure)) || pressure == null) dPressure = undefined;
+  if (humidity === null) humidity = undefined;
   if (config.show_attributes == false)
     return x``;
 
@@ -18921,6 +19458,7 @@ renderAttributes({ config, humidity, pressure, windSpeed, windDirection, sun, la
   const showWindDirection = config.show_wind_direction !== false;
   const showWindSpeed = config.show_wind_speed !== false;
   const showSun = config.show_sun !== false;
+  const showUV = config.show_uv !== false && uv_index != null && uv_index !== '' && Number.isFinite(Number(uv_index));
   const showDewpoint = config.show_dew_point == true;
   const showWindgustspeed = config.show_wind_gust_speed == true;
   const showVisibility = config.show_visibility == true;
@@ -18943,14 +19481,14 @@ return x`
           ` : ''}
         </div>
       ` : ''}
-      ${((showSun && sun !== undefined) || (typeof uv_index !== 'undefined' && uv_index !== undefined)) ? x`
+      ${((showSun && sun != null) || showUV) ? x`
         <div>
-          ${typeof uv_index !== 'undefined' && uv_index !== undefined ? x`
+          ${showUV ? x`
             <div>
               <ha-icon icon="hass:white-balance-sunny"></ha-icon> UV: ${Math.round(uv_index * 10) / 10}
             </div>
           ` : ''}
-          ${showSun && sun !== undefined ? x`
+          ${showSun && sun != null ? x`
             <div>
               ${this.renderSun({ sun, language })}
             </div>
@@ -19007,8 +19545,8 @@ renderForecastConditionIcons({ config, forecastItems, sun } = this) {
     <div class="conditions" @click="${(e) => this.showMoreInfo(config.entity)}">
       ${forecast.map((item) => {
         const forecastTime = new Date(item.datetime);
-        const sunriseTime = new Date(sun.attributes.next_rising);
-        const sunsetTime = new Date(sun.attributes.next_setting);
+        const sunriseTime = new Date(sun ? sun.attributes.next_rising : forecastTime);
+        const sunsetTime = new Date(sun ? sun.attributes.next_setting : forecastTime);
 
         // Adjust sunrise and sunset times to match the date of forecastTime
         const adjustedSunriseTime = new Date(forecastTime);
@@ -19042,7 +19580,7 @@ renderForecastConditionIcons({ config, forecastItems, sun } = this) {
             `${this.config.icons}${weatherIcons[condition]}.svg`;
           iconHtml = x`<img class="icon" src="${iconSrc}" alt="">`;
         } else {
-          iconHtml = x`<ha-icon icon="${this.getWeatherIcon(condition, sun.state)}"></ha-icon>`;
+          iconHtml = x`<ha-icon icon="${this.getWeatherIcon(condition, (sun ? sun.state : 'above_horizon'))}"></ha-icon>`;
         }
 
         return x`
@@ -19110,7 +19648,7 @@ renderWind({ config, weather, windSpeed, windDirection, forecastItems } = this) 
 }
 
 renderLastUpdated() {
-  const lastUpdatedString = this.weather.last_changed;
+  const lastUpdatedString = this.weather.last_updated || this.weather.last_changed;
   const lastUpdatedTimestamp = new Date(lastUpdatedString).getTime();
   const currentTimestamp = Date.now();
   const timeDifference = currentTimestamp - lastUpdatedTimestamp;

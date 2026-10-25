@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "eslint": "^8.56.0",
+    "happy-dom": "^21.0.4",
     "rollup": "^4.9.6",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -31,6 +32,7 @@
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "npm run lint && npm run rollup",
     "lint": "eslint 'src/**/*.js'",
-    "rollup": "rollup -c"
+    "rollup": "rollup -c",
+    "test": "node --experimental-default-type=module tests/modern-layout.test.mjs && node --experimental-default-type=module tests/card.test.mjs"
   }
 }
