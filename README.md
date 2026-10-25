@@ -11,6 +11,7 @@ The original repository is no longer maintained.
 ![weather-chart-card](https://github.com/mlamberts78/weather-chart-card/assets/93537082/bd5b9f6e-4125-4a19-9773-463e6d054bce)
 ![15-days](https://github.com/mlamberts78/weather-chart-card/assets/93537082/f4de6060-7005-4a6d-b1f3-3aa17c856c73)
 <img width="705" height="538" alt="Neues Layout" src="https://github.com/user-attachments/assets/b7cf6749-4465-46fa-b644-3ddd85bcfad5" />
+<img width="701" height="539" alt="Mit Color-Gradient - je nach Temperatur" src="https://github.com/user-attachments/assets/aa9f7e69-1601-4f89-ad08-158d368309c5" />
 
 ## Installation
 
