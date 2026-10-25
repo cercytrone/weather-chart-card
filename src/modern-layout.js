@@ -61,7 +61,7 @@ export function renderModern(card) {
       .forecast {min-width:${items.length * 56}px;}
       .row {display:grid;grid-template-columns:repeat(${items.length || 1},minmax(0,1fr));text-align:center;align-items:center;gap:0;}
       .days {font-size:11px;font-weight:600;text-transform:uppercase;color:var(--secondary-text-color);margin-top:20px;}
-      .plot {position:relative;height:${Math.max(175, Number(config.forecast.chart_height) || 180)}px;}
+      .plot {position:relative;height:${Math.max(120, Number(config.forecast.chart_height) || 150)}px;}
       svg {width:100%;height:100%;display:block;}
       .labels {position:absolute;inset:0;pointer-events:none;}
       .temp {position:absolute;transform:translate(-50%,-50%);font-size:${config.forecast.labels_font_size}px;font-weight:700;white-space:nowrap;}
@@ -73,6 +73,17 @@ export function renderModern(card) {
       .wind ha-icon {--mdc-icon-size:14px;}
       .wind small {display:block;font-size:9px;color:var(--secondary-text-color);}
       .updated,.empty {font-size:12px;color:var(--secondary-text-color);margin-top:12px;}
+      ${config.compact === false ? '' : `
+      .modern {padding:16px;}
+      .main {padding-bottom:12px;line-height:1.1;}
+      .attributes {gap:8px;margin:10px 0;font-size:12px;line-height:1.65;}
+      .attributes > div {padding:8px;}
+      .days {margin-top:10px;}
+      .rain {min-height:20px;}
+      .icons {padding:5px 0;}
+      .wind {padding-top:6px;}
+      .updated {margin-top:8px;}
+      `}
       @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
       @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
     </style>

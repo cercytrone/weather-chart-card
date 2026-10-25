@@ -267,3 +267,22 @@ icons_size: 30
 Forecast type, chart style, animated icon style and settings navigation use native
 HTML controls to avoid relying on internal Home Assistant radio/button components.
 Chart styles 1 and 2 still only affect the Classic layout; Modern has its own chart.
+
+### Compact modern cards
+
+Modern uses compact spacing by default (`compact: true`). The Main settings page
+has a **Compact spacing (Modern layout)** checkbox; disable it for the original
+roomier spacing. Classic is unaffected. The default modern chart height is now
+150px (previously 180px), and explicit `forecast.chart_height` values down to
+120px are supported. Existing explicit heights are preserved. For example:
+
+```yaml
+layout: modern
+compact: true
+forecast:
+  chart_height: 130
+```
+
+The weather-entity dropdown uses a native select and immediately saves the chosen
+entity. Changing entities refreshes the current temperature, units and other
+attributes as well as the forecast subscription.

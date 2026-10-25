@@ -106,7 +106,7 @@ setConfig(config) {
       precipitation_type: 'rainfall',
       show_probability: false,
       labels_font_size: 11,
-      chart_height: 180,
+      chart_height: config.layout === 'modern' ? 150 : 180,
       precip_bar_size: 100,
       style: 'style1',
       temperature1_color: config.layout === 'modern' ? '#f59e0b' : 'rgba(255, 152, 0, 1.0)',
@@ -444,8 +444,8 @@ async updated(changedProperties) {
       this.stopForecastSubscription();
       this.forecasts = [];
 
-      this.weather = this._hass.states[this.config.entity] || null;
-      if (this.weather) this.subscribeForecastEvents();
+      // Refresh all derived attributes immediately, not only the weather object.
+      if (this._hass) this.hass = this._hass;
     }
 
     if (this.forecasts && this.forecasts.length) {

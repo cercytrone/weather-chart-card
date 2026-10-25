@@ -290,17 +290,11 @@ class WeatherChartCardEditor extends LitElement {
       </style>
       <div>
       <div class="textfield-container">
-<ha-select
-  naturalMenuWidth
-  fixedMenuPosition
-  label="Entity"
-  .configValue=${'entity'}
-  .value=${this._entity}
-  @change=${(e) => this._EntityChanged(e, 'entity')}
-  @closed=${(ev) => ev.stopPropagation()}
->
-  ${this.entities.map((entity) => html`<ha-list-item .value=${entity}>${entity}</ha-list-item>`)}
-</ha-select>
+<label for="weather-entity">Weather entity</label>
+<select id="weather-entity" @change=${e => this._EntityChanged(e)}>
+  <option value="" .selected=${!this._entity} disabled>Select weather entity</option>
+  ${[...new Set([...this.entities, this._entity].filter(Boolean))].map(entity => html`<option value=${entity} .selected=${entity === this._entity}>${entity}</option>`)}
+</select>
       <ha-textfield
         label="Title"
         .value="${this._config.title || ''}"
@@ -379,6 +373,9 @@ class WeatherChartCardEditor extends LitElement {
 
         <!-- Card Settings Page -->
         <div class="page-container ${this.currentPage === 'card' ? 'active' : ''}">
+          <label class="compact-setting"><input type="checkbox" name="compact"
+            .checked=${this._config.compact !== false}
+            @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
           <fieldset class="icon-size-settings">
             <legend>Icon sizes</legend>
             <label for="current-icon-size">Current weather icon size (px)</label>
@@ -775,7 +772,7 @@ class WeatherChartCardEditor extends LitElement {
               <ha-textfield
                 label="Chart height"
                 type="number"
-                .value="${forecastConfig.chart_height || '180'}"
+                .value=${String(forecastConfig.chart_height || (this._config.layout === 'modern' ? 150 : 180))}
                 @change="${(e) => this._valueChanged(e, 'forecast.chart_height')}"
               ></ha-textfield>
               <ha-textfield
