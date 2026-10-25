@@ -1191,6 +1191,8 @@ class WeatherChartCardEditor extends s {
         button:focus-visible,select:focus-visible,input:focus-visible {outline:2px solid var(--primary-color);outline-offset:2px;}
         .buttons-container {display:flex;gap:8px;flex-wrap:wrap;}
         .hint {color:var(--secondary-text-color);font-size:12px;}
+        .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
+        .icon-size-settings input {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -1347,6 +1349,17 @@ class WeatherChartCardEditor extends s {
 
         <!-- Card Settings Page -->
         <div class="page-container ${this.currentPage === 'card' ? 'active' : ''}">
+          <fieldset class="icon-size-settings">
+            <legend>Icon sizes</legend>
+            <label for="current-icon-size">Current weather icon size (px)</label>
+            <input id="current-icon-size" name="current_icon_size" type="number" min="24" max="120" step="1"
+              .value=${String(this._config.current_icon_size || (this._config.layout === 'modern' ? 56 : (this._config.icons_size || 25) * 2))}
+              @change=${e => this._valueChanged(e, 'current_icon_size')}>
+            <label for="forecast-icon-size">Forecast icon size (px)</label>
+            <input id="forecast-icon-size" name="icons_size" type="number" min="12" max="80" step="1"
+              .value=${String(this._config.icons_size || 25)}
+              @change=${e => this._valueChanged(e, 'icons_size')}>
+          </fieldset>
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'show_main')}"
@@ -1603,19 +1616,6 @@ class WeatherChartCardEditor extends s {
                 </div>
               </div>
        <div class="textfield-container">
-         <ha-textfield
-           label="Current weather icon size (px)"
-           type="number" min="24" max="120"
-           .value=${String(this._config.current_icon_size || (this._config.layout === 'modern' ? 56 : (this._config.icons_size || 25) * 2))}
-           @change=${e => this._valueChanged(e, 'current_icon_size')}
-         ></ha-textfield>
-         <ha-textfield
-           label="Forecast icon size (px)"
-           min="12" max="80"
-           type="number"
-           .value="${this._config.icons_size || '25'}"
-           @change="${(e) => this._valueChanged(e, 'icons_size')}"
-         ></ha-textfield>
           <ha-textfield
             label="Curent temperature Font Size"
            type="number"

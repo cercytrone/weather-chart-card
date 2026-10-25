@@ -95,7 +95,12 @@ for (const [label,page] of [['Forecast','forecast'],['Units','units'],['Alternat
   assert.equal(editor.shadowRoot.querySelectorAll('.page-container.active').length,1);
 }
 for (const [label,key,value] of [['Current weather icon size (px)','current_icon_size',72],['Forecast icon size (px)','icons_size',36]]) {
-  const field = [...editor.shadowRoot.querySelectorAll('ha-textfield')].find(el => el.getAttribute('label') === label);
+  const fieldLabel = [...editor.shadowRoot.querySelectorAll('.icon-size-settings label')].find(el => el.textContent === label);
+  assert.ok(fieldLabel);
+  const field = editor.shadowRoot.getElementById(fieldLabel.htmlFor);
+  assert.equal(field.tagName, 'INPUT');
+  assert.equal(field.type, 'number');
+  assert.ok(field.closest('.page-container').classList.contains('active'));
   assert.ok(field);
   field.value = String(value);
   field.dispatchEvent(new Event('change'));
