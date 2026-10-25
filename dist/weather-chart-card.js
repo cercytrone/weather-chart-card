@@ -828,7 +828,7 @@ function forecastGeometry(forecasts) {
 
 function renderModern(card) {
   const {config, weather} = card;
-  const count = Math.max(1, Math.min(15, Number(config.forecast.number_of_forecasts) || 5));
+  const count = Math.max(1, Math.min(15, Math.floor(Number(config.forecast.number_of_forecasts)) || 5));
   const cutoff = (config.forecast.type === 'hourly' ? 1 : 24) * 3600000;
   const items = (card.forecasts || []).filter(item => !config.autoscroll || Date.now() - new Date(item.datetime) <= cutoff).slice(0, count);
   const points = forecastGeometry(items);
@@ -1131,6 +1131,11 @@ class WeatherChartCardEditor extends s {
       }
     }
 
+    if (key === 'forecast.number_of_forecasts') {
+      const value = Number(event.target.value);
+      if (event.target.value === '' || !Number.isFinite(value)) return;
+      newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
+    }
     const limits = {icons_size: [12, 80], current_icon_size: [24, 120]};
     if (limits[key]) {
       const value = Number(event.target.value);
@@ -1207,7 +1212,8 @@ class WeatherChartCardEditor extends s {
         .buttons-container {display:flex;gap:8px;flex-wrap:wrap;}
         .hint {color:var(--secondary-text-color);font-size:12px;}
         .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
-        .icon-size-settings input {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
+        .forecast-count-setting {display:grid;gap:8px;margin-top:12px;}
+        .forecast-count-setting input,.icon-size-settings input {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -1317,6 +1323,15 @@ class WeatherChartCardEditor extends s {
 
           Hourly forecast
         </label>
+      </div>
+
+      <div class="forecast-count-setting">
+        <label for="forecast-count">Number of forecasts (days / hours)</label>
+        <input id="forecast-count" type="number" min="0" max=${this._config.layout === 'modern' ? '15' : '100'} step="1"
+          .value=${String(forecastConfig.number_of_forecasts == null ? (this._config.layout === 'modern' ? 5 : 0) : forecastConfig.number_of_forecasts)}
+          aria-describedby="forecast-count-hint"
+          @change=${e => this._valueChanged(e, 'forecast.number_of_forecasts')}>
+        <p class="hint" id="forecast-count-hint">Daily: days. Hourly: hours. 0 = automatic (Modern: 5). Only available forecasts are shown.</p>
       </div>
 
       <h5>Chart style:</h5>
@@ -1760,12 +1775,7 @@ class WeatherChartCardEditor extends s {
                 .value=${String(forecastConfig.chart_height || (this._config.layout === 'modern' ? 150 : 180))}
                 @change="${(e) => this._valueChanged(e, 'forecast.chart_height')}"
               ></ha-textfield>
-              <ha-textfield
-                label="Number of forecasts"
-                type="number"
-                .value="${forecastConfig.number_of_forecasts || '0'}"
-                @change="${(e) => this._valueChanged(e, 'forecast.number_of_forecasts')}"
-              ></ha-textfield>
+
               </div>
             </div>
           </div>
@@ -18622,6 +18632,9 @@ async updated(changedProperties) {
     const entityChanged = oldConfig && this.config.entity !== oldConfig.entity;
     const forecastTypeChanged = oldConfig && this.config.forecast.type !== oldConfig.forecast.type;
     const autoscrollChanged = oldConfig && this.config.autoscroll !== oldConfig.autoscroll;
+    if (oldConfig && this.config.forecast.number_of_forecasts !== oldConfig.forecast.number_of_forecasts) {
+      this.measureCard();
+    }
 
     if (entityChanged || forecastTypeChanged) {
       this.stopForecastSubscription();

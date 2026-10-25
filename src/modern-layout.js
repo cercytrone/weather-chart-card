@@ -17,7 +17,7 @@ export function forecastGeometry(forecasts) {
 
 export function renderModern(card) {
   const {config, weather} = card;
-  const count = Math.max(1, Math.min(15, Number(config.forecast.number_of_forecasts) || 5));
+  const count = Math.max(1, Math.min(15, Math.floor(Number(config.forecast.number_of_forecasts)) || 5));
   const cutoff = (config.forecast.type === 'hourly' ? 1 : 24) * 3600000;
   const items = (card.forecasts || []).filter(item => !config.autoscroll || Date.now() - new Date(item.datetime) <= cutoff).slice(0, count);
   const points = forecastGeometry(items);

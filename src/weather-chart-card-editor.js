@@ -146,6 +146,11 @@ class WeatherChartCardEditor extends LitElement {
       }
     }
 
+    if (key === 'forecast.number_of_forecasts') {
+      const value = Number(event.target.value);
+      if (event.target.value === '' || !Number.isFinite(value)) return;
+      newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
+    }
     const limits = {icons_size: [12, 80], current_icon_size: [24, 120]};
     if (limits[key]) {
       const value = Number(event.target.value);
@@ -222,7 +227,8 @@ class WeatherChartCardEditor extends LitElement {
         .buttons-container {display:flex;gap:8px;flex-wrap:wrap;}
         .hint {color:var(--secondary-text-color);font-size:12px;}
         .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
-        .icon-size-settings input {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
+        .forecast-count-setting {display:grid;gap:8px;margin-top:12px;}
+        .forecast-count-setting input,.icon-size-settings input {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -332,6 +338,15 @@ class WeatherChartCardEditor extends LitElement {
 
           Hourly forecast
         </label>
+      </div>
+
+      <div class="forecast-count-setting">
+        <label for="forecast-count">Number of forecasts (days / hours)</label>
+        <input id="forecast-count" type="number" min="0" max=${this._config.layout === 'modern' ? '15' : '100'} step="1"
+          .value=${String(forecastConfig.number_of_forecasts == null ? (this._config.layout === 'modern' ? 5 : 0) : forecastConfig.number_of_forecasts)}
+          aria-describedby="forecast-count-hint"
+          @change=${e => this._valueChanged(e, 'forecast.number_of_forecasts')}>
+        <p class="hint" id="forecast-count-hint">Daily: days. Hourly: hours. 0 = automatic (Modern: 5). Only available forecasts are shown.</p>
       </div>
 
       <h5>Chart style:</h5>
@@ -775,12 +790,7 @@ class WeatherChartCardEditor extends LitElement {
                 .value=${String(forecastConfig.chart_height || (this._config.layout === 'modern' ? 150 : 180))}
                 @change="${(e) => this._valueChanged(e, 'forecast.chart_height')}"
               ></ha-textfield>
-              <ha-textfield
-                label="Number of forecasts"
-                type="number"
-                .value="${forecastConfig.number_of_forecasts || '0'}"
-                @change="${(e) => this._valueChanged(e, 'forecast.number_of_forecasts')}"
-              ></ha-textfield>
+
               </div>
             </div>
           </div>

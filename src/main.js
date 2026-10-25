@@ -439,6 +439,9 @@ async updated(changedProperties) {
     const entityChanged = oldConfig && this.config.entity !== oldConfig.entity;
     const forecastTypeChanged = oldConfig && this.config.forecast.type !== oldConfig.forecast.type;
     const autoscrollChanged = oldConfig && this.config.autoscroll !== oldConfig.autoscroll;
+    if (oldConfig && this.config.forecast.number_of_forecasts !== oldConfig.forecast.number_of_forecasts) {
+      this.measureCard();
+    }
 
     if (entityChanged || forecastTypeChanged) {
       this.stopForecastSubscription();
