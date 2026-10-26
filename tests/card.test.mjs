@@ -264,6 +264,54 @@ assert.equal(plot.querySelector('linearGradient[id$="-temperature"]'),null);
 assert.equal(plot.querySelector('path[stroke^="url("]'),null);
 assert.equal(plot.querySelector('ellipse').getAttribute('fill'),'#abcdef');
 assert.ok(gradientCard.shadowRoot.querySelector('.temp').getAttribute('style').includes('#abcdef'));
+// Weather symbols need no registered HA weather-icon component or external CDN.
+const iconCard = document.createElement('weather-chart-card');
+iconCard.setConfig({entity:'weather.home',layout:'modern',current_icon_size:64,icons_size:30});
+iconCard.hass = hass;
+document.body.append(iconCard);
+await iconCard.updateComplete;
+await new Promise(resolve => setTimeout(resolve,30));
+iconCard.forecasts = [{datetime:new Date().toISOString(),condition:'rainy',temperature:10}];
+await iconCard.updateComplete;
+assert.ok(iconCard.shadowRoot.querySelector('.main .weather-icon-svg path').getAttribute('d'));
+assert.ok(iconCard.shadowRoot.querySelector('.icons .weather-icon-svg path').getAttribute('d'));
+assert.equal(iconCard.shadowRoot.querySelector('.main .weather-icon').style.width,'64px');
+assert.equal(iconCard.shadowRoot.querySelector('.icons .weather-icon').style.width,'30px');
+assert.equal(iconCard.shadowRoot.querySelector('.main ha-icon'),null);
+for (const style of ['style1','style2']) {
+  iconCard.setConfig({entity:'weather.home',layout:'modern',animated_icons:true,icon_style:style});
+  await iconCard.updateComplete;
+  for (const image of iconCard.shadowRoot.querySelectorAll('.weather-icon img')) {
+    assert.ok(image.src.startsWith('data:image/svg+xml;base64,'));
+    assert.ok(Buffer.from(image.src.split(',')[1], 'base64').toString().includes('<svg'));
+    assert.ok(Number(image.width) > 0 && Number(image.height) > 0);
+  }
+}
+// Custom paths are still supported; failures use an inline SVG instead of a broken image.
+iconCard.setConfig({entity:'weather.home',layout:'modern',icons:'/local/my-weather'});
+await iconCard.updateComplete;
+const failedImage = iconCard.shadowRoot.querySelector('.main .weather-icon img');
+assert.ok(failedImage.getAttribute('src').startsWith('/local/my-weather/'));
+failedImage.dispatchEvent(new Event('error'));
+await iconCard.updateComplete;
+assert.equal(iconCard.shadowRoot.querySelector('.main .weather-icon img'),null);
+assert.ok(iconCard.shadowRoot.querySelector('.main .weather-icon-svg path'));
+assert.ok(iconCard.shadowRoot.querySelector('.icons .weather-icon img'));
+iconCard.shadowRoot.querySelector('.icons .weather-icon img').dispatchEvent(new Event('error'));
+await iconCard.updateComplete;
+assert.ok(iconCard.shadowRoot.querySelector('.icons .weather-icon-svg path'));
+iconCard.setConfig({entity:'weather.home',layout:'classic',animated_icons:true});
+iconCard.forecasts = [];
+await iconCard.updateComplete;
+const classicContext = {config:iconCard.config, forecasts:[{datetime:new Date().toISOString(),condition:'sunny'}], forecastItems:1, sun:null, ll:()=> 'Sunny', getWeatherIcon:iconCard.getWeatherIcon.bind(iconCard)};
+// Render Classic's forecast fragment without requiring a canvas in the DOM test runner.
+const {render} = await import('lit');
+const fragment = document.createElement('div');
+render(iconCard.renderForecastConditionIcons.call(classicContext),fragment);
+assert.ok(fragment.querySelector('.weather-icon img').src.startsWith('data:image/svg+xml;base64,'));
+assert.ok(iconCard.shadowRoot.querySelector('.main .weather-icon img').src.startsWith('data:image/svg+xml;base64,'));
+iconCard.forecasts = [];
+iconCard.remove();
 gradientCard.remove();
 editor.remove();
 card.remove();

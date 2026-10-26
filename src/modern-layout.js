@@ -1,4 +1,5 @@
 import {html, svg} from 'lit';
+import {renderWeatherIcon} from './weather-icon.js';
 
 export const numeric = value => value !== null && value !== '' && value !== undefined && Number.isFinite(Number(value)) ? Number(value) : null;
 
@@ -88,7 +89,7 @@ export function renderModern(card) {
   const {points} = geometry;
   const format = value => value === null ? '–' : new Intl.NumberFormat(card.language, {maximumFractionDigits: config.forecast.round_temp ? 0 : 1}).format(value);
   const formatRainfall = value => new Intl.NumberFormat(card.language, {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(value);
-  const icon = item => html`<ha-icon title=${card.ll(item.condition) || item.condition || ''} icon=${card.getWeatherIcon(item.condition, 'above_horizon')}></ha-icon>`;
+  const icon = item => renderWeatherIcon(card, item.condition, 'above_horizon', config.icons_size, card.ll(item.condition));
   const series = (key, color) => {
     // Break paths at missing readings rather than interpolating invented data.
     let previous;
@@ -118,6 +119,8 @@ export function renderModern(card) {
       .main ha-icon {--mdc-icon-size:${config.current_icon_size}px; color:#38bdf8; flex-shrink:0;}
       .main img {width:${config.current_icon_size}px;height:${config.current_icon_size}px;}
       .main > div {min-width:0;overflow-wrap:anywhere;}
+      .main .weather-icon {color:#38bdf8;}
+      .weather-icon-svg {display:block;}
       .main span {font-size:22px; color:var(--secondary-text-color); font-weight:400;}
       .main .current-condition span,.main .feels-like,.main .description {font-size:14px; font-weight:400;}
       .main > div:not(.current-time) {line-height:1.05;}
@@ -156,7 +159,7 @@ export function renderModern(card) {
       .wind {padding-top:6px;}
       .updated {margin-top:8px;}
       `}
-      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
+      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main .weather-icon{max-width:36px;max-height:36px}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
       @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
     </style>
     <ha-card .header=${config.title || ''}><div class="modern">
@@ -190,7 +193,7 @@ export function renderModern(card) {
           const value = numeric(probability ? item.precipitation_probability : item.precipitation);
           return html`<div>${value === null ? '–' : value > 0 ? html`<span>${probability ? format(value) : formatRainfall(value)} ${probability ? '%' : weather.attributes.precipitation_unit || 'mm'}</span>` : ''}</div>`;
         })}</div>
-        ${config.forecast.condition_icons === false ? '' : html`<div class="row icons">${items.map(item => html`<div>${config.icons || config.animated_icons ? html`<img width=${config.icons_size} height=${config.icons_size} src=${card.getWeatherIcon(item.condition, 'above_horizon')} alt=${card.ll(item.condition) || ''}>` : icon(item)}</div>`)}</div>`}
+        ${config.forecast.condition_icons === false ? '' : html`<div class="row icons">${items.map(item => html`<div>${icon(item)}</div>`)}</div>`}
         ${config.forecast.show_wind_forecast === false ? '' : html`<div class="row wind">${items.map(item => html`<div>${numeric(item.wind_speed) === null ? '–' : html`${item.wind_bearing === undefined ? '' : html`<ha-icon icon=${`hass:${card.getWindDirIcon(item.wind_bearing)}`}></ha-icon>`}${format(card.convertWindSpeed(Number(item.wind_speed)))}<small>${card.unitSpeed || ''}</small>`}</div>`)}</div>`}
       </div></div>` : html`<div class="empty" role="status">${card.language && card.language.startsWith('de') ? 'Keine Vorhersagedaten verfügbar.' : 'No forecast data available.'}</div>`}
       ${card.renderLastUpdated()}

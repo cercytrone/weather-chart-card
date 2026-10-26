@@ -1,4 +1,5 @@
 import locale from './locale.js';
+import {bundledWeatherIcon, renderWeatherIcon} from './weather-icon.js';
 import {renderModern} from './modern-layout.js';
 import {
   cardinalDirectionsIcon,
@@ -137,9 +138,6 @@ setConfig(config) {
 
   cardConfig.units.speed = config.speed ? config.speed : cardConfig.units.speed;
 
-  this.baseIconPath = cardConfig.icon_style === 'style2' ?
-    'https://cdn.jsdelivr.net/gh/mlamberts78/weather-chart-card/dist/icons2/':
-    'https://cdn.jsdelivr.net/gh/mlamberts78/weather-chart-card/dist/icons/' ;
 
   this.config = cardConfig;
   if (!config.entity) {
@@ -315,11 +313,10 @@ ll(str) {
 
   getWeatherIcon(condition, sun) {
     if (this.config.animated_icons === true) {
-      const iconName = sun === 'below_horizon' ? weatherIconsNight[condition] : weatherIconsDay[condition];
-      return `${this.baseIconPath}${iconName}.svg`;
+      return bundledWeatherIcon(condition, sun, this.config.icon_style);
     } else if (this.config.icons) {
       const iconName = sun === 'below_horizon' ? weatherIconsNight[condition] : weatherIconsDay[condition];
-      return `${this.config.icons}${iconName}.svg`;
+      return `${this.config.icons.replace(/\/?$/, '/')}${iconName || 'exceptional'}.svg`;
     }
     return weatherIcons[condition];
   }
@@ -919,6 +916,9 @@ updateChart({ forecasts, forecastChart } = this) {
           margin-inline-start: initial;
           margin-inline-end: 14px;
         }
+        .main .weather-icon {color:var(--paper-item-icon-color, var(--primary-text-color));margin-inline-end:14px;}
+        .weather-icon-svg {display:block;}
+        .main .weather-icon img {margin:0;}
         .main div {
           line-height: 0.9;
         }
@@ -1063,9 +1063,7 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
     roundedFeelsLike = Math.round(roundedFeelsLike * 10) / 10;
   }
 
-  const iconHtml = config.animated_icons || config.icons
-    ? html`<img src="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}" alt="">`
-    : html`<ha-icon icon="${this.getWeatherIcon(weather.state, (sun ? sun.state : 'above_horizon'))}"></ha-icon>`;
+  const iconHtml = renderWeatherIcon(this, weather.state, sun ? sun.state : 'above_horizon', config.current_icon_size, this.ll(weather.state));
 
   const currentDate = new Date();
   const currentTime = currentDate.toLocaleTimeString(this.language, {
@@ -1290,19 +1288,9 @@ renderForecastConditionIcons({ config, forecastItems, sun } = this) {
           isDayTime = forecastTime >= adjustedSunriseTime && forecastTime <= adjustedSunsetTime;
         }
 
-        const weatherIcons = isDayTime ? weatherIconsDay : weatherIconsNight;
         const condition = item.condition;
 
-        let iconHtml;
-
-        if (config.animated_icons || config.icons) {
-          const iconSrc = config.animated_icons ?
-            `${this.baseIconPath}${weatherIcons[condition]}.svg` :
-            `${this.config.icons}${weatherIcons[condition]}.svg`;
-          iconHtml = html`<img class="icon" src="${iconSrc}" alt="">`;
-        } else {
-          iconHtml = html`<ha-icon icon="${this.getWeatherIcon(condition, (sun ? sun.state : 'above_horizon'))}"></ha-icon>`;
-        }
+        const iconHtml = renderWeatherIcon(this, condition, isDayTime ? 'above_horizon' : 'below_horizon', config.icons_size, this.ll(condition));
 
         return html`
           <div class="forecast-item">

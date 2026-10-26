@@ -15,6 +15,7 @@
   "author": "Marc Lamberts",
   "license": "MIT",
   "dependencies": {
+    "@mdi/js": "^7.4.47",
     "chart.js": "^4.4.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "lit": "^2.8.0",
@@ -33,6 +34,8 @@
     "build": "npm run lint && npm run rollup",
     "lint": "eslint 'src/**/*.js'",
     "rollup": "rollup -c",
-    "test": "node --experimental-default-type=module tests/modern-layout.test.mjs && node --experimental-default-type=module tests/card.test.mjs"
+    "test": "node --experimental-default-type=module tests/modern-layout.test.mjs && node --experimental-default-type=module tests/card.test.mjs && node --experimental-default-type=module tests/weather-icons.test.mjs",
+    "generate:icons": "node scripts/generate-weather-icons.mjs",
+    "prebuild": "npm run generate:icons"
   }
 }
