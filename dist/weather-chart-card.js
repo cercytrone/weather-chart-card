@@ -1075,7 +1075,8 @@ function renderModern(card) {
       .main .current-condition span {line-height:inherit;}
       .main > .current-time {grid-column:3; text-align:right; margin:0; font-size:${config.time_size}px; font-weight:400; line-height:1.3;}
       #digital-clock {white-space:nowrap;}
-      .date-text {font-size:${config.day_date_size}px;}
+      .date-text.day {font-size:${config.day_size}px;}
+      .date-text.date {font-size:${config.date_size}px;}
       .attributes {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:16px 0; font-size:12px; line-height:1.9;}
       .attributes > div {padding:10px; border-radius:16px; background:color-mix(in srgb,var(--primary-text-color) 5%,transparent); overflow-wrap:anywhere; min-width:0;}
       .attributes ha-icon {--mdc-icon-size:${config.attribute_icon_size}px;color:#38bdf8;}
@@ -1106,7 +1107,7 @@ function renderModern(card) {
       .wind {padding-top:6px;}
       .updated {margin-top:8px;}
       `}
-      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px;font-size:min(${config.current_temp_size}px,28px)}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main .weather-icon{max-width:36px;max-height:36px}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}.main > .current-time{font-size:min(${config.time_size}px,20px)}.date-text{font-size:min(${config.day_date_size}px,12px)}}
+      @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main .weather-icon{max-width:36px;max-height:36px}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}}
       @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
     </style>
     <ha-card .header=${config.title || ''}><div class="modern">
@@ -1298,7 +1299,7 @@ class WeatherChartCardEditor extends s {
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
     }
-    const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48]};
+    const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48], time_size: [10, 72], day_size: [10, 48], date_size: [10, 48], current_temp_size: [12, 96]};
     if (limits[key]) {
       const value = Number(event.target.value);
       if (!Number.isFinite(value) || value <= 0) return;
@@ -1549,6 +1550,20 @@ class WeatherChartCardEditor extends s {
           <label class="compact-setting"><input type="checkbox" name="compact"
             .checked=${this._config.compact !== false}
             @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+          <fieldset class="icon-size-settings font-size-settings">
+            <legend>Font sizes (px)</legend>
+            ${[
+              ['time_size', 'Time', 26, 10, 72],
+              ['day_size', 'Weekday', this._config.day_date_size || 15, 10, 48],
+              ['date_size', 'Date', this._config.day_date_size || 15, 10, 48],
+              ['current_temp_size', 'Current temperature', this._config.layout === 'modern' ? 40 : 28, 12, 96],
+            ].map(([key, label, fallback, min, max]) => x`
+              <label for=${`font-${key}`}>${label}</label>
+              <input id=${`font-${key}`} name=${key} type="number" min=${min} max=${max} step="1"
+                .value=${String(this._config[key] || fallback)}
+                @change=${e => this._valueChanged(e, key)}>
+            `)}
+          </fieldset>
           <fieldset class="icon-size-settings">
             <legend>Icon sizes</legend>
             <label for="current-icon-size">Current weather icon size (px)</label>
@@ -1772,20 +1787,6 @@ class WeatherChartCardEditor extends s {
               </label>
             </div>
           </div>
-            <div class="flex-container">
-              <ha-textfield
-                label="Time text size"
-                type="number"
-                .value="${this._config.time_size || '26'}"
-                @change="${(e) => this._valueChanged(e, 'time_size')}"
-              ></ha-textfield>
-              <ha-textfield
-                label="Day and date text size"
-                type="number"
-                .value="${this._config.day_date_size || '15'}"
-                @change="${(e) => this._valueChanged(e, 'day_date_size')}"
-              ></ha-textfield>
-              </div>
             <div class="icon-container">
               <div class="switch-right">
                 <ha-switch
@@ -1820,12 +1821,7 @@ class WeatherChartCardEditor extends s {
                 </div>
               </div>
        <div class="textfield-container">
-          <ha-textfield
-            label="Curent temperature Font Size"
-           type="number"
-            .value="${this._config.current_temp_size || '28'}"
-            @change="${(e) => this._valueChanged(e, 'current_temp_size')}"
-          ></ha-textfield>
+
         <ha-textfield
           label="Custom icon path"
           .value="${this._config.icons || ''}"
@@ -18501,6 +18497,10 @@ setConfig(config) {
   };
 
   const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
+  cardConfig.time_size = size(config.time_size, 26, 10, 72);
+  cardConfig.day_size = size(config.day_size, size(config.day_date_size, 15, 10, 48), 10, 48);
+  cardConfig.date_size = size(config.date_size, size(config.day_date_size, 15, 10, 48), 10, 48);
+  cardConfig.current_temp_size = size(config.current_temp_size, cardConfig.layout === 'modern' ? 40 : 28, 12, 96);
   cardConfig.icons_size = size(cardConfig.icons_size, 25, 12, 80);
   cardConfig.attribute_icon_size = size(config.attribute_icon_size, cardConfig.layout === 'modern' ? 16 : 24, 12, 48);
   cardConfig.current_icon_size = size(config.current_icon_size, cardConfig.layout === 'modern' ? 56 : cardConfig.icons_size * 2, 24, 120);
@@ -19374,6 +19374,8 @@ updateChart({ forecasts, forecastChart } = this) {
           font-size: ${config.day_date_size}px;
           color: var(--secondary-text-color);
         }
+        .date-text.day {font-size:${config.day_size}px;}
+        .date-text.date {font-size:${config.date_size}px;}
         .main .feels-like {
           font-size: 13px;
           margin-top: 5px;

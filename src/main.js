@@ -132,6 +132,10 @@ setConfig(config) {
   };
 
   const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
+  cardConfig.time_size = size(config.time_size, 26, 10, 72);
+  cardConfig.day_size = size(config.day_size, size(config.day_date_size, 15, 10, 48), 10, 48);
+  cardConfig.date_size = size(config.date_size, size(config.day_date_size, 15, 10, 48), 10, 48);
+  cardConfig.current_temp_size = size(config.current_temp_size, cardConfig.layout === 'modern' ? 40 : 28, 12, 96);
   cardConfig.icons_size = size(cardConfig.icons_size, 25, 12, 80);
   cardConfig.attribute_icon_size = size(config.attribute_icon_size, cardConfig.layout === 'modern' ? 16 : 24, 12, 48);
   cardConfig.current_icon_size = size(config.current_icon_size, cardConfig.layout === 'modern' ? 56 : cardConfig.icons_size * 2, 24, 120);
@@ -1005,6 +1009,8 @@ updateChart({ forecasts, forecastChart } = this) {
           font-size: ${config.day_date_size}px;
           color: var(--secondary-text-color);
         }
+        .date-text.day {font-size:${config.day_size}px;}
+        .date-text.date {font-size:${config.date_size}px;}
         .main .feels-like {
           font-size: 13px;
           margin-top: 5px;

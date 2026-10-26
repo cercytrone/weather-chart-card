@@ -151,7 +151,7 @@ class WeatherChartCardEditor extends LitElement {
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
     }
-    const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48]};
+    const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48], time_size: [10, 72], day_size: [10, 48], date_size: [10, 48], current_temp_size: [12, 96]};
     if (limits[key]) {
       const value = Number(event.target.value);
       if (!Number.isFinite(value) || value <= 0) return;
@@ -402,6 +402,20 @@ class WeatherChartCardEditor extends LitElement {
           <label class="compact-setting"><input type="checkbox" name="compact"
             .checked=${this._config.compact !== false}
             @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+          <fieldset class="icon-size-settings font-size-settings">
+            <legend>Font sizes (px)</legend>
+            ${[
+              ['time_size', 'Time', 26, 10, 72],
+              ['day_size', 'Weekday', this._config.day_date_size || 15, 10, 48],
+              ['date_size', 'Date', this._config.day_date_size || 15, 10, 48],
+              ['current_temp_size', 'Current temperature', this._config.layout === 'modern' ? 40 : 28, 12, 96],
+            ].map(([key, label, fallback, min, max]) => html`
+              <label for=${`font-${key}`}>${label}</label>
+              <input id=${`font-${key}`} name=${key} type="number" min=${min} max=${max} step="1"
+                .value=${String(this._config[key] || fallback)}
+                @change=${e => this._valueChanged(e, key)}>
+            `)}
+          </fieldset>
           <fieldset class="icon-size-settings">
             <legend>Icon sizes</legend>
             <label for="current-icon-size">Current weather icon size (px)</label>
@@ -625,20 +639,6 @@ class WeatherChartCardEditor extends LitElement {
               </label>
             </div>
           </div>
-            <div class="flex-container">
-              <ha-textfield
-                label="Time text size"
-                type="number"
-                .value="${this._config.time_size || '26'}"
-                @change="${(e) => this._valueChanged(e, 'time_size')}"
-              ></ha-textfield>
-              <ha-textfield
-                label="Day and date text size"
-                type="number"
-                .value="${this._config.day_date_size || '15'}"
-                @change="${(e) => this._valueChanged(e, 'day_date_size')}"
-              ></ha-textfield>
-              </div>
             <div class="icon-container">
               <div class="switch-right">
                 <ha-switch
@@ -673,12 +673,7 @@ class WeatherChartCardEditor extends LitElement {
                 </div>
               </div>
        <div class="textfield-container">
-          <ha-textfield
-            label="Curent temperature Font Size"
-           type="number"
-            .value="${this._config.current_temp_size || '28'}"
-            @change="${(e) => this._valueChanged(e, 'current_temp_size')}"
-          ></ha-textfield>
+
         <ha-textfield
           label="Custom icon path"
           .value="${this._config.icons || ''}"
