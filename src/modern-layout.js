@@ -113,8 +113,8 @@ export function renderModern(card) {
   return html`
     <style>
       :host {display:block; min-width:0; container-type:inline-size;}
-      ha-card {position:relative; border-radius:32px; overflow:hidden; background:var(--ha-card-background,var(--card-background-color)); color:var(--primary-text-color); box-shadow:var(--ha-card-box-shadow,0 10px 30px -12px #0005);}
-      .modern {padding:20px; background:radial-gradient(circle at 100% 0%,#38bdf812,transparent 50%);}
+      ha-card {position:relative; border-radius:32px; overflow:hidden; background:var(--ha-card-background,var(--card-background-color)); background-image:radial-gradient(circle at 100% 0%,#38bdf812,transparent 50%); color:var(--primary-text-color); box-shadow:var(--ha-card-box-shadow,0 10px 30px -12px #0005);}
+      .modern {padding:20px;}
       .main {display:grid; grid-template-columns:${config.current_icon_size}px minmax(0,1fr) auto; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--divider-color); font-size:${config.current_temp_size}px; font-weight:800;}
       .main ha-icon {--mdc-icon-size:${config.current_icon_size}px; color:#38bdf8; flex-shrink:0;}
       .main img {width:${config.current_icon_size}px;height:${config.current_icon_size}px;}

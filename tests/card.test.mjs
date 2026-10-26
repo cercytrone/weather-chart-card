@@ -312,6 +312,17 @@ assert.ok(fragment.querySelector('.weather-icon img').src.startsWith('data:image
 assert.ok(iconCard.shadowRoot.querySelector('.main .weather-icon img').src.startsWith('data:image/svg+xml;base64,'));
 iconCard.forecasts = [];
 iconCard.remove();
+// Header and content share one card-wide ambient background.
+gradientCard.setConfig({entity:'weather.home',layout:'modern',title:'Wetter zuhause'});
+await gradientCard.updateComplete;
+assert.equal(gradientCard.shadowRoot.querySelector('ha-card').header,'Wetter zuhause');
+let titleStyles = gradientCard.shadowRoot.querySelector('style').textContent;
+assert.match(titleStyles, /ha-card\s*\{[^}]*background-image:radial-gradient/);
+assert.ok(!/\.modern\s*\{[^}]*background:/.test(titleStyles));
+gradientCard.setConfig({entity:'weather.home',layout:'modern'});
+await gradientCard.updateComplete;
+assert.equal(gradientCard.shadowRoot.querySelector('ha-card').header,'');
+assert.match(gradientCard.shadowRoot.querySelector('style').textContent, /ha-card\s*\{[^}]*background-image:radial-gradient/);
 gradientCard.remove();
 editor.remove();
 card.remove();
