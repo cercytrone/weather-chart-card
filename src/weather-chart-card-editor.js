@@ -151,6 +151,14 @@ class WeatherChartCardEditor extends LitElement {
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
     }
+    if (key === 'modern_padding_top' || key === 'modern_padding_bottom') {
+      if (event.target.value === '') delete newConfig[key];
+      else {
+        const value = Number(event.target.value);
+        if (!Number.isFinite(value)) return;
+        newConfig[key] = Math.min(80, Math.max(0, value));
+      }
+    }
     const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48], time_size: [10, 72], day_size: [10, 48], date_size: [10, 48], current_temp_size: [12, 96]};
     if (limits[key]) {
       const value = Number(event.target.value);
@@ -402,6 +410,16 @@ class WeatherChartCardEditor extends LitElement {
           <label class="compact-setting"><input type="checkbox" name="compact"
             .checked=${this._config.compact !== false}
             @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+          <fieldset class="icon-size-settings modern-spacing-settings">
+            <legend>Vertical spacing (Modern layout)</legend>
+            ${[['modern_padding_top', 'Top padding (px)'], ['modern_padding_bottom', 'Bottom padding (px)']].map(([key, label]) => html`
+              <label for=${key}>${label}</label>
+              <input id=${key} name=${key} type="number" min="0" max="80" step="1" placeholder="Automatic"
+                .value=${this._config[key] == null ? '' : String(this._config[key])}
+                @change=${e => this._valueChanged(e, key)}>
+            `)}
+            <p class="hint">Leave empty for automatic spacing. 0 removes the content inset. Side padding stays unchanged. Only affects Modern.</p>
+          </fieldset>
           <fieldset class="icon-size-settings font-size-settings">
             <legend>Font sizes (px)</legend>
             ${[

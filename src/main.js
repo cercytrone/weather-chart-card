@@ -132,6 +132,11 @@ setConfig(config) {
   };
 
   const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
+  for (const key of ['modern_padding_top', 'modern_padding_bottom']) {
+    const value = config[key];
+    if (value === '' || value == null || !Number.isFinite(Number(value))) delete cardConfig[key];
+    else cardConfig[key] = Math.min(80, Math.max(0, Number(value)));
+  }
   cardConfig.time_size = size(config.time_size, 26, 10, 72);
   cardConfig.day_size = size(config.day_size, size(config.day_date_size, 15, 10, 48), 10, 48);
   cardConfig.date_size = size(config.date_size, size(config.day_date_size, 15, 10, 48), 10, 48);

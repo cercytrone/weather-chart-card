@@ -1108,6 +1108,9 @@ function renderModern(card) {
       .updated {margin-top:8px;}
       `}
       @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main .weather-icon{max-width:36px;max-height:36px}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}}
+      /* Explicit vertical insets take precedence over compact and narrow-card defaults. */
+      ${config.modern_padding_top == null ? '' : `.modern {padding-top:${config.modern_padding_top}px;}`}
+      ${config.modern_padding_bottom == null ? '' : `.modern {padding-bottom:${config.modern_padding_bottom}px;}`}
       @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
     </style>
     <ha-card .header=${config.title || ''}><div class="modern">
@@ -1298,6 +1301,14 @@ class WeatherChartCardEditor extends s {
       const value = Number(event.target.value);
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
+    }
+    if (key === 'modern_padding_top' || key === 'modern_padding_bottom') {
+      if (event.target.value === '') delete newConfig[key];
+      else {
+        const value = Number(event.target.value);
+        if (!Number.isFinite(value)) return;
+        newConfig[key] = Math.min(80, Math.max(0, value));
+      }
     }
     const limits = {icons_size: [12, 80], current_icon_size: [24, 120], attribute_icon_size: [12, 48], time_size: [10, 72], day_size: [10, 48], date_size: [10, 48], current_temp_size: [12, 96]};
     if (limits[key]) {
@@ -1550,6 +1561,16 @@ class WeatherChartCardEditor extends s {
           <label class="compact-setting"><input type="checkbox" name="compact"
             .checked=${this._config.compact !== false}
             @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+          <fieldset class="icon-size-settings modern-spacing-settings">
+            <legend>Vertical spacing (Modern layout)</legend>
+            ${[['modern_padding_top', 'Top padding (px)'], ['modern_padding_bottom', 'Bottom padding (px)']].map(([key, label]) => x`
+              <label for=${key}>${label}</label>
+              <input id=${key} name=${key} type="number" min="0" max="80" step="1" placeholder="Automatic"
+                .value=${this._config[key] == null ? '' : String(this._config[key])}
+                @change=${e => this._valueChanged(e, key)}>
+            `)}
+            <p class="hint">Leave empty for automatic spacing. 0 removes the content inset. Side padding stays unchanged. Only affects Modern.</p>
+          </fieldset>
           <fieldset class="icon-size-settings font-size-settings">
             <legend>Font sizes (px)</legend>
             ${[
@@ -18497,6 +18518,11 @@ setConfig(config) {
   };
 
   const size = (value, fallback, min, max) => Number.isFinite(Number(value)) && Number(value) > 0 ? Math.min(max, Math.max(min, Number(value))) : fallback;
+  for (const key of ['modern_padding_top', 'modern_padding_bottom']) {
+    const value = config[key];
+    if (value === '' || value == null || !Number.isFinite(Number(value))) delete cardConfig[key];
+    else cardConfig[key] = Math.min(80, Math.max(0, Number(value)));
+  }
   cardConfig.time_size = size(config.time_size, 26, 10, 72);
   cardConfig.day_size = size(config.day_size, size(config.day_date_size, 15, 10, 48), 10, 48);
   cardConfig.date_size = size(config.date_size, size(config.day_date_size, 15, 10, 48), 10, 48);

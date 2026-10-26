@@ -161,6 +161,9 @@ export function renderModern(card) {
       .updated {margin-top:8px;}
       `}
       @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main .weather-icon{max-width:36px;max-height:36px}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}}
+      /* Explicit vertical insets take precedence over compact and narrow-card defaults. */
+      ${config.modern_padding_top == null ? '' : `.modern {padding-top:${config.modern_padding_top}px;}`}
+      ${config.modern_padding_bottom == null ? '' : `.modern {padding-bottom:${config.modern_padding_bottom}px;}`}
       @media (prefers-reduced-motion:reduce) {*{animation:none!important;transition:none!important}}
     </style>
     <ha-card .header=${config.title || ''}><div class="modern">
