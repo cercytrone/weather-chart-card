@@ -1,7 +1,7 @@
 # Temperature gradients (Modern layout)
 
-The visual editor exposes native checkboxes in **Temperature chart (Modern layout)**
-below the forecast count and above the Settings tabs. In addition to the dotted-low
+The visual editor exposes native on/off switches under
+**Settings → Modern → Temperature chart (Modern layout)**. In addition to the dotted-low
 curve switch, the two colour controls are:
 
 - **Temperature-based chart colours** enables temperature-dependent line, point

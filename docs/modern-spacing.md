@@ -1,6 +1,6 @@
 # Modern vertical spacing
 
-Under **Main → Vertical spacing (Modern layout)** two native numeric fields
+Under **Modern → Vertical spacing (Modern layout)** two native numeric fields
 control the content's vertical insets independently:
 
 - **Top padding (px)** / `modern_padding_top`: space above the current-weather row

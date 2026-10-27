@@ -2,7 +2,7 @@
 
 All switches default to the previous presentation and only affect Modern.
 
-## Main → Header and attribute fields (Modern layout)
+## Modern → Header and attribute fields
 
 - **Centre weather icon between temperature and time** (`center_weather_icon`,
   default false) places the weather summary on the left, the icon in the middle,
@@ -15,7 +15,7 @@ All switches default to the previous presentation and only affect Modern.
   Disabling it makes those fields transparent, leaving values, icons and spacing
   unchanged. It does not remove the card-wide theme/ambient background.
 
-## Temperature chart (Modern layout) — above the Settings tabs
+## Modern → Temperature chart (Modern layout)
 
 - **Dotted night / low temperature curve (Modern layout)**
   (`forecast.night_dotted`, default false) renders the low-temperature curve with
@@ -33,3 +33,7 @@ forecast:
 ```
 
 Each switch can be turned off independently without resetting other settings.
+
+All Modern-only settings now live in the **Modern** tab next to Main and Forecast.
+Boolean options use native accessible slider switches; vertical insets use numeric
+fields. Shared font and icon sizes remain in Main. Existing YAML keys are unchanged.

@@ -144,10 +144,9 @@ assert.equal(card.temperature,7);
 assert.equal(card.humidity,42);
 assert.equal(card.config.forecast.chart_height,150);
 assert.ok(card.shadowRoot.querySelector('style').textContent.includes('.modern {padding:16px;}'));
-const compact = editor.shadowRoot.querySelector('input[name="compact"]');
-assert.equal(compact.checked,true);
-compact.checked = false;
-compact.dispatchEvent(new Event('change'));
+const compact = editor.shadowRoot.querySelector('button[name="compact"]');
+assert.equal(compact.getAttribute('aria-checked'),'true');
+compact.click();
 await editor.updateComplete;
 assert.equal(editor.config.compact,false);
 card.setConfig({...editor.config,forecast:{chart_height:130}});
@@ -220,12 +219,11 @@ card.setConfig({entity:'weather.home',layout:'modern',attribute_icon_size:'unava
 assert.equal(card.config.attribute_icon_size,16);
 const gradientCard = document.createElement('weather-chart-card');
 // Native gradient switches persist and affect only the modern temperature chart.
-const gradientSwitch = editor.shadowRoot.querySelector('input[name="temperature_gradient"]');
-const fillSwitch = editor.shadowRoot.querySelector('input[name="gradient_fill"]');
-assert.equal(gradientSwitch.checked,false);
-assert.equal(fillSwitch.checked,true);
-gradientSwitch.checked = true;
-gradientSwitch.dispatchEvent(new Event('change'));
+const gradientSwitch = editor.shadowRoot.querySelector('button[name="temperature_gradient"]');
+const fillSwitch = editor.shadowRoot.querySelector('button[name="gradient_fill"]');
+assert.equal(gradientSwitch.getAttribute('aria-checked'),'false');
+assert.equal(fillSwitch.getAttribute('aria-checked'),'true');
+gradientSwitch.click();
 await editor.updateComplete;
 assert.equal(editor.config.forecast.temperature_gradient,true);
 gradientCard.setConfig({...editor.config,layout:'modern'});
@@ -244,8 +242,7 @@ assert.ok(plot.querySelector('mask'));
 assert.ok(plot.querySelector('path[stroke^="url("]'));
 assert.match(plot.querySelector('ellipse').getAttribute('fill'), /^rgb\(/);
 assert.ok(gradientCard.shadowRoot.querySelector('.temp').getAttribute('style').includes('rgb(56, 189, 248)'));
-fillSwitch.checked = false;
-fillSwitch.dispatchEvent(new Event('change'));
+fillSwitch.click();
 await editor.updateComplete;
 assert.equal(editor.config.forecast.gradient_fill,false);
 gradientCard.setConfig({...editor.config,layout:'modern'});
@@ -254,8 +251,7 @@ plot = gradientCard.shadowRoot.querySelector('.plot');
 assert.ok(plot.querySelector('path[stroke^="url("]'));
 assert.equal(plot.querySelector('mask'),null);
 assert.ok(plot.querySelector('linearGradient[id$="-high-fill"]'));
-gradientSwitch.checked = false;
-gradientSwitch.dispatchEvent(new Event('change'));
+gradientSwitch.click();
 await editor.updateComplete;
 gradientCard.setConfig({...editor.config,layout:'modern',forecast:{...editor.config.forecast,temperature1_color:'#abcdef'}});
 await gradientCard.updateComplete;
@@ -404,18 +400,12 @@ assert.ok(!gradientCard.shadowRoot.querySelector('style').textContent.includes('
 // Modern presentation switches persist independently and preserve their defaults.
 editor.setConfig({entity:'weather.home',layout:'modern',show_time:true});
 await editor.updateComplete;
-assert.equal(editor.shadowRoot.querySelector('input[name="center_weather_icon"]').checked,false);
-assert.equal(editor.shadowRoot.querySelector('input[name="show_attribute_background"]').checked,true);
+assert.equal(editor.shadowRoot.querySelector('button[name="center_weather_icon"]').getAttribute('aria-checked'),'false');
+assert.equal(editor.shadowRoot.querySelector('button[name="show_attribute_background"]').getAttribute('aria-checked'),'true');
 assert.equal(editor.shadowRoot.querySelector('button[name="night_dotted"]').getAttribute('aria-checked'),'false');
 for (const [name, checked] of [['center_weather_icon',true],['show_attribute_background',false],['night_dotted',true]]) {
-  if (name === 'night_dotted') {
-    const toggle = editor.shadowRoot.querySelector('button[name="night_dotted"]');
-    if ((toggle.getAttribute('aria-checked') === 'true') !== checked) toggle.click();
-  } else {
-    const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
-    input.checked = checked;
-    input.dispatchEvent(new Event('change'));
-  }
+  const toggle = editor.shadowRoot.querySelector(`button[name="${name}"]`);
+  if ((toggle.getAttribute('aria-checked') === 'true') !== checked) toggle.click();
   await editor.updateComplete;
 }
 assert.equal(editor.config.center_weather_icon,true);
@@ -448,14 +438,8 @@ for (const path of lowLines) {
 for (const path of highLines) assert.equal(path.getAttribute('stroke-dasharray'),'none');
 assert.ok(gradientCard.shadowRoot.querySelector('.plot mask'));
 for (const [name, checked] of [['center_weather_icon',false],['show_attribute_background',true],['night_dotted',false]]) {
-  if (name === 'night_dotted') {
-    const toggle = editor.shadowRoot.querySelector('button[name="night_dotted"]');
-    if ((toggle.getAttribute('aria-checked') === 'true') !== checked) toggle.click();
-  } else {
-    const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
-    input.checked = checked;
-    input.dispatchEvent(new Event('change'));
-  }
+  const toggle = editor.shadowRoot.querySelector(`button[name="${name}"]`);
+  if ((toggle.getAttribute('aria-checked') === 'true') !== checked) toggle.click();
   await editor.updateComplete;
 }
 gradientCard.setConfig({...editor.config});
@@ -472,15 +456,16 @@ gradientCard.setConfig({...editor.config,layout:'classic',center_weather_icon:tr
 await gradientCard.updateComplete;
 assert.equal(gradientCard.shadowRoot.querySelector('.main.center-weather-icon'),null);
 gradientCard.remove();
-// Dotted-low control is always visible above tabs and reflects existing YAML.
+// Modern-specific controls live in the new Modern tab and reflect existing YAML.
 editor.setConfig({entity:'weather.home',layout:'modern',forecast:{night_dotted:true,temperature_gradient:true,number_of_forecasts:7}});
 await editor.updateComplete;
-for (const page of ['card','forecast','units','alternate']) {
+for (const page of ['card','modern','forecast','units','alternate']) {
   editor.showPage(page);
   await editor.updateComplete;
   const switches = editor.shadowRoot.querySelectorAll('button[name="night_dotted"]');
   assert.equal(switches.length,1);
-  assert.equal(switches[0].closest('.page-container'),null);
+  assert.equal(switches[0].closest('.page-container').getAttribute('data-page'),'modern');
+  assert.equal(switches[0].closest('.page-container').classList.contains('active'),page === 'modern');
   assert.equal(switches[0].closest('fieldset').querySelector('legend').textContent,'Temperature chart (Modern layout)');
   assert.equal(switches[0].getAttribute('role'),'switch');
   assert.equal(switches[0].getAttribute('aria-checked'),'true');
@@ -492,6 +477,45 @@ assert.equal(editor.config.forecast.night_dotted,false);
 assert.equal(dottedSwitch.getAttribute('aria-checked'),'false');
 assert.equal(editor.config.forecast.temperature_gradient,true);
 assert.equal(editor.config.forecast.number_of_forecasts,7);
+// The Modern tab is navigable and all exclusive controls are grouped exactly once.
+const modernTab = [...editor.shadowRoot.querySelectorAll('.buttons-container button')].find(button => button.textContent === 'Modern');
+assert.ok(modernTab);
+modernTab.click();
+await editor.updateComplete;
+assert.equal(editor.currentPage,'modern');
+assert.equal(modernTab.getAttribute('aria-pressed'),'true');
+assert.equal(editor.shadowRoot.querySelectorAll('.page-container.active').length,1);
+const modernPage = editor.shadowRoot.querySelector('[data-page="modern"]');
+assert.ok(modernPage.classList.contains('active'));
+for (const name of ['compact','center_weather_icon','show_attribute_background','night_dotted','temperature_gradient','gradient_fill']) {
+  const controls = editor.shadowRoot.querySelectorAll(`[name="${name}"]`);
+  assert.equal(controls.length,1);
+  assert.equal(controls[0].tagName,'BUTTON');
+  assert.equal(controls[0].getAttribute('role'),'switch');
+  assert.equal(controls[0].closest('[data-page="modern"]'),modernPage);
+  assert.ok(editor.shadowRoot.getElementById(controls[0].getAttribute('aria-labelledby')));
+}
+for (const name of ['modern_padding_top','modern_padding_bottom']) {
+  assert.equal(editor.shadowRoot.querySelector(`[name="${name}"]`).closest('[data-page="modern"]'),modernPage);
+}
+// Leaving/reopening a page preserves edited and YAML-derived values.
+const enabledBefore = editor.config.forecast.temperature_gradient;
+editor.showPage('card');
+await editor.updateComplete;
+assert.equal(modernPage.classList.contains('active'),false);
+assert.equal(editor.shadowRoot.querySelector('#font-time_size').closest('.page-container').classList.contains('active'),true);
+assert.equal(editor.shadowRoot.querySelector('#current-icon-size').closest('.page-container').classList.contains('active'),true);
+modernTab.click();
+await editor.updateComplete;
+assert.equal(editor.config.forecast.temperature_gradient,enabledBefore);
+assert.equal(editor.config.forecast.number_of_forecasts,7);
+const fillToggle = editor.shadowRoot.querySelector('button[name="gradient_fill"]');
+const oldFill = fillToggle.getAttribute('aria-checked') === 'true';
+fillToggle.click();
+await editor.updateComplete;
+assert.equal(editor.config.forecast.gradient_fill,!oldFill);
+assert.equal(fillToggle.getAttribute('aria-checked'),String(!oldFill));
+assert.equal(editor.config.forecast.temperature_gradient,enabledBefore);
 editor.remove();
 card.remove();
 await window.happyDOM.abort();

@@ -217,6 +217,17 @@ class WeatherChartCardEditor extends LitElement {
     this.requestUpdate();
   }
 
+  _renderModernSwitch(key, label, checked) {
+    const name = key.split('.').pop();
+    const labelId = `modern-${name}-label`;
+    return html`<div class="native-switch-row">
+      <button type="button" role="switch" name=${name} class="native-switch"
+        aria-checked=${checked ? 'true' : 'false'} aria-labelledby=${labelId}
+        @click=${() => this._valueChanged({target: {checked: !checked}}, key)}></button>
+      <span id=${labelId}>${label}</span>
+    </div>`;
+  }
+
   render() {
     if (this._config && this._config.entity !== this._entity) {
       this._entity = this._config.entity;
@@ -362,24 +373,6 @@ class WeatherChartCardEditor extends LitElement {
         <p class="hint" id="forecast-count-hint">Daily: days. Hourly: hours. 0 = automatic (Modern: 5). Only available forecasts are shown.</p>
       </div>
 
-      <fieldset class="icon-size-settings">
-        <legend>Temperature chart (Modern layout)</legend>
-          <div class="native-switch-row">
-            <button type="button" role="switch" name="night_dotted" class="native-switch"
-              aria-checked=${forecastConfig.night_dotted === true ? 'true' : 'false'}
-              aria-labelledby="night-dotted-label"
-              @click=${() => this._valueChanged({target: {checked: !(this._config.forecast && this._config.forecast.night_dotted === true)}}, 'forecast.night_dotted')}></button>
-            <span id="night-dotted-label">Dotted night / low temperature curve (Modern layout)</span>
-          </div>
-        <label><input type="checkbox" name="temperature_gradient"
-          .checked=${forecastConfig.temperature_gradient === true}
-          @change=${e => this._valueChanged(e, 'forecast.temperature_gradient')}> Temperature-based chart colours</label>
-        <label><input type="checkbox" name="gradient_fill"
-          .checked=${forecastConfig.gradient_fill !== false}
-          @change=${e => this._valueChanged(e, 'forecast.gradient_fill')}> Apply temperature colours to chart fill</label>
-        <p class="hint">Cold: blue, mild: green, warm: yellow/orange, hot: red. Only affects Modern. Disable chart colours to restore your configured colours.</p>
-      </fieldset>
-
       <h5>Chart style:</h5>
       ${this._config.layout === 'modern' ? html`<p class="hint">Chart style 1 and 2 apply only to the Classic layout. Modern uses its own temperature chart.</p>` : ''}
       <div class="radio-container">
@@ -412,24 +405,19 @@ class WeatherChartCardEditor extends LitElement {
        <h4>Settings:</h4>
        <div class="buttons-container">
          <button type="button" aria-pressed=${this.currentPage === 'card'} @click="${() => this.showPage('card')}">Main</button>
+         <button type="button" aria-pressed=${this.currentPage === 'modern'} @click=${() => this.showPage('modern')}>Modern</button>
          <button type="button" aria-pressed=${this.currentPage === 'forecast'} @click="${() => this.showPage('forecast')}">Forecast</button>
          <button type="button" aria-pressed=${this.currentPage === 'units'} @click="${() => this.showPage('units')}">Units</button>
          <button type="button" aria-pressed=${this.currentPage === 'alternate'} @click="${() => this.showPage('alternate')}">Alternate entities</button>
        </div>
 
-        <!-- Card Settings Page -->
-        <div class="page-container ${this.currentPage === 'card' ? 'active' : ''}">
-          <label class="compact-setting"><input type="checkbox" name="compact"
-            .checked=${this._config.compact !== false}
-            @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+        <div class="page-container ${this.currentPage === 'modern' ? 'active' : ''}" data-page="modern" role="region" aria-label="Modern layout settings">
+          <p class="hint">These settings apply only to the Modern layout. Select Modern in the Layout menu to use them. Shared font and icon sizes remain under Main.</p>
+          ${this._renderModernSwitch('compact', 'Compact spacing', this._config.compact !== false)}
           <fieldset class="icon-size-settings modern-display-settings">
-            <legend>Header and attribute fields (Modern layout)</legend>
-            <label><input type="checkbox" name="center_weather_icon"
-              .checked=${this._config.center_weather_icon === true}
-              @change=${e => this._valueChanged(e, 'center_weather_icon')}> Centre weather icon between temperature and time</label>
-            <label><input type="checkbox" name="show_attribute_background"
-              .checked=${this._config.show_attribute_background !== false}
-              @change=${e => this._valueChanged(e, 'show_attribute_background')}> Show attribute field backgrounds</label>
+            <legend>Header and attribute fields</legend>
+            ${this._renderModernSwitch('center_weather_icon', 'Centre weather icon between temperature and time', this._config.center_weather_icon === true)}
+            ${this._renderModernSwitch('show_attribute_background', 'Show attribute field backgrounds', this._config.show_attribute_background !== false)}
           </fieldset>
           <fieldset class="icon-size-settings modern-spacing-settings">
             <legend>Vertical spacing (Modern layout)</legend>
@@ -441,6 +429,18 @@ class WeatherChartCardEditor extends LitElement {
             `)}
             <p class="hint">Leave empty for automatic spacing. 0 removes the content inset. Side padding stays unchanged. Only affects Modern.</p>
           </fieldset>
+
+          <fieldset class="icon-size-settings">
+            <legend>Temperature chart (Modern layout)</legend>
+            ${this._renderModernSwitch('forecast.night_dotted', 'Dotted night / low temperature curve', forecastConfig.night_dotted === true)}
+            ${this._renderModernSwitch('forecast.temperature_gradient', 'Temperature-based chart colours', forecastConfig.temperature_gradient === true)}
+            ${this._renderModernSwitch('forecast.gradient_fill', 'Apply temperature colours to chart fill', forecastConfig.gradient_fill !== false)}
+            <p class="hint">Cold: blue, mild: green, warm: yellow/orange, hot: red. Fill colours take effect when temperature-based chart colours are enabled. Disable chart colours to restore your configured colours.</p>
+          </fieldset>
+        </div>
+
+        <!-- Card Settings Page -->
+        <div class="page-container ${this.currentPage === 'card' ? 'active' : ''}">
           <fieldset class="icon-size-settings font-size-settings">
             <legend>Font sizes (px)</legend>
             ${[
