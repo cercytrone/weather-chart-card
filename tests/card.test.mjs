@@ -401,6 +401,66 @@ assert.equal(gradientCard.config.modern_padding_bottom,undefined);
 gradientCard.setConfig({entity:'weather.home',layout:'classic',modern_padding_top:2,modern_padding_bottom:3});
 await gradientCard.updateComplete;
 assert.ok(!gradientCard.shadowRoot.querySelector('style').textContent.includes('.modern {padding-top:'));
+// Modern presentation switches persist independently and preserve their defaults.
+editor.setConfig({entity:'weather.home',layout:'modern',show_time:true});
+await editor.updateComplete;
+assert.equal(editor.shadowRoot.querySelector('input[name="center_weather_icon"]').checked,false);
+assert.equal(editor.shadowRoot.querySelector('input[name="show_attribute_background"]').checked,true);
+assert.equal(editor.shadowRoot.querySelector('input[name="night_dotted"]').checked,false);
+for (const [name, checked] of [['center_weather_icon',true],['show_attribute_background',false],['night_dotted',true]]) {
+  const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
+  input.checked = checked;
+  input.dispatchEvent(new Event('change'));
+  await editor.updateComplete;
+}
+assert.equal(editor.config.center_weather_icon,true);
+assert.equal(editor.config.show_attribute_background,false);
+assert.equal(editor.config.forecast.night_dotted,true);
+gradientCard.setConfig({...editor.config,forecast:{...editor.config.forecast,temperature_gradient:true,gradient_fill:true}});
+await gradientCard.updateComplete;
+await new Promise(resolve => setTimeout(resolve,30));
+gradientCard.forecasts = [
+  {datetime:new Date().toISOString(),temperature:20,templow:10},
+  {datetime:new Date(Date.now()+86400000).toISOString(),temperature:25,templow:12},
+];
+await gradientCard.updateComplete;
+assert.ok(gradientCard.shadowRoot.querySelector('.main.center-weather-icon'));
+assert.ok(gradientCard.shadowRoot.querySelector('.main > .weather-summary'));
+assert.ok(gradientCard.shadowRoot.querySelector('.main > .current-time'));
+let displayStyles = gradientCard.shadowRoot.querySelector('style').textContent;
+assert.match(displayStyles, /\.main.center-weather-icon > \.weather-icon \{grid-column:2;grid-row:1;justify-self:center;/);
+assert.match(displayStyles, /\.main.center-weather-icon > \.weather-summary \{grid-column:1;grid-row:1;/);
+assert.match(displayStyles, /\.attributes > div \{[^}]*background:transparent;/);
+assert.ok(gradientCard.shadowRoot.querySelector('.attributes').textContent.includes('1017'));
+let lowLines = [...gradientCard.shadowRoot.querySelectorAll('[data-series="low"] path[fill="none"]')];
+let highLines = [...gradientCard.shadowRoot.querySelectorAll('[data-series="high"] path[fill="none"]')];
+assert.ok(lowLines.length > 0 && highLines.length > 0);
+for (const path of lowLines) {
+  assert.equal(path.getAttribute('stroke-dasharray'),'0 6');
+  assert.equal(path.getAttribute('stroke-linecap'),'round');
+  assert.ok(path.getAttribute('stroke').startsWith('url('));
+}
+for (const path of highLines) assert.equal(path.getAttribute('stroke-dasharray'),'none');
+assert.ok(gradientCard.shadowRoot.querySelector('.plot mask'));
+for (const [name, checked] of [['center_weather_icon',false],['show_attribute_background',true],['night_dotted',false]]) {
+  const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
+  input.checked = checked;
+  input.dispatchEvent(new Event('change'));
+  await editor.updateComplete;
+}
+gradientCard.setConfig({...editor.config});
+await gradientCard.updateComplete;
+assert.equal(gradientCard.shadowRoot.querySelector('.main.center-weather-icon'),null);
+assert.match(gradientCard.shadowRoot.querySelector('style').textContent, /\.attributes > div \{[^}]*background:color-mix/);
+for (const path of gradientCard.shadowRoot.querySelectorAll('[data-series="low"] path[fill="none"]')) assert.equal(path.getAttribute('stroke-dasharray'),'none');
+gradientCard.setConfig({...editor.config,center_weather_icon:true,show_time:false,show_day:false,show_date:false});
+await gradientCard.updateComplete;
+assert.ok(gradientCard.shadowRoot.querySelector('.main.center-weather-icon > .weather-icon'));
+assert.equal(gradientCard.shadowRoot.querySelector('.current-time'),null);
+gradientCard.forecasts = [];
+gradientCard.setConfig({...editor.config,layout:'classic',center_weather_icon:true,show_attribute_background:false});
+await gradientCard.updateComplete;
+assert.equal(gradientCard.shadowRoot.querySelector('.main.center-weather-icon'),null);
 gradientCard.remove();
 editor.remove();
 card.remove();

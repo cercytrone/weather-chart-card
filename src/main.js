@@ -1085,9 +1085,9 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
   const currentDateFormatted = currentDate.toLocaleDateString(this.language, {month: 'long', day: 'numeric'});
 
   return html`
-    <div class="main">
+    <div class=${config.layout === 'modern' && config.center_weather_icon === true ? 'main center-weather-icon' : 'main'}>
       ${iconHtml}
-      <div>
+      <div class="weather-summary">
         <div>
           ${showTemperature ? html`${Number.isFinite(roundedTemperature) ? roundedTemperature : '–'}<span>${this.getUnit('temperature')}</span>` : ''}
           ${showFeelsLike && roundedFeelsLike ? html`

@@ -410,6 +410,15 @@ class WeatherChartCardEditor extends LitElement {
           <label class="compact-setting"><input type="checkbox" name="compact"
             .checked=${this._config.compact !== false}
             @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+          <fieldset class="icon-size-settings modern-display-settings">
+            <legend>Header and attribute fields (Modern layout)</legend>
+            <label><input type="checkbox" name="center_weather_icon"
+              .checked=${this._config.center_weather_icon === true}
+              @change=${e => this._valueChanged(e, 'center_weather_icon')}> Centre weather icon between temperature and time</label>
+            <label><input type="checkbox" name="show_attribute_background"
+              .checked=${this._config.show_attribute_background !== false}
+              @change=${e => this._valueChanged(e, 'show_attribute_background')}> Show attribute field backgrounds</label>
+          </fieldset>
           <fieldset class="icon-size-settings modern-spacing-settings">
             <legend>Vertical spacing (Modern layout)</legend>
             ${[['modern_padding_top', 'Top padding (px)'], ['modern_padding_bottom', 'Bottom padding (px)']].map(([key, label]) => html`
@@ -736,6 +745,9 @@ class WeatherChartCardEditor extends LitElement {
 
         <!-- Forecast Settings Page -->
         <div class="page-container ${this.currentPage === 'forecast' ? 'active' : ''}">
+          <label><input type="checkbox" name="night_dotted"
+            .checked=${forecastConfig.night_dotted === true}
+            @change=${e => this._valueChanged(e, 'forecast.night_dotted')}> Dotted night / low temperature curve (Modern layout)</label>
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'forecast.condition_icons')}"

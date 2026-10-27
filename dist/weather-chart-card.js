@@ -1040,7 +1040,7 @@ function renderModern(card) {
   const series = (key, color) => {
     // Break paths at missing readings rather than interpolating invented data.
     let previous;
-    return b`<g style=${`color:${color}`}>
+    return b`<g data-series=${key} style=${`color:${color}`}>
       ${curvePoints(geometry, key).map((point, index) => {
         const y = point[`${key}Y`];
         const old = previous;
@@ -1051,7 +1051,7 @@ function renderModern(card) {
               ${[0, 0.25, 0.5, 0.75, 1].map(fraction => b`<stop offset=${fraction} stop-color=${temperatureColor(old[key] + (point[key] - old[key]) * fraction, temperatureUnit)}/>`)}
             </linearGradient></defs>` : ''}
             <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y} L ${point.x} 175 L ${old.x} 175 Z`} fill=${`url(#${gradientFill ? `${id}-${key}-${index}` : `${id}-${key}-fill`})`} fill-opacity=${gradientFill ? 0.2 : 1} mask=${gradientFill ? `url(#${id}-fade)` : 'none'}/>
-            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y}`} fill="none" stroke=${gradient ? `url(#${id}-temperature)` : 'currentColor'} stroke-width="2.5" vector-effect="non-scaling-stroke"/>` : ''}
+            <path d=${`M ${old.x} ${old[`${key}Y`]} C ${(old.x + point.x)/2} ${old[`${key}Y`]}, ${(old.x + point.x)/2} ${y}, ${point.x} ${y}`} fill="none" stroke=${gradient ? `url(#${id}-temperature)` : 'currentColor'} stroke-width="2.5" stroke-linecap="round" stroke-dasharray=${key === 'low' && config.forecast.night_dotted === true ? '0 6' : 'none'} vector-effect="non-scaling-stroke"/>` : ''}
           ${points.includes(point) ? b`<ellipse cx=${point.x} cy=${y} rx="0.8" ry="3" fill=${colorFor(point[key], color)} stroke="var(--ha-card-background, var(--card-background-color))" vector-effect="non-scaling-stroke"/>` : ''}
         `;
       })}
@@ -1063,6 +1063,10 @@ function renderModern(card) {
       ha-card {position:relative; border-radius:32px; overflow:hidden; background:var(--ha-card-background,var(--card-background-color)); background-image:radial-gradient(circle at 100% 0%,#38bdf812,transparent 50%); color:var(--primary-text-color); box-shadow:var(--ha-card-box-shadow,0 10px 30px -12px #0005);}
       .modern {padding:20px;}
       .main {display:grid; grid-template-columns:${config.current_icon_size}px minmax(0,1fr) auto; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--divider-color); font-size:${config.current_temp_size}px; font-weight:800;}
+      .main.center-weather-icon {grid-template-columns:minmax(0,1fr) ${config.current_icon_size}px minmax(0,1fr);}
+      .main.center-weather-icon > .weather-icon {grid-column:2;grid-row:1;justify-self:center;}
+      .main.center-weather-icon > .weather-summary {grid-column:1;grid-row:1;}
+      .main.center-weather-icon > .current-time {grid-column:3;grid-row:1;}
       .main ha-icon {--mdc-icon-size:${config.current_icon_size}px; color:#38bdf8; flex-shrink:0;}
       .main img {width:${config.current_icon_size}px;height:${config.current_icon_size}px;}
       .main > div {min-width:0;overflow-wrap:anywhere;}
@@ -1078,7 +1082,7 @@ function renderModern(card) {
       .date-text.day {font-size:${config.day_size}px;}
       .date-text.date {font-size:${config.date_size}px;}
       .attributes {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:16px 0; font-size:12px; line-height:1.9;}
-      .attributes > div {padding:10px; border-radius:16px; background:color-mix(in srgb,var(--primary-text-color) 5%,transparent); overflow-wrap:anywhere; min-width:0;}
+      .attributes > div {padding:10px; border-radius:16px; background:${config.show_attribute_background === false ? 'transparent' : 'color-mix(in srgb,var(--primary-text-color) 5%,transparent)'}; overflow-wrap:anywhere; min-width:0;}
       .attributes ha-icon {--mdc-icon-size:${config.attribute_icon_size}px;color:#38bdf8;}
       .forecast-scroll {overflow-x:auto; padding-bottom:4px;}
       .forecast {min-width:${items.length * 56}px;}
@@ -1108,6 +1112,7 @@ function renderModern(card) {
       .updated {margin-top:8px;}
       `}
       @container (max-width:300px) {.modern{padding:12px}.attributes{grid-template-columns:1fr;gap:6px}.attributes > div{padding:8px}.main{grid-template-columns:min(${config.current_icon_size}px,36px) minmax(0,1fr) auto;gap:6px}.main ha-icon{--mdc-icon-size:min(${config.current_icon_size}px,36px)}.main .weather-icon{max-width:36px;max-height:36px}.main img{width:min(${config.current_icon_size}px,36px);height:min(${config.current_icon_size}px,36px)}}
+      @container (max-width:300px) {.main.center-weather-icon {grid-template-columns:minmax(0,1fr) min(${config.current_icon_size}px,36px) minmax(0,1fr);}}
       /* Explicit vertical insets take precedence over compact and narrow-card defaults. */
       ${config.modern_padding_top == null ? '' : `.modern {padding-top:${config.modern_padding_top}px;}`}
       ${config.modern_padding_bottom == null ? '' : `.modern {padding-bottom:${config.modern_padding_bottom}px;}`}
@@ -1561,6 +1566,15 @@ class WeatherChartCardEditor extends s {
           <label class="compact-setting"><input type="checkbox" name="compact"
             .checked=${this._config.compact !== false}
             @change=${e => this._valueChanged(e, 'compact')}> Compact spacing (Modern layout)</label>
+          <fieldset class="icon-size-settings modern-display-settings">
+            <legend>Header and attribute fields (Modern layout)</legend>
+            <label><input type="checkbox" name="center_weather_icon"
+              .checked=${this._config.center_weather_icon === true}
+              @change=${e => this._valueChanged(e, 'center_weather_icon')}> Centre weather icon between temperature and time</label>
+            <label><input type="checkbox" name="show_attribute_background"
+              .checked=${this._config.show_attribute_background !== false}
+              @change=${e => this._valueChanged(e, 'show_attribute_background')}> Show attribute field backgrounds</label>
+          </fieldset>
           <fieldset class="icon-size-settings modern-spacing-settings">
             <legend>Vertical spacing (Modern layout)</legend>
             ${[['modern_padding_top', 'Top padding (px)'], ['modern_padding_bottom', 'Bottom padding (px)']].map(([key, label]) => x`
@@ -1887,6 +1901,9 @@ class WeatherChartCardEditor extends s {
 
         <!-- Forecast Settings Page -->
         <div class="page-container ${this.currentPage === 'forecast' ? 'active' : ''}">
+          <label><input type="checkbox" name="night_dotted"
+            .checked=${forecastConfig.night_dotted === true}
+            @change=${e => this._valueChanged(e, 'forecast.night_dotted')}> Dotted night / low temperature curve (Modern layout)</label>
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'forecast.condition_icons')}"
@@ -19471,9 +19488,9 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
   const currentDateFormatted = currentDate.toLocaleDateString(this.language, {month: 'long', day: 'numeric'});
 
   return x`
-    <div class="main">
+    <div class=${config.layout === 'modern' && config.center_weather_icon === true ? 'main center-weather-icon' : 'main'}>
       ${iconHtml}
-      <div>
+      <div class="weather-summary">
         <div>
           ${showTemperature ? x`${Number.isFinite(roundedTemperature) ? roundedTemperature : '–'}<span>${this.getUnit('temperature')}</span>` : ''}
           ${showFeelsLike && roundedFeelsLike ? x`
