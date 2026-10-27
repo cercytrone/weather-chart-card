@@ -406,11 +406,16 @@ editor.setConfig({entity:'weather.home',layout:'modern',show_time:true});
 await editor.updateComplete;
 assert.equal(editor.shadowRoot.querySelector('input[name="center_weather_icon"]').checked,false);
 assert.equal(editor.shadowRoot.querySelector('input[name="show_attribute_background"]').checked,true);
-assert.equal(editor.shadowRoot.querySelector('input[name="night_dotted"]').checked,false);
+assert.equal(editor.shadowRoot.querySelector('button[name="night_dotted"]').getAttribute('aria-checked'),'false');
 for (const [name, checked] of [['center_weather_icon',true],['show_attribute_background',false],['night_dotted',true]]) {
-  const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
-  input.checked = checked;
-  input.dispatchEvent(new Event('change'));
+  if (name === 'night_dotted') {
+    const toggle = editor.shadowRoot.querySelector('button[name="night_dotted"]');
+    if ((toggle.getAttribute('aria-checked') === 'true') !== checked) toggle.click();
+  } else {
+    const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
+    input.checked = checked;
+    input.dispatchEvent(new Event('change'));
+  }
   await editor.updateComplete;
 }
 assert.equal(editor.config.center_weather_icon,true);
@@ -443,9 +448,14 @@ for (const path of lowLines) {
 for (const path of highLines) assert.equal(path.getAttribute('stroke-dasharray'),'none');
 assert.ok(gradientCard.shadowRoot.querySelector('.plot mask'));
 for (const [name, checked] of [['center_weather_icon',false],['show_attribute_background',true],['night_dotted',false]]) {
-  const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
-  input.checked = checked;
-  input.dispatchEvent(new Event('change'));
+  if (name === 'night_dotted') {
+    const toggle = editor.shadowRoot.querySelector('button[name="night_dotted"]');
+    if ((toggle.getAttribute('aria-checked') === 'true') !== checked) toggle.click();
+  } else {
+    const input = editor.shadowRoot.querySelector(`input[name="${name}"]`);
+    input.checked = checked;
+    input.dispatchEvent(new Event('change'));
+  }
   await editor.updateComplete;
 }
 gradientCard.setConfig({...editor.config});
@@ -468,17 +478,18 @@ await editor.updateComplete;
 for (const page of ['card','forecast','units','alternate']) {
   editor.showPage(page);
   await editor.updateComplete;
-  const switches = editor.shadowRoot.querySelectorAll('input[name="night_dotted"]');
+  const switches = editor.shadowRoot.querySelectorAll('button[name="night_dotted"]');
   assert.equal(switches.length,1);
   assert.equal(switches[0].closest('.page-container'),null);
   assert.equal(switches[0].closest('fieldset').querySelector('legend').textContent,'Temperature chart (Modern layout)');
-  assert.equal(switches[0].checked,true);
+  assert.equal(switches[0].getAttribute('role'),'switch');
+  assert.equal(switches[0].getAttribute('aria-checked'),'true');
 }
-const dottedSwitch = editor.shadowRoot.querySelector('input[name="night_dotted"]');
-dottedSwitch.checked = false;
-dottedSwitch.dispatchEvent(new Event('change'));
+const dottedSwitch = editor.shadowRoot.querySelector('button[name="night_dotted"]');
+dottedSwitch.click();
 await editor.updateComplete;
 assert.equal(editor.config.forecast.night_dotted,false);
+assert.equal(dottedSwitch.getAttribute('aria-checked'),'false');
 assert.equal(editor.config.forecast.temperature_gradient,true);
 assert.equal(editor.config.forecast.number_of_forecasts,7);
 editor.remove();

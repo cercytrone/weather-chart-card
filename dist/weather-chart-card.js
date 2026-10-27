@@ -1393,6 +1393,11 @@ class WeatherChartCardEditor extends s {
         .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
         .forecast-count-setting {display:grid;gap:8px;margin-top:12px;}
         .forecast-count-setting input,.icon-size-settings input[type="number"] {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
+        .native-switch-row {display:flex;align-items:center;gap:12px;}
+        button.native-switch {position:relative;flex:0 0 44px;width:44px;height:26px;padding:0;border:1px solid var(--divider-color,#888);border-radius:20px;background:var(--disabled-color,#888);cursor:pointer;}
+        button.native-switch::after {content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card-background-color,#fff);}
+        button.native-switch[aria-checked="true"] {background:var(--primary-color,#03a9f4);}
+        button.native-switch[aria-checked="true"]::after {left:21px;}
         .switch-label {
           padding-left: 14px;
         }
@@ -1515,9 +1520,13 @@ class WeatherChartCardEditor extends s {
 
       <fieldset class="icon-size-settings">
         <legend>Temperature chart (Modern layout)</legend>
-          <label><input type="checkbox" name="night_dotted"
-            .checked=${forecastConfig.night_dotted === true}
-            @change=${e => this._valueChanged(e, 'forecast.night_dotted')}> Dotted night / low temperature curve (Modern layout)</label>
+          <div class="native-switch-row">
+            <button type="button" role="switch" name="night_dotted" class="native-switch"
+              aria-checked=${forecastConfig.night_dotted === true ? 'true' : 'false'}
+              aria-labelledby="night-dotted-label"
+              @click=${() => this._valueChanged({target: {checked: !(this._config.forecast && this._config.forecast.night_dotted === true)}}, 'forecast.night_dotted')}></button>
+            <span id="night-dotted-label">Dotted night / low temperature curve (Modern layout)</span>
+          </div>
         <label><input type="checkbox" name="temperature_gradient"
           .checked=${forecastConfig.temperature_gradient === true}
           @change=${e => this._valueChanged(e, 'forecast.temperature_gradient')}> Temperature-based chart colours</label>
