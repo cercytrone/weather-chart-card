@@ -74,6 +74,17 @@ export function curvePoints(geometry, key) {
   return [left, ...points, right].filter(Boolean);
 }
 
+// Shared linear scale per visible rainfall window; probability always uses 0–100%.
+export function precipitationData(items, type = 'rainfall') {
+  const probability = type === 'probability';
+  const values = items.map(item => {
+    const value = numeric(probability ? item.precipitation_probability : item.precipitation);
+    return value === null || value < 0 || (probability && value > 100) ? null : value;
+  });
+  const maximum = probability ? 100 : Math.max(0, ...values.filter(value => value !== null));
+  return {values, maximum, heights: values.map(value => value === null || maximum === 0 ? 0 : value / maximum * 100)};
+}
+
 export function renderModern(card) {
   const {config, weather} = card;
   if (!chartIds.has(card)) chartIds.set(card, `weather-chart-${++chartId}`);
@@ -89,6 +100,26 @@ export function renderModern(card) {
   const {points} = geometry;
   const format = value => value === null ? '–' : new Intl.NumberFormat(card.language, {maximumFractionDigits: config.forecast.round_temp ? 0 : 1}).format(value);
   const formatRainfall = value => new Intl.NumberFormat(card.language, {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(value);
+  const precipitationStyle = config.forecast.precipitation_style || 'badges';
+  const probability = config.forecast.precipitation_type === 'probability';
+  const precipitation = precipitationData(items, config.forecast.precipitation_type);
+  const precipitationUnit = probability ? '%' : weather.attributes.precipitation_unit || 'mm';
+  const precipitationLabel = value => value === null ? '–' : `${probability ? new Intl.NumberFormat(card.language, {maximumFractionDigits: 0}).format(value) : formatRainfall(value)} ${precipitationUnit}`;
+  const renderPrecipitation = () => {
+    if (precipitationStyle === 'off') return '';
+    if (precipitationStyle !== 'bars') return html`<div class="row rain rain-badges">${precipitation.values.map(value => html`<div>${value === null ? '–' : value > 0 ? html`<span>${precipitationLabel(value)}</span>` : ''}</div>`)}</div>`;
+    return html`<div class="row rain rain-bars">${precipitation.values.map((value, index) => {
+      const label = precipitationLabel(value);
+      const date = Date.parse(items[index].datetime);
+      const description = `${Number.isNaN(date) ? '' : new Date(date).toLocaleString(card.language)}: ${label}`;
+      return html`<div class="precip-column" role="img" aria-label=${description} title=${description}>
+        <div class="precip-track" aria-hidden="true">
+          ${value !== null && value > 0 ? html`<div class="precip-bar" style=${`height:${precipitation.heights[index]}%;`}></div>` : ''}
+        </div>
+        <span class="precip-label" aria-hidden="true">${label}</span>
+      </div>`;
+    })}</div>`;
+  };
   const icon = item => renderWeatherIcon(card, item.condition, 'above_horizon', config.icons_size, card.ll(item.condition));
   const series = (key, color) => {
     // Break paths at missing readings rather than interpolating invented data.
@@ -146,7 +177,12 @@ export function renderModern(card) {
       .labels {position:absolute;inset:0;pointer-events:none;}
       .temp {position:absolute;transform:translate(-50%,-50%);font-size:${config.forecast.labels_font_size}px;font-weight:700;white-space:nowrap;}
       .rain {font-size:10px;color:#38bdf8;min-height:26px;}
-      .rain span {display:inline-block;background:#38bdf815;border-radius:5px;padding:3px;overflow-wrap:anywhere;}
+      .rain-badges span {display:inline-block;background:#38bdf815;border-radius:5px;padding:3px;overflow-wrap:anywhere;}
+      .rain-bars {align-items:start;min-height:0;padding-top:4px;}
+      .precip-column {min-width:0;padding:0 3px;}
+      .precip-track {height:${config.forecast.precipitation_height}px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid var(--divider-color);}
+      .precip-bar {width:14px;max-width:60%;border-radius:5px 5px 0 0;background:linear-gradient(to top,rgba(56,189,248,0.25),#38bdf8);}
+      .precip-label {display:block;padding:4px 0 0;font-size:10px;line-height:1.3;overflow-wrap:anywhere;}
       .icons {padding:8px 0;color:#38bdf8;}
       .icons ha-icon {--mdc-icon-size:${config.icons_size}px;}
       .wind {padding-top:10px;border-top:1px solid var(--divider-color);font-size:11px;}
@@ -197,11 +233,7 @@ export function renderModern(card) {
             ${point.low === null ? '' : html`<span class="temp" style=${`left:${point.x}%;top:${(point.lowY+16)/175*100}%;color:${colorFor(point.low, config.forecast.temperature2_color)}`}>${format(point.low)}°</span>`}
           `)}</div>
         </div>
-        <div class="row rain">${items.map(item => {
-          const probability = config.forecast.precipitation_type === 'probability';
-          const value = numeric(probability ? item.precipitation_probability : item.precipitation);
-          return html`<div>${value === null ? '–' : value > 0 ? html`<span>${probability ? format(value) : formatRainfall(value)} ${probability ? '%' : weather.attributes.precipitation_unit || 'mm'}</span>` : ''}</div>`;
-        })}</div>
+        ${renderPrecipitation()}
         ${config.forecast.condition_icons === false ? '' : html`<div class="row icons">${items.map(item => html`<div>${icon(item)}</div>`)}</div>`}
         ${config.forecast.show_wind_forecast === false ? '' : html`<div class="row wind">${items.map(item => html`<div>${numeric(item.wind_speed) === null ? '–' : html`${item.wind_bearing === undefined ? '' : html`<ha-icon icon=${`hass:${card.getWindDirIcon(item.wind_bearing)}`}></ha-icon>`}${format(card.convertWindSpeed(Number(item.wind_speed)))}<small>${card.unitSpeed || ''}</small>`}</div>`)}</div>`}
       </div></div>` : html`<div class="empty" role="status">${card.language && card.language.startsWith('de') ? 'Keine Vorhersagedaten verfügbar.' : 'No forecast data available.'}</div>`}

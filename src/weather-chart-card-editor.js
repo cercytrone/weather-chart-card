@@ -151,6 +151,11 @@ class WeatherChartCardEditor extends LitElement {
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
     }
+    if (key === 'forecast.precipitation_height') {
+      const value = Number(event.target.value);
+      if (event.target.value === '' || !Number.isFinite(value)) return;
+      newConfig.forecast.precipitation_height = Math.min(100, Math.max(20, value));
+    }
     if (key === 'modern_padding_top' || key === 'modern_padding_bottom') {
       if (event.target.value === '') delete newConfig[key];
       else {
@@ -428,6 +433,21 @@ class WeatherChartCardEditor extends LitElement {
                 @change=${e => this._valueChanged(e, key)}>
             `)}
             <p class="hint">Leave empty for automatic spacing. 0 removes the content inset. Side padding stays unchanged. Only affects Modern.</p>
+          </fieldset>
+
+          <fieldset class="icon-size-settings modern-precipitation-settings">
+            <legend>Precipitation</legend>
+            <label for="precipitation-style">Precipitation display</label>
+            <select id="precipitation-style" name="precipitation_style"
+              @change=${e => this._valueChanged(e, 'forecast.precipitation_style')}>
+              ${[['badges','Badges'],['bars','Bars'],['off','Off']].map(([value,label]) => html`<option value=${value} .selected=${(forecastConfig.precipitation_style || 'badges') === value}>${label}</option>`)}
+            </select>
+            <label for="precipitation-height">Bar chart height (px)</label>
+            <input id="precipitation-height" name="precipitation_height" type="number" min="20" max="100" step="1"
+              .value=${String(forecastConfig.precipitation_height || 40)}
+              ?disabled=${forecastConfig.precipitation_style !== 'bars'}
+              @change=${e => this._valueChanged(e, 'forecast.precipitation_height')}>
+            <p class="hint">Rainfall bars share a scale within the visible forecasts. Probability uses 0–100%. Choose rainfall or probability under Forecast. Missing values show a dash; zero has no bar.</p>
           </fieldset>
 
           <fieldset class="icon-size-settings">

@@ -37,3 +37,9 @@ Each switch can be turned off independently without resetting other settings.
 All Modern-only settings now live in the **Modern** tab next to Main and Forecast.
 Boolean options use native accessible slider switches; vertical insets use numeric
 fields. Shared font and icon sizes remain in Main. Existing YAML keys are unchanged.
+
+## Modern → Precipitation
+
+Choose **Badges**, **Bars** or **Off**, and adjust the bar area height when Bars is
+selected. See [Modern precipitation display](modern-precipitation.md) for scaling,
+zero/missing values, units and YAML options.

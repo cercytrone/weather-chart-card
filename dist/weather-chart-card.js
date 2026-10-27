@@ -1021,6 +1021,17 @@ function curvePoints(geometry, key) {
   return [left, ...points, right].filter(Boolean);
 }
 
+// Shared linear scale per visible rainfall window; probability always uses 0–100%.
+function precipitationData(items, type = 'rainfall') {
+  const probability = type === 'probability';
+  const values = items.map(item => {
+    const value = numeric(probability ? item.precipitation_probability : item.precipitation);
+    return value === null || value < 0 || (probability && value > 100) ? null : value;
+  });
+  const maximum = probability ? 100 : Math.max(0, ...values.filter(value => value !== null));
+  return {values, maximum, heights: values.map(value => value === null || maximum === 0 ? 0 : value / maximum * 100)};
+}
+
 function renderModern(card) {
   const {config, weather} = card;
   if (!chartIds.has(card)) chartIds.set(card, `weather-chart-${++chartId}`);
@@ -1036,6 +1047,26 @@ function renderModern(card) {
   const {points} = geometry;
   const format = value => value === null ? '–' : new Intl.NumberFormat(card.language, {maximumFractionDigits: config.forecast.round_temp ? 0 : 1}).format(value);
   const formatRainfall = value => new Intl.NumberFormat(card.language, {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(value);
+  const precipitationStyle = config.forecast.precipitation_style || 'badges';
+  const probability = config.forecast.precipitation_type === 'probability';
+  const precipitation = precipitationData(items, config.forecast.precipitation_type);
+  const precipitationUnit = probability ? '%' : weather.attributes.precipitation_unit || 'mm';
+  const precipitationLabel = value => value === null ? '–' : `${probability ? new Intl.NumberFormat(card.language, {maximumFractionDigits: 0}).format(value) : formatRainfall(value)} ${precipitationUnit}`;
+  const renderPrecipitation = () => {
+    if (precipitationStyle === 'off') return '';
+    if (precipitationStyle !== 'bars') return x`<div class="row rain rain-badges">${precipitation.values.map(value => x`<div>${value === null ? '–' : value > 0 ? x`<span>${precipitationLabel(value)}</span>` : ''}</div>`)}</div>`;
+    return x`<div class="row rain rain-bars">${precipitation.values.map((value, index) => {
+      const label = precipitationLabel(value);
+      const date = Date.parse(items[index].datetime);
+      const description = `${Number.isNaN(date) ? '' : new Date(date).toLocaleString(card.language)}: ${label}`;
+      return x`<div class="precip-column" role="img" aria-label=${description} title=${description}>
+        <div class="precip-track" aria-hidden="true">
+          ${value !== null && value > 0 ? x`<div class="precip-bar" style=${`height:${precipitation.heights[index]}%;`}></div>` : ''}
+        </div>
+        <span class="precip-label" aria-hidden="true">${label}</span>
+      </div>`;
+    })}</div>`;
+  };
   const icon = item => renderWeatherIcon(card, item.condition, 'above_horizon', config.icons_size, card.ll(item.condition));
   const series = (key, color) => {
     // Break paths at missing readings rather than interpolating invented data.
@@ -1093,7 +1124,12 @@ function renderModern(card) {
       .labels {position:absolute;inset:0;pointer-events:none;}
       .temp {position:absolute;transform:translate(-50%,-50%);font-size:${config.forecast.labels_font_size}px;font-weight:700;white-space:nowrap;}
       .rain {font-size:10px;color:#38bdf8;min-height:26px;}
-      .rain span {display:inline-block;background:#38bdf815;border-radius:5px;padding:3px;overflow-wrap:anywhere;}
+      .rain-badges span {display:inline-block;background:#38bdf815;border-radius:5px;padding:3px;overflow-wrap:anywhere;}
+      .rain-bars {align-items:start;min-height:0;padding-top:4px;}
+      .precip-column {min-width:0;padding:0 3px;}
+      .precip-track {height:${config.forecast.precipitation_height}px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid var(--divider-color);}
+      .precip-bar {width:14px;max-width:60%;border-radius:5px 5px 0 0;background:linear-gradient(to top,rgba(56,189,248,0.25),#38bdf8);}
+      .precip-label {display:block;padding:4px 0 0;font-size:10px;line-height:1.3;overflow-wrap:anywhere;}
       .icons {padding:8px 0;color:#38bdf8;}
       .icons ha-icon {--mdc-icon-size:${config.icons_size}px;}
       .wind {padding-top:10px;border-top:1px solid var(--divider-color);font-size:11px;}
@@ -1144,11 +1180,7 @@ function renderModern(card) {
             ${point.low === null ? '' : x`<span class="temp" style=${`left:${point.x}%;top:${(point.lowY+16)/175*100}%;color:${colorFor(point.low, config.forecast.temperature2_color)}`}>${format(point.low)}°</span>`}
           `)}</div>
         </div>
-        <div class="row rain">${items.map(item => {
-          const probability = config.forecast.precipitation_type === 'probability';
-          const value = numeric(probability ? item.precipitation_probability : item.precipitation);
-          return x`<div>${value === null ? '–' : value > 0 ? x`<span>${probability ? format(value) : formatRainfall(value)} ${probability ? '%' : weather.attributes.precipitation_unit || 'mm'}</span>` : ''}</div>`;
-        })}</div>
+        ${renderPrecipitation()}
         ${config.forecast.condition_icons === false ? '' : x`<div class="row icons">${items.map(item => x`<div>${icon(item)}</div>`)}</div>`}
         ${config.forecast.show_wind_forecast === false ? '' : x`<div class="row wind">${items.map(item => x`<div>${numeric(item.wind_speed) === null ? '–' : x`${item.wind_bearing === undefined ? '' : x`<ha-icon icon=${`hass:${card.getWindDirIcon(item.wind_bearing)}`}></ha-icon>`}${format(card.convertWindSpeed(Number(item.wind_speed)))}<small>${card.unitSpeed || ''}</small>`}</div>`)}</div>`}
       </div></div>` : x`<div class="empty" role="status">${card.language && card.language.startsWith('de') ? 'Keine Vorhersagedaten verfügbar.' : 'No forecast data available.'}</div>`}
@@ -1306,6 +1338,11 @@ class WeatherChartCardEditor extends s {
       const value = Number(event.target.value);
       if (event.target.value === '' || !Number.isFinite(value)) return;
       newConfig.forecast.number_of_forecasts = Math.max(0, Math.min(this._config.layout === 'modern' ? 15 : 100, Math.floor(value)));
+    }
+    if (key === 'forecast.precipitation_height') {
+      const value = Number(event.target.value);
+      if (event.target.value === '' || !Number.isFinite(value)) return;
+      newConfig.forecast.precipitation_height = Math.min(100, Math.max(20, value));
     }
     if (key === 'modern_padding_top' || key === 'modern_padding_bottom') {
       if (event.target.value === '') delete newConfig[key];
@@ -1584,6 +1621,21 @@ class WeatherChartCardEditor extends s {
                 @change=${e => this._valueChanged(e, key)}>
             `)}
             <p class="hint">Leave empty for automatic spacing. 0 removes the content inset. Side padding stays unchanged. Only affects Modern.</p>
+          </fieldset>
+
+          <fieldset class="icon-size-settings modern-precipitation-settings">
+            <legend>Precipitation</legend>
+            <label for="precipitation-style">Precipitation display</label>
+            <select id="precipitation-style" name="precipitation_style"
+              @change=${e => this._valueChanged(e, 'forecast.precipitation_style')}>
+              ${[['badges','Badges'],['bars','Bars'],['off','Off']].map(([value,label]) => x`<option value=${value} .selected=${(forecastConfig.precipitation_style || 'badges') === value}>${label}</option>`)}
+            </select>
+            <label for="precipitation-height">Bar chart height (px)</label>
+            <input id="precipitation-height" name="precipitation_height" type="number" min="20" max="100" step="1"
+              .value=${String(forecastConfig.precipitation_height || 40)}
+              ?disabled=${forecastConfig.precipitation_style !== 'bars'}
+              @change=${e => this._valueChanged(e, 'forecast.precipitation_height')}>
+            <p class="hint">Rainfall bars share a scale within the visible forecasts. Probability uses 0–100%. Choose rainfall or probability under Forecast. Missing values show a dash; zero has no bar.</p>
           </fieldset>
 
           <fieldset class="icon-size-settings">
@@ -18470,6 +18522,8 @@ static getStubConfig(hass, unusedEntities, allEntities) {
       temperature_gradient: false,
       gradient_fill: true,
       precipitation_type: 'rainfall',
+      precipitation_style: 'badges',
+      precipitation_height: 40,
       show_probability: false,
       labels_font_size: '11',
       precip_bar_size: '100',
@@ -18522,6 +18576,8 @@ setConfig(config) {
       temperature_gradient: false,
       gradient_fill: true,
       precipitation_type: 'rainfall',
+      precipitation_style: 'badges',
+      precipitation_height: 40,
       show_probability: false,
       labels_font_size: 11,
       chart_height: config.layout === 'modern' ? 150 : 180,
@@ -18550,6 +18606,8 @@ setConfig(config) {
     if (value === '' || value == null || !Number.isFinite(Number(value))) delete cardConfig[key];
     else cardConfig[key] = Math.min(80, Math.max(0, Number(value)));
   }
+  if (!['badges', 'bars', 'off'].includes(cardConfig.forecast.precipitation_style)) cardConfig.forecast.precipitation_style = 'badges';
+  cardConfig.forecast.precipitation_height = size(cardConfig.forecast.precipitation_height, 40, 20, 100);
   cardConfig.time_size = size(config.time_size, 26, 10, 72);
   cardConfig.day_size = size(config.day_size, size(config.day_date_size, 15, 10, 48), 10, 48);
   cardConfig.date_size = size(config.date_size, size(config.day_date_size, 15, 10, 48), 10, 48);

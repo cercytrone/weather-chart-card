@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {forecastGeometry, numeric, extendedGeometry, curvePoints, forecastWindow, temperatureColor} from '../src/modern-layout.js';
+import {forecastGeometry, numeric, extendedGeometry, curvePoints, forecastWindow, temperatureColor, precipitationData} from '../src/modern-layout.js';
 
 for (const value of [null, undefined, '', 'unknown', 'unavailable', NaN, Infinity]) assert.equal(numeric(value), null);
 assert.equal(numeric(0), 0);
@@ -65,3 +65,17 @@ for (const celsius of [-10, 0, 10, 20, 30, 40]) {
   assert.equal(temperatureColor(celsius + 273.15, 'K'), temperatureColor(celsius));
 }
 console.log('Temperature palette and unit conversion tests passed');
+
+const rainfall = precipitationData([{precipitation:0.4},{precipitation:0.3},{precipitation:1},{precipitation:0},{},{precipitation:-1}]);
+assert.deepEqual(rainfall.values,[0.4,0.3,1,0,null,null]);
+assert.deepEqual(rainfall.heights,[40,30,100,0,0,0]);
+assert.equal(rainfall.maximum,1);
+assert.deepEqual(precipitationData([{precipitation:0}]).heights,[0]);
+assert.equal(precipitationData([]).maximum,0);
+assert.deepEqual(precipitationData([{precipitation:'unavailable'},{precipitation:null}]).values,[null,null]);
+const probability = precipitationData([{precipitation_probability:25},{precipitation_probability:50},{precipitation_probability:100},{precipitation_probability:101},{precipitation_probability:-1}], 'probability');
+assert.equal(probability.maximum,100);
+assert.deepEqual(probability.values,[25,50,100,null,null]);
+assert.deepEqual(probability.heights,[25,50,100,0,0]);
+assert.equal(precipitationData([{precipitation:0.4}]).heights[0],100);
+console.log('Precipitation scaling, probabilities, zero and missing-value tests passed');

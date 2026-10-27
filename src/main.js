@@ -57,6 +57,8 @@ static getStubConfig(hass, unusedEntities, allEntities) {
       temperature_gradient: false,
       gradient_fill: true,
       precipitation_type: 'rainfall',
+      precipitation_style: 'badges',
+      precipitation_height: 40,
       show_probability: false,
       labels_font_size: '11',
       precip_bar_size: '100',
@@ -109,6 +111,8 @@ setConfig(config) {
       temperature_gradient: false,
       gradient_fill: true,
       precipitation_type: 'rainfall',
+      precipitation_style: 'badges',
+      precipitation_height: 40,
       show_probability: false,
       labels_font_size: 11,
       chart_height: config.layout === 'modern' ? 150 : 180,
@@ -137,6 +141,8 @@ setConfig(config) {
     if (value === '' || value == null || !Number.isFinite(Number(value))) delete cardConfig[key];
     else cardConfig[key] = Math.min(80, Math.max(0, Number(value)));
   }
+  if (!['badges', 'bars', 'off'].includes(cardConfig.forecast.precipitation_style)) cardConfig.forecast.precipitation_style = 'badges';
+  cardConfig.forecast.precipitation_height = size(cardConfig.forecast.precipitation_height, 40, 20, 100);
   cardConfig.time_size = size(config.time_size, 26, 10, 72);
   cardConfig.day_size = size(config.day_size, size(config.day_date_size, 15, 10, 48), 10, 48);
   cardConfig.date_size = size(config.date_size, size(config.day_date_size, 15, 10, 48), 10, 48);
