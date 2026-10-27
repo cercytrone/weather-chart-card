@@ -15,7 +15,7 @@ All switches default to the previous presentation and only affect Modern.
   Disabling it makes those fields transparent, leaving values, icons and spacing
   unchanged. It does not remove the card-wide theme/ambient background.
 
-## Forecast
+## Temperature chart (Modern layout) — above the Settings tabs
 
 - **Dotted night / low temperature curve (Modern layout)**
   (`forecast.night_dotted`, default false) renders the low-temperature curve with

@@ -462,6 +462,25 @@ gradientCard.setConfig({...editor.config,layout:'classic',center_weather_icon:tr
 await gradientCard.updateComplete;
 assert.equal(gradientCard.shadowRoot.querySelector('.main.center-weather-icon'),null);
 gradientCard.remove();
+// Dotted-low control is always visible above tabs and reflects existing YAML.
+editor.setConfig({entity:'weather.home',layout:'modern',forecast:{night_dotted:true,temperature_gradient:true,number_of_forecasts:7}});
+await editor.updateComplete;
+for (const page of ['card','forecast','units','alternate']) {
+  editor.showPage(page);
+  await editor.updateComplete;
+  const switches = editor.shadowRoot.querySelectorAll('input[name="night_dotted"]');
+  assert.equal(switches.length,1);
+  assert.equal(switches[0].closest('.page-container'),null);
+  assert.equal(switches[0].closest('fieldset').querySelector('legend').textContent,'Temperature chart (Modern layout)');
+  assert.equal(switches[0].checked,true);
+}
+const dottedSwitch = editor.shadowRoot.querySelector('input[name="night_dotted"]');
+dottedSwitch.checked = false;
+dottedSwitch.dispatchEvent(new Event('change'));
+await editor.updateComplete;
+assert.equal(editor.config.forecast.night_dotted,false);
+assert.equal(editor.config.forecast.temperature_gradient,true);
+assert.equal(editor.config.forecast.number_of_forecasts,7);
 editor.remove();
 card.remove();
 await window.happyDOM.abort();

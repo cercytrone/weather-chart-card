@@ -358,7 +358,10 @@ class WeatherChartCardEditor extends LitElement {
       </div>
 
       <fieldset class="icon-size-settings">
-        <legend>Temperature gradients (Modern layout)</legend>
+        <legend>Temperature chart (Modern layout)</legend>
+          <label><input type="checkbox" name="night_dotted"
+            .checked=${forecastConfig.night_dotted === true}
+            @change=${e => this._valueChanged(e, 'forecast.night_dotted')}> Dotted night / low temperature curve (Modern layout)</label>
         <label><input type="checkbox" name="temperature_gradient"
           .checked=${forecastConfig.temperature_gradient === true}
           @change=${e => this._valueChanged(e, 'forecast.temperature_gradient')}> Temperature-based chart colours</label>
@@ -745,9 +748,7 @@ class WeatherChartCardEditor extends LitElement {
 
         <!-- Forecast Settings Page -->
         <div class="page-container ${this.currentPage === 'forecast' ? 'active' : ''}">
-          <label><input type="checkbox" name="night_dotted"
-            .checked=${forecastConfig.night_dotted === true}
-            @change=${e => this._valueChanged(e, 'forecast.night_dotted')}> Dotted night / low temperature curve (Modern layout)</label>
+
           <div class="switch-container">
             <ha-switch
               @change="${(e) => this._valueChanged(e, 'forecast.condition_icons')}"

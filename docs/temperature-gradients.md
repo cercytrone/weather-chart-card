@@ -1,6 +1,8 @@
 # Temperature gradients (Modern layout)
 
-The visual editor exposes two native checkboxes below the forecast count:
+The visual editor exposes native checkboxes in **Temperature chart (Modern layout)**
+below the forecast count and above the Settings tabs. In addition to the dotted-low
+curve switch, the two colour controls are:
 
 - **Temperature-based chart colours** enables temperature-dependent line, point
   and temperature-label colours (`forecast.temperature_gradient`, default false).
