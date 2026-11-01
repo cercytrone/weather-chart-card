@@ -8,6 +8,13 @@ This is a frontend card, not a Home Assistant add-on or weather-data integration
 [![Latest release](https://img.shields.io/github/v/release/cercytrone/weather-chart-card)](https://github.com/cercytrone/weather-chart-card/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE.md)
 
+## Version 3.0
+
+Version **3.0.0** brings the optional Modern layout and its visual editor controls
+to the stable release. Classic remains the default and existing YAML continues
+to work. See the [release notes](CHANGELOG.md) for the included features and
+update instructions.
+
 ## Screenshots
 
 Current branch bundle rendered in Chromium with deterministic **demo weather**.

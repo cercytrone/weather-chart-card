@@ -1,0 +1,47 @@
+# Changelog
+
+## 3.0.0
+
+First stable release of the modernised fork, including the features developed
+through v0.2.19-alpha and the refreshed README/screenshots.
+
+### Added
+
+- Optional responsive Modern layout with Home Assistant theme support and a
+  data-driven SVG forecast chart. Classic remains the default.
+- Modern editor tab grouping layout-specific settings: compact spacing, centred
+  header icon, attribute-field backgrounds and independent top/bottom insets.
+- Temperature-dependent gradients and optional coloured fills; optional dotted
+  low-temperature curve, each controlled by native on/off switches.
+- Precipitation badges, rounded blue-gradient bars or hidden precipitation row;
+  adjustable bar area height and rainfall labels with one decimal.
+- Independent font controls for time, weekday, date and current temperature;
+  separate current, forecast and attribute icon sizes.
+- Selectable forecast count (Modern defaults to five, up to 15 available entries).
+- Bundled static/animated weather icons, explicit sizing and inline SVG fallbacks
+  for failed images, reducing external dependencies for kiosk browsers.
+- Current branch screenshots, reproducible browser-capture tooling and focused
+  documentation for configuration and development.
+
+### Fixed
+
+- Clock/editor default mismatches and visibility of independent weekday/date.
+- Missing sun-entity handling, forecast subscription cleanup/reconnection, clock
+  timer cleanup, autoscroll scheduling and derived values after entity changes.
+- Editor entity selection, settings navigation and unavailable legacy controls.
+- Consistent modern title/content background and tighter condition-text spacing.
+- Shared forecast alignment and edge continuation using supplied neighbouring
+  values, or flat graphical extensions when neighbours are unavailable.
+- Missing readings remain missing rather than becoming invented zero values.
+
+### Updating
+
+Update this fork through HACS and completely reload the frontend. For Fully Kiosk,
+clear the web cache if needed. Keep only one weather-chart-card resource. Existing
+cards remain Classic unless `layout: modern` is selected; new Modern options do
+not require changes to existing YAML. Forecast availability depends on the weather
+integration. A fully local card does not make a cloud weather integration local.
+
+Automated tests and the lint/build pipeline have been run. Documentation screenshots
+use deterministic demo data and simulated HA shell components, not a live Home
+Assistant/Fire Tablet session; verify the display on your actual devices/themes.
