@@ -1,6 +1,6 @@
 {
   "name": "weather-chart-card",
-  "version": "1.0.1",
+  "version": "3.0.0",
   "description": "Weather card with charts for Home Assistant Lovelace UI",
   "keywords": [
     "home-assistant",
@@ -11,10 +11,11 @@
     "custom-cards"
   ],
   "module": "src/main.js",
-  "repository": "git@github.com:mlamberts78/weather-chart-card.git",
+  "repository": "https://github.com/cercytrone/weather-chart-card.git",
   "author": "Marc Lamberts",
   "license": "MIT",
   "dependencies": {
+    "@mdi/js": "^7.4.47",
     "chart.js": "^4.4.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "lit": "^2.8.0",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "eslint": "^8.56.0",
+    "happy-dom": "^21.0.4",
     "rollup": "^4.9.6",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -31,6 +33,9 @@
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "npm run lint && npm run rollup",
     "lint": "eslint 'src/**/*.js'",
-    "rollup": "rollup -c"
+    "rollup": "rollup -c",
+    "test": "node --experimental-default-type=module tests/modern-layout.test.mjs && node --experimental-default-type=module tests/card.test.mjs && node --experimental-default-type=module tests/weather-icons.test.mjs",
+    "generate:icons": "node scripts/generate-weather-icons.mjs",
+    "prebuild": "npm run generate:icons"
   }
 }
