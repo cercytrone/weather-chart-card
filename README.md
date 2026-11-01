@@ -7,7 +7,6 @@ This is a frontend card, not a Home Assistant add-on or weather-data integration
 
 Forked from [mlamberts78/weather-chart-card](https://github.com/mlamberts78/weather-chart-card).
 
-[![Latest release](https://img.shields.io/github/v/release/cercytrone/weather-chart-card)](https://github.com/cercytrone/weather-chart-card/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE.md)
 
 ## Version 3.0
