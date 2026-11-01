@@ -45,3 +45,11 @@ integration. A fully local card does not make a cloud weather integration local.
 Automated tests and the lint/build pipeline have been run. Documentation screenshots
 use deterministic demo data and simulated HA shell components, not a live Home
 Assistant/Fire Tablet session; verify the display on your actual devices/themes.
+
+### Dependency audit
+
+At release preparation, `npm audit --omit=dev` reported no known vulnerabilities
+in runtime dependencies. The full development dependency tree reported 11
+moderate advisories, including legacy ESLint/copy-tool chains. Development tools
+are not shipped as runtime dashboard scripts; toolchain migration is deferred
+rather than applying breaking automated fixes during this release.
