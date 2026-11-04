@@ -1,6 +1,6 @@
 {
   "name": "weather-chart-card",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Weather card with charts for Home Assistant Lovelace UI",
   "keywords": [
     "home-assistant",
@@ -34,7 +34,7 @@
     "build": "npm run lint && npm run rollup",
     "lint": "eslint 'src/**/*.js'",
     "rollup": "rollup -c",
-    "test": "node --experimental-default-type=module tests/modern-layout.test.mjs && node --experimental-default-type=module tests/card.test.mjs && node --experimental-default-type=module tests/weather-icons.test.mjs",
+    "test": "node --experimental-default-type=module tests/modern-layout.test.mjs && node --experimental-default-type=module tests/card.test.mjs && node --experimental-default-type=module tests/weather-icons.test.mjs && node --experimental-default-type=module tests/clock.test.mjs",
     "generate:icons": "node scripts/generate-weather-icons.mjs",
     "prebuild": "npm run generate:icons"
   }

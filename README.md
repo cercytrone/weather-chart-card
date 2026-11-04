@@ -14,7 +14,8 @@ Forked from [mlamberts78/weather-chart-card](https://github.com/mlamberts78/weat
 Version **3.0.0** brings the optional Modern layout and its visual editor controls
 to the stable release. Classic remains the default and existing YAML continues
 to work. See the [release notes](CHANGELOG.md) for the included features and
-update instructions.
+update instructions. Version **3.0.1** adds an optional Home Assistant clock
+source for tablets with an unsynchronised device clock.
 
 ## Screenshots
 
@@ -162,11 +163,15 @@ when switching tabs/layouts; Modern-only settings have no effect on Classic.
 | `show_sun` / `show_uv` | `true` | Sun times / UV (requires available data) |
 | `show_wind_direction` / `show_wind_speed` | `true` | Current wind metrics |
 | `show_time` / `show_time_seconds` | `false` | Clock / seconds |
+| `time_entity` | none (device clock) | Optional HA clock entity, e.g. `sensor.date_time_iso`; see [clock sources](docs/clock-source.md) |
 | `show_day` / `show_date` | `false` | Independent weekday/date display; does not require clock enabled |
 | `use_12hour_format` | `false` | 12-hour clock/sun times |
 | `show_last_changed` | `false` | Relative age of entity `last_updated` (not a forecast-delivery timestamp) |
 | `show_feels_like`, `show_dew_point`, `show_wind_gust_speed`, `show_visibility`, `show_description` | `false` | Optional extra metrics; requires provider/sensor data |
 | `autoscroll` | `false` | Hide forecasts outside the daily/hourly cutoff as time advances |
+
+For tablets with an unsynchronised device clock, **Main → Clock source** can use a
+Home Assistant time entity. This is available starting with v3.0.1. See [clock source setup and limitations](docs/clock-source.md).
 
 ### Sizes and icons (both layouts)
 
