@@ -660,6 +660,15 @@ class WeatherChartCardEditor extends LitElement {
               Autoscroll
             </label>
           </div>
+          <fieldset class="icon-size-settings clock-source-settings">
+            <legend>Clock source</legend>
+            <label for="time-entity">Home Assistant time entity (optional)</label>
+            <select id="time-entity" name="time_entity" @change=${e => this._valueChanged(e, 'time_entity')}>
+              <option value="" .selected=${!this._config.time_entity}>Device clock (default)</option>
+              ${[...new Set([...Object.keys(this.hass && this.hass.states || {}).filter(id => /^(sensor|input_datetime|time)\./.test(id)).sort(), this._config.time_entity].filter(Boolean))].map(id => html`<option value=${id} .selected=${this._config.time_entity === id}>${id}${this.hass && this.hass.states[id] && this.hass.states[id].attributes.friendly_name ? ` — ${this.hass.states[id].attributes.friendly_name}` : ''}</option>`)}
+            </select>
+            <p class="hint">Recommended: Time &amp; Date sensor with ISO date/time, or sensor.time. Values update with Home Assistant; no internet on the tablet is needed. An unavailable source displays a dash, not device time. Date/time sources also supply weekday/date; time-only sources use their HA update date.</p>
+          </fieldset>
           <div class="time-container">
             <div class="switch-right">
               <ha-switch

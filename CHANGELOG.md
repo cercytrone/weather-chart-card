@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Optional `time_entity` in Main → Clock source to use an HA time/date entity for
+  the header clock, weekday and date instead of an unsynchronised device clock.
+- Supports ISO timestamps, HA-local date/time and time-only states; uses the HA
+  time zone for absolute timestamps and never silently falls back on source errors.
+- Tests cover wrong device dates, DST, invalid values, editor selection and live
+  HA state updates. See `docs/clock-source.md` for update precision and limitations.
+
 ## 3.0.0
 
 First stable release of the modernised fork, including the features developed

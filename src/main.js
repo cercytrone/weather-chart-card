@@ -1,4 +1,5 @@
 import locale from './locale.js';
+import {clockDisplay} from './clock.js';
 import {bundledWeatherIcon, renderWeatherIcon} from './weather-icon.js';
 import {renderModern} from './modern-layout.js';
 import {
@@ -440,7 +441,7 @@ async firstUpdated(changedProperties) {
 
 
 async updated(changedProperties) {
-  const needsClock = this.isConnected && this.config.show_main !== false &&
+  const needsClock = this.isConnected && !this.config.time_entity && this.config.show_main !== false &&
     (this.config.show_time || this.config.show_day || this.config.show_date);
   if (needsClock && !this.clockInterval) {
     this.clockInterval = setInterval(() => this.requestUpdate(), 1000);
@@ -1060,7 +1061,6 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
   if (config.show_main === false)
     return html``;
 
-  const use12HourFormat = config.use_12hour_format;
   const showTime = config.show_time;
   const showDay = config.show_day;
   const showDate = config.show_date;
@@ -1068,7 +1068,6 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
   const showDescription = config.show_description;
   const showCurrentCondition = config.show_current_condition !== false;
   const showTemperature = config.show_temperature !== false;
-  const showSeconds = config.show_time_seconds === true;
 
   let roundedTemperature = parseFloat(temperature);
   if (!isNaN(roundedTemperature) && roundedTemperature % 1 !== 0) {
@@ -1082,13 +1081,7 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
 
   const iconHtml = renderWeatherIcon(this, weather.state, sun ? sun.state : 'above_horizon', config.current_icon_size, this.ll(weather.state));
 
-  const currentDate = new Date();
-  const currentTime = currentDate.toLocaleTimeString(this.language, {
-    hour12: use12HourFormat, hour: 'numeric', minute: 'numeric',
-    second: showSeconds ? 'numeric' : undefined
-  });
-  const currentDay = currentDate.toLocaleDateString(this.language, {weekday: 'long'});
-  const currentDateFormatted = currentDate.toLocaleDateString(this.language, {month: 'long', day: 'numeric'});
+  const {time: currentTime, day: currentDay, date: currentDateFormatted} = clockDisplay(this._hass, config, this.language);
 
   return html`
     <div class=${config.layout === 'modern' && config.center_weather_icon === true ? 'main center-weather-icon' : 'main'}>

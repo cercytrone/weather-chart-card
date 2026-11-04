@@ -785,6 +785,69 @@ const locale = {
   },
 };
 
+const missing = () => ({time: '–', day: '–', date: '–'});
+
+function wallDate(year, month, day, hour, minute, second) {
+  if (year < 1000 || month < 1 || month > 12 || day < 1 || day > 31 || hour > 23 || minute > 59 || second > 59) return null;
+  const value = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+  return value.getUTCFullYear() === year && value.getUTCMonth() === month - 1 && value.getUTCDate() === day ? value : null;
+}
+
+function serverTimeZone(hass) {
+  const zone = hass.config && hass.config.time_zone || 'UTC';
+  try { new Intl.DateTimeFormat('en', {timeZone: zone}).format(0); return zone; }
+  catch (error) { return 'UTC'; }
+}
+
+// Read entity snapshots, never extrapolate them using an unsynchronised device clock.
+// Wall-clock states already represent HA local time; ISO timestamps use HA's zone.
+function clockDisplay(hass, config, language, deviceNow = new Date()) {
+  const options = {hour12: config.use_12hour_format === true, hour: 'numeric', minute: 'numeric', second: config.show_time_seconds === true ? 'numeric' : undefined};
+  const format = (value, zone, kind) => {
+    const settings = kind === 'time' ? options : kind === 'day' ? {weekday: 'long'} : {month: 'long', day: 'numeric'};
+    return new Intl.DateTimeFormat(language, {...settings, ...(zone ? {timeZone: zone} : {})}).format(value);
+  };
+  if (!config.time_entity) return {time: format(deviceNow, null, 'time'), day: format(deviceNow, null, 'day'), date: format(deviceNow, null, 'date')};
+  const entity = hass.states[config.time_entity];
+  if (!entity || typeof entity.state !== 'string') return missing();
+  const state = entity.state.trim();
+  const zone = serverTimeZone(hass);
+  let time;
+  let date;
+  let displayZone = 'UTC';
+  // ISO 8601 timestamp with an explicit offset (e.g. sensor.date_time_iso).
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})$/i.test(state)) {
+    const parts = state.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/i);
+    if (!wallDate(Number(parts[1]), Number(parts[2]), Number(parts[3]), Number(parts[4]), Number(parts[5]), Number(parts[6] || 0))) return missing();
+    time = new Date(state);
+    if (!Number.isFinite(time.getTime())) return missing();
+    date = time;
+    displayZone = zone;
+  } else {
+    // input_datetime and the Time & Date integration's date_time / time_date states.
+    let match = state.match(/^(\d{4})-(\d{2})-(\d{2})[T, ]+(\d{2}):(\d{2})(?::(\d{2}))?$/);
+    const reversed = state.match(/^(\d{2}):(\d{2})(?::(\d{2}))?,?\s+(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match && reversed) match = [reversed[0], reversed[4], reversed[5], reversed[6], reversed[1], reversed[2], reversed[3]];
+    if (match) {
+      time = wallDate(Number(match[1]), Number(match[2]), Number(match[3]), Number(match[4]), Number(match[5]), Number(match[6] || 0));
+      date = time;
+    } else {
+      const onlyTime = state.match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);
+      if (!onlyTime) return missing();
+      time = wallDate(2000, 1, 1, Number(onlyTime[1]), Number(onlyTime[2]), Number(onlyTime[3] || 0));
+      // Time-only entities have no date. Use HA's update timestamp, not the tablet's date.
+      const updated = new Date(typeof entity.last_updated === 'string' ? entity.last_updated : NaN);
+      if (Number.isFinite(updated.getTime())) {
+        const parts = new Intl.DateTimeFormat('en', {timeZone: zone, year: 'numeric', month: 'numeric', day: 'numeric'}).formatToParts(updated);
+        const part = key => Number(parts.find(item => item.type === key).value);
+        date = wallDate(part('year'), part('month'), part('day'), 12, 0, 0);
+      }
+    }
+    if (!time) return missing();
+  }
+  return {time: format(time, displayZone, 'time'), day: date ? format(date, displayZone, 'day') : '–', date: date ? format(date, displayZone, 'date') : '–'};
+}
+
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -1848,6 +1911,15 @@ class WeatherChartCardEditor extends s {
               Autoscroll
             </label>
           </div>
+          <fieldset class="icon-size-settings clock-source-settings">
+            <legend>Clock source</legend>
+            <label for="time-entity">Home Assistant time entity (optional)</label>
+            <select id="time-entity" name="time_entity" @change=${e => this._valueChanged(e, 'time_entity')}>
+              <option value="" .selected=${!this._config.time_entity}>Device clock (default)</option>
+              ${[...new Set([...Object.keys(this.hass && this.hass.states || {}).filter(id => /^(sensor|input_datetime|time)\./.test(id)).sort(), this._config.time_entity].filter(Boolean))].map(id => x`<option value=${id} .selected=${this._config.time_entity === id}>${id}${this.hass && this.hass.states[id] && this.hass.states[id].attributes.friendly_name ? ` — ${this.hass.states[id].attributes.friendly_name}` : ''}</option>`)}
+            </select>
+            <p class="hint">Recommended: Time &amp; Date sensor with ISO date/time, or sensor.time. Values update with Home Assistant; no internet on the tablet is needed. An unavailable source displays a dash, not device time. Date/time sources also supply weekday/date; time-only sources use their HA update date.</p>
+          </fieldset>
           <div class="time-container">
             <div class="switch-right">
               <ha-switch
@@ -18905,7 +18977,7 @@ async firstUpdated(changedProperties) {
 
 
 async updated(changedProperties) {
-  const needsClock = this.isConnected && this.config.show_main !== false &&
+  const needsClock = this.isConnected && !this.config.time_entity && this.config.show_main !== false &&
     (this.config.show_time || this.config.show_day || this.config.show_date);
   if (needsClock && !this.clockInterval) {
     this.clockInterval = setInterval(() => this.requestUpdate(), 1000);
@@ -19525,7 +19597,6 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
   if (config.show_main === false)
     return x``;
 
-  const use12HourFormat = config.use_12hour_format;
   const showTime = config.show_time;
   const showDay = config.show_day;
   const showDate = config.show_date;
@@ -19533,7 +19604,6 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
   const showDescription = config.show_description;
   const showCurrentCondition = config.show_current_condition !== false;
   const showTemperature = config.show_temperature !== false;
-  const showSeconds = config.show_time_seconds === true;
 
   let roundedTemperature = parseFloat(temperature);
   if (!isNaN(roundedTemperature) && roundedTemperature % 1 !== 0) {
@@ -19547,13 +19617,7 @@ renderMain({ config, sun, weather, temperature, feels_like, description } = this
 
   const iconHtml = renderWeatherIcon(this, weather.state, sun ? sun.state : 'above_horizon', config.current_icon_size, this.ll(weather.state));
 
-  const currentDate = new Date();
-  const currentTime = currentDate.toLocaleTimeString(this.language, {
-    hour12: use12HourFormat, hour: 'numeric', minute: 'numeric',
-    second: showSeconds ? 'numeric' : undefined
-  });
-  const currentDay = currentDate.toLocaleDateString(this.language, {weekday: 'long'});
-  const currentDateFormatted = currentDate.toLocaleDateString(this.language, {month: 'long', day: 'numeric'});
+  const {time: currentTime, day: currentDay, date: currentDateFormatted} = clockDisplay(this._hass, config, this.language);
 
   return x`
     <div class=${config.layout === 'modern' && config.center_weather_icon === true ? 'main center-weather-icon' : 'main'}>
