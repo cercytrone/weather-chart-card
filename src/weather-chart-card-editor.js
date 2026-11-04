@@ -244,13 +244,20 @@ class WeatherChartCardEditor extends LitElement {
 
     return html`
       <style>
+        :host {display:block;min-width:0;max-width:100%;overflow-wrap:anywhere;}
+        *,*::before,*::after {box-sizing:border-box;}
+        select {width:100%;min-width:0;max-width:100%;text-overflow:ellipsis;}
+        legend {max-width:100%;white-space:normal;}
+        ha-textfield,ha-select,ha-form {min-width:0;max-width:100%;}
+        ha-switch,ha-checkbox {flex-shrink:0;}
+        .layout-setting {display:grid;gap:8px;margin-top:12px;}
         button,select,input[type="radio"] {font:inherit;accent-color:var(--primary-color);cursor:pointer;}
         button,select {color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px 12px;}
         button[aria-pressed="true"] {border-color:var(--primary-color);color:var(--primary-color);}
         button:focus-visible,select:focus-visible,input:focus-visible {outline:2px solid var(--primary-color);outline-offset:2px;}
         .buttons-container {display:flex;gap:8px;flex-wrap:wrap;}
-        .hint {color:var(--secondary-text-color);font-size:12px;}
-        .icon-size-settings {display:grid;gap:8px;min-width:0;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
+        .hint {color:var(--secondary-text-color);font-size:12px;line-height:1.5;margin:4px 0;min-width:0;}
+        .icon-size-settings {display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0;max-width:100%;margin:12px 0 20px;padding:12px;border:1px solid var(--divider-color);border-radius:8px;}
         .forecast-count-setting {display:grid;gap:8px;margin-top:12px;}
         .forecast-count-setting input,.icon-size-settings input[type="number"] {box-sizing:border-box;width:100%;min-width:0;padding:10px;font:inherit;color:var(--primary-text-color);background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;}
         .native-switch-row {display:flex;align-items:center;gap:12px;}
@@ -259,9 +266,12 @@ class WeatherChartCardEditor extends LitElement {
         button.native-switch[aria-checked="true"] {background:var(--primary-color,#03a9f4);}
         button.native-switch[aria-checked="true"]::after {left:21px;}
         .switch-label {
-          padding-left: 14px;
+          min-width: 0;
         }
         .switch-container {
+          display: flex;
+          align-items: center;
+          gap: 12px;
           margin-bottom: 12px;
         }
         .page-container {
@@ -272,15 +282,21 @@ class WeatherChartCardEditor extends LitElement {
         }
         .time-container {
           display: flex;
-          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 12px 20px;
           margin-bottom: 12px;
         }
+        .time-container > .switch-right {flex:1 1 180px;}
         .icon-container {
           display: flex;
-          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 12px 20px;
           margin-bottom: 12px;
         }
         .switch-right {
+          min-width: 0;
+          max-width: 100%;
+          gap: 12px;
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -315,12 +331,12 @@ class WeatherChartCardEditor extends LitElement {
         }
         .flex-container {
           display: flex;
-          flex-direction: row;
+          flex-wrap: wrap;
           gap: 20px;
         }
         .flex-container ha-textfield {
-          flex-basis: 50%;
-          flex-grow: 1;
+          flex: 1 1 180px;
+          min-width: 0;
         }
       </style>
       <div>
@@ -337,7 +353,7 @@ class WeatherChartCardEditor extends LitElement {
       ></ha-textfield>
        </div>
 
-      <label>Layout
+      <label class="layout-setting">Layout
         <select .value=${this._config.layout || 'classic'} @change=${e => this._valueChanged(e, 'layout')}>
           <option value="classic">Classic</option>
           <option value="modern">Modern</option>
@@ -663,7 +679,7 @@ class WeatherChartCardEditor extends LitElement {
           <fieldset class="icon-size-settings clock-source-settings">
             <legend>Clock source</legend>
             <label for="time-entity">Home Assistant time entity (optional)</label>
-            <select id="time-entity" name="time_entity" @change=${e => this._valueChanged(e, 'time_entity')}>
+            <select id="time-entity" name="time_entity" title=${this._config.time_entity || 'Device clock (default)'} @change=${e => this._valueChanged(e, 'time_entity')}>
               <option value="" .selected=${!this._config.time_entity}>Device clock (default)</option>
               ${[...new Set([...Object.keys(this.hass && this.hass.states || {}).filter(id => /^(sensor|input_datetime|time)\./.test(id)).sort(), this._config.time_entity].filter(Boolean))].map(id => html`<option value=${id} .selected=${this._config.time_entity === id}>${id}${this.hass && this.hass.states[id] && this.hass.states[id].attributes.friendly_name ? ` — ${this.hass.states[id].attributes.friendly_name}` : ''}</option>`)}
             </select>
