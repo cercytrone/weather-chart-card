@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.2
+
+- Fixed visual editor overflow introduced by long clock entity IDs/friendly names:
+  native selects now stay within their available width, as do grid fields/legends.
+- Wrapped clock and icon toggle groups and paired fields on narrow screens;
+  kept switch controls from shrinking and allowed labels/help text to wrap.
+- Added an optional Chromium layout regression check for 280/320/480/620 px,
+  light/dark, both layouts and five editor tabs, with long entity names and
+  clock-source selection/reset. HA shell components are simulated, not live HA.
+- No changes to the card layouts, time source semantics or existing YAML options.
+
 ## 3.0.1
 
 - Optional `time_entity` in Main → Clock source to use an HA time/date entity for

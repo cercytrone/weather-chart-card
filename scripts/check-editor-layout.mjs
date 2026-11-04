@@ -33,9 +33,12 @@ export async function checkEditorLayout(page) {
           await page.evaluate(async tab => {editor.showPage(tab);await editor.updateComplete;},tab);
           const overflow = await page.evaluate(() => {
             const right = editor.getBoundingClientRect().right;
-            return [...editor.shadowRoot.querySelectorAll('select,input,fieldset,label,legend,button,p,ha-switch,ha-checkbox,ha-textfield,ha-select,.time-container,.icon-container,.flex-container,.native-switch-row')]
+            const issues = [...editor.shadowRoot.querySelectorAll('select,input,fieldset,label,legend,button,p,ha-switch,ha-checkbox,ha-textfield,ha-select,.time-container,.icon-container,.flex-container,.native-switch-row')]
               .filter(el => el.getClientRects().length && el.getBoundingClientRect().right > right + 1)
               .map(el => `${el.id || el.className || el.tagName}: ${Math.round(el.getBoundingClientRect().right)} > ${Math.round(right)}`);
+            if (editor.scrollWidth > editor.clientWidth + 1) issues.push(`Editor scroll width: ${editor.scrollWidth} > ${editor.clientWidth}`);
+            if (document.documentElement.scrollWidth > innerWidth + 1) issues.push('Document overflows the viewport');
+            return issues;
           });
           if (overflow.length) failures.push({layout,theme,width,tab,overflow});
         }

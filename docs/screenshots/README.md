@@ -35,3 +35,20 @@ is disabled to avoid serverless screenshot compositing artefacts. Runtime page
 errors fail the capture. The editor viewport is expanded so its full tab is not
 clipped. To change the screenshot configuration or demo values, edit
 `scripts/capture-docs.mjs`, rebuild the card if needed, and regenerate all images.
+
+## Editor layout regression checks
+
+With the same optional browser dependencies installed, run:
+
+```sh
+npm run build
+node scripts/capture-docs.mjs --test-editor
+```
+
+This mode does not overwrite the documentation screenshots. It tests long clock
+entity IDs/friendly names, 280/320/480/620 px editor widths, light/dark themes,
+Classic/Modern and five tabs. It checks that visible controls and document content
+stay within the available width and that selecting/clearing the clock source still
+works. It writes a diagnostic Main-tab screenshot to
+`/tmp/weather-editor-layout.png`. Additional lightweight HA switch/checkbox/select
+shells approximate control dimensions; this is not a full HA or Fire Tablet test.
