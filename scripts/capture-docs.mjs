@@ -50,6 +50,9 @@ try{
   await page.addInitScript(()=>{const OriginalDate=Date;const now=OriginalDate.parse('2026-10-27T12:00:00Z');window.Date=class extends OriginalDate{constructor(...args){super(...(args.length?args:[now]))}static now(){return now}}});
   await page.goto(`http://127.0.0.1:${server.address().port}`,{waitUntil:'networkidle'});
   await page.waitForFunction(()=>window.card?.shadowRoot?.querySelectorAll('.precip-column').length===5);
+  if (process.argv.includes('--test-editor')) {
+    await (await import('./check-editor-layout.mjs')).checkEditorLayout(page);
+  } else {
   await mkdir(new URL('docs/screenshots/',root),{recursive:true});
   for(const theme of ['light','dark']){
     await page.evaluate(theme=>document.body.classList.toggle('dark',theme==='dark'),theme);
@@ -65,6 +68,7 @@ try{
   // Capture the real settings navigation and active Modern page, excluding unrelated global controls.
   const clip=await page.evaluate(()=>{const outer=document.querySelector('#editor-demo').getBoundingClientRect();const top=editor.shadowRoot.querySelector('.buttons-container').getBoundingClientRect();const bottom=editor.shadowRoot.querySelector('[data-page="modern"]').getBoundingClientRect();return {x:outer.x,y:top.y-12,width:outer.width,height:bottom.bottom-top.y+32}});
   await page.screenshot({path:new URL('docs/screenshots/editor-modern.png',root).pathname,clip});
+  }
   if(errors.length)throw new Error(errors.join('\n'));
-  console.log('Rendered Modern light/dark, Classic and Modern editor screenshots from dist/weather-chart-card.js');
+  if (!process.argv.includes('--test-editor')) console.log('Rendered Modern light/dark, Classic and Modern editor screenshots from dist/weather-chart-card.js');
 }finally{await browser?.close();server.close();}

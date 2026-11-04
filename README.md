@@ -15,7 +15,8 @@ Version **3.0.0** brings the optional Modern layout and its visual editor contro
 to the stable release. Classic remains the default and existing YAML continues
 to work. See the [release notes](CHANGELOG.md) for the included features and
 update instructions. Version **3.0.1** adds an optional Home Assistant clock
-source for tablets with an unsynchronised device clock.
+source for tablets with an unsynchronised device clock. Version **3.0.2** fixes
+visual editor overflow with long entity names and narrow editor widths.
 
 ## Screenshots
 
