@@ -14,7 +14,8 @@ Forked from [mlamberts78/weather-chart-card](https://github.com/mlamberts78/weat
 Version **3.0.0** brings the optional Modern layout and its visual editor controls
 to the stable release. Classic remains the default and existing YAML continues
 to work. See the [release notes](CHANGELOG.md) for the included features and
-update instructions.
+update instructions. Version **3.0.1** adds an optional Home Assistant clock
+source for tablets with an unsynchronised device clock.
 
 ## Screenshots
 
@@ -170,8 +171,7 @@ when switching tabs/layouts; Modern-only settings have no effect on Classic.
 | `autoscroll` | `false` | Hide forecasts outside the daily/hourly cutoff as time advances |
 
 For tablets with an unsynchronised device clock, **Main → Clock source** can use a
-Home Assistant time entity. This is a new branch feature after 3.0.0; it is not yet
-part of the published v3.0.0 release. See [clock source setup and limitations](docs/clock-source.md).
+Home Assistant time entity. This is available starting with v3.0.1. See [clock source setup and limitations](docs/clock-source.md).
 
 ### Sizes and icons (both layouts)
 

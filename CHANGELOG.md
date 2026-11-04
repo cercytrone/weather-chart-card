@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.1
 
 - Optional `time_entity` in Main → Clock source to use an HA time/date entity for
   the header clock, weekday and date instead of an unsynchronised device clock.
